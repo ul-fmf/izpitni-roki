@@ -1,30 +1,11 @@
-from dataclasses import dataclass
 from typing import List, Optional, Dict
 from datetime import datetime
 import re
 import os
-from pomozno import create_logger
+from osnovno import create_logger, IzpitniRok, Koledar
 
 
 LOGGER = create_logger(__file__)
-
-
-@dataclass
-class IzpitniRok:
-    """Osnovne informacije o izpitnem roku"""
-    smeri: List[str]
-    letnik: str
-    predmet: str
-    izvajalci: List[str]
-    rok: str
-    datum: datetime
-
-
-@dataclass
-class Koledar:
-    """Osnovne informacije o koledarju"""
-    smer: str
-    izpitni_roki: List[IzpitniRok]
 
 
 def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Dict[str, str]:

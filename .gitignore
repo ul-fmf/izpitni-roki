@@ -1,5 +1,7 @@
 data
+!data/test.ics
 .idea
+out/izpitni_roki.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
