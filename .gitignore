@@ -1,5 +1,4 @@
-data
-!data/test.ics
+data/*2122.ics
 .idea
 out/izpitni_roki.html
 
