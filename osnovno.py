@@ -28,14 +28,18 @@ class HtmlPredloga:
         self.pot = f"predloge/{ime_predloge}.html"
         self.predloga = ""
         self.parametri = {}
+        self.zamiki = {}
         self._nalozi()
         self.nastavi_parametre(**kwargs)
 
     def _nalozi(self):
         with open(self.pot, encoding="utf-8") as f:
             self.predloga = "".join(f.readlines())
-        for zadetek in re.findall("{{[^}]+}}", self.predloga):
+        for zadetek in re.findall(" *{{[^}]+}}", self.predloga):
+            zamik = zadetek.find("{")
+            zadetek = zadetek.strip()
             self.parametri[zadetek] = None
+            self.zamiki[zadetek] = zamik
 
     def nastavi_parametre(self, **kwargs):
         for kljuc, vrednost in kwargs.items():
@@ -44,7 +48,11 @@ class HtmlPredloga:
                 raise ValueError(
                     f"Neznani parameter {parameter}. Dovoljeno: {list(self.parametri)}"
                 )
-            self.parametri[parameter] = vrednost
+            vrstice = vrednost.split("\n")
+            zamik = self.zamiki[parameter]
+            zamaknjene_vrstice = [vrstice[0]]
+            zamaknjene_vrstice += list(map(lambda vrsta: zamik * " " + vrsta, vrstice[1:]))
+            self.parametri[parameter] = "\n".join(zamaknjene_vrstice)
 
     def __str__(self):
         niz = self.predloga

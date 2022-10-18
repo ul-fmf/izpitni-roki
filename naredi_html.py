@@ -64,7 +64,8 @@ def naredi_spustni_meni_po_crkah(ime_menija: str, html_razred: str, moznosti: Li
                 HtmlPredloga(
                     "spustni_spustni_nivo1",
                     ime_skupine=crka,
-                    moznosti="\n".join(elementi_nivo2)
+                    moznosti="\n".join(elementi_nivo2),
+                    razred=html_razred
                 )
             )
         )
@@ -78,7 +79,7 @@ def naredi_spustni_meni_po_crkah(ime_menija: str, html_razred: str, moznosti: Li
     )
 
 
-def naredi_html(poti_do_urnikov: List[str]):
+def naredi_html(poti_do_urnikov: List[str], naslov: str):
     koledarji = [nalozi_ics(pot) for pot in poti_do_urnikov]
     vsi_izvajalci = najdi_vse_izvajalce(koledarji)
     vsi_predmeti = najdi_vse_predmete(koledarji)
@@ -87,11 +88,15 @@ def naredi_html(poti_do_urnikov: List[str]):
     meni_predmeti = naredi_spustni_meni_po_crkah("Predmeti", "predmet", vsi_predmeti)
     meniji = "\n".join([meni_izvajalci, meni_predmeti])
 
-    html_stran = HtmlPredloga("stran", spustni_meniji=meniji)
+    html_stran = HtmlPredloga("stran", spustni_meniji=meniji, naslov=naslov)
     with open("out/izpitni_roki.html", "w", encoding="utf-8") as f:
         print(html_stran, file=f)
 
 
 if __name__ == "__main__":
-    naredi_html(["data/test.ics", "data/1FiMa2122.ics", "data/1Mate2PeMa2122.ics"][1:])
+    naredi_html(
+        ["data/test.ics", "data/1FiMa2122.ics", "data/1Mate2PeMa2122.ics"][1:],
+        "Izpiti 2022/2023"
+    )
+
 

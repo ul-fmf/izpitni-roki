@@ -14,8 +14,12 @@ body {
     transition: background-color .4s ease;
 }
 
+.checkbox-submenu li.active label {
+    background-color: #cbcbff;
+    font-weight:bold;
+}
 
-.checkbox-menu li.active label {
+.checkbox-menu li.active a {
     background-color: #cbcbff;
     font-weight:bold;
 }
