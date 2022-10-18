@@ -43,9 +43,12 @@ def najdi_vse_predmete(koledarji: List[Koledar]) -> List[str]:
 
 def naredi_spustni_meni_po_crkah(ime_menija: str, html_razred: str, moznosti: List[str]) -> str:
     """
-    Naredi dvonivosjki dropdown element za html.
+    Naredi dvonivojski spustni meni.
+
+    :param ime_menija: napis na gumbu
+    :param html_razred: razred, ki ga dodatmo v class atribut vseh možnosti
     :param moznosti: Urejen seznam moznosti.
-    :return:
+    :return: str(html predloga za dvonivojski spustni meni)
     """
     skupine: List[List[str]] = [[] for _ in CRKE]
     for moznost in moznosti:
@@ -79,14 +82,45 @@ def naredi_spustni_meni_po_crkah(ime_menija: str, html_razred: str, moznosti: Li
     )
 
 
+def naredi_spustni_meni(ime_menija: str, html_razred: str, moznosti: List[str]) -> str:
+    """
+    Naredi enonivojski spustni meni.
+
+    :param ime_menija: napis na gumbu
+    :param html_razred: razred, ki ga dodatmo v class atribut vseh možnosti
+    :param moznosti: Urejen seznam moznosti.
+    :return: str(html predloga enonivojski spustni meni)
+    """
+    elementi_nivo2 = []
+    for moznost in moznosti:
+        element = HtmlPredloga("spustni_spustni_nivo2", razred=html_razred, besedilo=moznost)
+        elementi_nivo2.append(str(element))
+    return str(
+        HtmlPredloga(
+            "spustni_spustni",
+            ime_menija=ime_menija,
+            razred=html_razred,
+            skupine="\n".join(elementi_nivo2)
+        )
+    )
+
 def naredi_html(poti_do_urnikov: List[str], naslov: str):
     koledarji = [nalozi_ics(pot) for pot in poti_do_urnikov]
+    vsi_programi = najdi_vse_programe(koledarji)
+    vsi_letniki = najdi_vse_letnike(koledarji)
+    vsi_roki = najdi_vse_roke(koledarji)
     vsi_izvajalci = najdi_vse_izvajalce(koledarji)
     vsi_predmeti = najdi_vse_predmete(koledarji)
 
+    meni_programi = naredi_spustni_meni("Programi", "program", vsi_programi)
+    meni_letniki = naredi_spustni_meni("Letniki", "letnik", vsi_letniki)
+    meni_roki = naredi_spustni_meni("Roki", "rok", vsi_roki)
     meni_izvajalci = naredi_spustni_meni_po_crkah("Izvajalci", "izvajalec", vsi_izvajalci)
     meni_predmeti = naredi_spustni_meni_po_crkah("Predmeti", "predmet", vsi_predmeti)
-    meniji = "\n".join([meni_izvajalci, meni_predmeti])
+
+    meniji = "\n\n".join(
+        [meni_programi, meni_programi, meni_roki, meni_izvajalci, meni_predmeti]
+    )
 
     html_stran = HtmlPredloga("stran", spustni_meniji=meniji, naslov=naslov)
     with open("out/izpitni_roki.html", "w", encoding="utf-8") as f:
