@@ -15,6 +15,7 @@ function contains(list, element){
     return false;
 }
 
+
 $(".opcija").on("click", function() {
     $(this).closest("li").toggleClass("active");
     // aktivnost grupe
@@ -29,9 +30,7 @@ $(".opcija").on("click", function() {
     } else {
         potentialGroupParent.removeClass("active");
     }
-
-
-
+    posodobiTabeloIzbranih();
 });
 
 $(".group-choice").on("click", function() {
@@ -45,5 +44,37 @@ $(".group-choice").on("click", function() {
         $(pikaRazred).addClass("active");
         $(this).text("Odstrani vse");
     }
+    posodobiTabeloIzbranih();
 });
+
+
+function najPrikazem(seznamSkupinID) {
+    for (let i = 0; i < seznamSkupinID.length; i++){
+        let vsajEn = false;
+        let skupina = seznamSkupinID[i].split("x");
+        for (let j = 0; j < skupina.length; j++){
+            let kandidat = skupina[j];
+            if(contains(getClasses($("#" + kandidat)), "active")){
+                vsajEn = true;
+                break;
+            }
+        }
+        if (! vsajEn){
+            return false;
+        }
+    }
+    return true;
+}
+
+function posodobiTabeloIzbranih(){
+    let idIzpitnihVrstic = $.map($(".izpitna-vrstica"), function(vrsta){return $(vrsta).attr("id")});
+    for (let i = 0; i < idIzpitnihVrstic.length; i++){
+        let zdaj = "#" + idIzpitnihVrstic[i];
+        if (najPrikazem(idIzpitnihVrstic[i].split("_"))){
+            $(zdaj).removeAttr("hidden");
+        } else {
+            $(zdaj).attr("hidden", "");
+        }
+    }
+}
 

@@ -2,10 +2,21 @@ from typing import List, Optional, Dict
 from datetime import datetime
 import re
 import os
-from osnovno import create_logger, IzpitniRok, Koledar
+from osnovno import (
+    create_logger,
+    IzpitniRok,
+    Koledar,
+    Predmet,
+    Program,
+    Letnik,
+    Rok,
+    Izvajalec,
+    IDTerIme
+)
 
 
 LOGGER = create_logger(__file__)
+
 
 
 def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Dict[str, str]:
@@ -74,7 +85,17 @@ def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
     letnik = izpit.group("letnik")
     izvajalci = razbij_na_dele(izpit.group("izvajalci"))
     rok = izpit.group("rok")
-    return IzpitniRok(smeri, letnik, predmet, izvajalci, rok, datum)
+
+    izpitni_rok = IzpitniRok(
+        datum,
+        IDTerIme.naredi_objekt(Predmet, predmet),
+        [IDTerIme.naredi_objekt(Program, smer) for smer in smeri],
+        IDTerIme.naredi_objekt(Letnik, letnik),
+        IDTerIme.naredi_objekt(Rok, rok),
+        [IDTerIme.naredi_objekt(Izvajalec, izvajalec) for izvajalec in izvajalci]
+    )
+    izpitni_rok.preveri()
+    return izpitni_rok
 
 
 def naredi_koledar(meta_vrstice_koledarja: List[str], izpitni_roki: List[IzpitniRok]) -> Koledar:
