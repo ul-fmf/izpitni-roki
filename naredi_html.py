@@ -160,7 +160,7 @@ def naredi_html(poti_do_urnikov: List[str], naslov: str):
 if __name__ == "__main__":
     naredi_html(
         ["data/test.ics", "data/1FiMa2122.ics", "data/1Mate2PeMa2122.ics"][:1],
-        "Izpiti 2022/2023"
+        "Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2022/23"
     )
 
 

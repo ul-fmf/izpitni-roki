@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 class IDGenerator:
-    """Polepšajmo kodo in se izognimi dolgim guidom."""
+    """Polepšajmo kodo in se izognimo dolgim guidom."""
     NASLEDNJI_ID = 0
 
     @staticmethod

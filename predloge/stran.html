@@ -12,11 +12,49 @@
     <title>Izpitni roki</title>
   </head>
   <body>
-    <h1>{{naslov}}</h1>
+  <div class="mt-2 col-md-12">
+    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+        <h1>{{naslov}}</h1>
+    </nav>
 
-{{spustni_meniji}}
+    <div class="mt-2 card">
+      <div class="card-header">
+        O strani
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+            Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa), Matematika (1Mate) in Praktična matematika (1PrMa) in prvih treh letnikih programa Pedagoška matematika (2PeMa) na Oddelku za matematiko FMF v študijskem letu 2022/23, ki zadoščajo izbranim kriterijem.
+        </p>
+        <p class="card-text">
+            Izpitne roke lahko uvozite v svoj osebni koledar preko .ics datotek:
+            <ul>
+              <li><a href="#" >Finančna matematika</a></li>
+              <li><a href="#" >Matematika in pedagoška matematika</a></li>
+              <li><a href="#" >Praktična matematika</a></li>
+            </ul>
+            <a href="mailto:matematika@fmf.uni-lj.si" class="btn btn-info">Pošlji komentar</a>
+        </p>
+      </div>
+    </div>
 
-{{izpiti}}
+    <div class="mt-2 card">
+      <div class="card-header">
+        Izbira izpitnih rokov
+      </div>
+      <div class="card-body">
+        {{spustni_meniji}}
+      </div>
+    </div>
+
+    <div class="mt-2 card">
+      <div class="card-header">
+        Izbrani izpiti
+      </div>
+      <div class="card-body">
+        {{izpiti}}
+      </div>
+    </div>
+  </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
