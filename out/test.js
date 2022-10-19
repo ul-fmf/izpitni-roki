@@ -21,14 +21,13 @@ $(".opcija").on("click", function() {
     // aktivnost grupe
     const thisDropDownGroup = $(this).closest("li").closest("ul.dropdown-menu");
     const potentialGroupParent = thisDropDownGroup.closest("li");
-    if (potentialGroupParent.length === 0){
-        return;
-    }
-    const nActiveInGroup = thisDropDownGroup.children(".active").length;
-    if (nActiveInGroup > 0){
-        potentialGroupParent.addClass("active");
-    } else {
-        potentialGroupParent.removeClass("active");
+    if (potentialGroupParent.length > 0){
+        const nActiveInGroup = thisDropDownGroup.children(".active").length;
+        if (nActiveInGroup > 0){
+            potentialGroupParent.addClass("active");
+        } else {
+            potentialGroupParent.removeClass("active");
+        }
     }
     posodobiTabeloIzbranih();
 });
