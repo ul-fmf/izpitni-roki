@@ -1,3 +1,6 @@
+const ODSTRANI_VSE = "Odstrani vse";
+const IZBERI_VSE = "Izberi vse";
+
 $(document).on('click', '.allow-focus', function (e) {
   e.stopPropagation();
 });
@@ -29,18 +32,21 @@ $(".opcija").on("click", function() {
             potentialGroupParent.removeClass("active");
         }
     }
+    posodobiGrupnoIzbiro($(this).attr("data-group"));
     posodobiTabeloIzbranih();
 });
 
 $(".group-choice").on("click", function() {
-    const pikaRazred = "." + $(this).attr("data-group");
-    if ($(this).text() === "Odstrani vse"){
+    const razred = $(this).attr("data-group");
+    const pikaRazred = "." + razred;
+    if ($(this).text() === ODSTRANI_VSE){
         $(pikaRazred).removeClass("active");
-        $(this).text("Izberi vse");
+        $(this).text(IZBERI_VSE);
     } else {
         $(pikaRazred).addClass("active");
-        $(this).text("Odstrani vse");
+        $(this).text(ODSTRANI_VSE);
     }
+    posodobiGrupnoIzbiro(razred);
     posodobiTabeloIzbranih();
 });
 
@@ -72,6 +78,22 @@ function posodobiTabeloIzbranih(){
         } else {
             $(zdaj).attr("hidden", "");
         }
+    }
+}
+
+function posodobiGrupnoIzbiro(razred) {
+    const filter = "." + razred + ".active";
+    const n = $(filter).length;
+    const gumbID = "#gumb_" + razred;
+    const grupaID = "#grupa_" + razred;
+    if (n > 0){
+        $(grupaID).text(ODSTRANI_VSE);
+        $(gumbID).removeClass("btn-secondary");
+        $(gumbID).addClass("btn-success");
+    } else{
+        $(grupaID).text(IZBERI_VSE);
+        $(gumbID).removeClass("btn-success");
+        $(gumbID).addClass("btn-secondary");
     }
 }
 
