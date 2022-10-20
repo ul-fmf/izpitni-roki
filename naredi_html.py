@@ -12,13 +12,9 @@ HTML_MAPA = "out"
 
 
 def najdi_vse(koledarji: List[Koledar], izvleckar: Callable[[IzpitniRok], List[IDTerIme]]) -> List[IDTerIme]:
-    def oblika_za_primerjanje(niz):
-        posebni = {"č": "cc", "ć": "ccc", "đ": "dd", "š": "ss", "ž": "zz"}
-        return "".join([crka if crka not in posebni else posebni[crka] for crka in niz]).lower()
-
     izvlecki = map(izvleckar, [rok for koledar in koledarji for rok in koledar.izpitni_roki])
     vrednosti = set(vrednost for izvlecek in izvlecki for vrednost in izvlecek)
-    return sorted(vrednosti, key=oblika_za_primerjanje)
+    return sorted(vrednosti)
 
 
 def najdi_vse_programe(koledarji: List[Koledar]) -> List[IDTerIme]:

@@ -25,9 +25,15 @@ class IDTerIme:
     def __str__(self):
         return self.ime
 
+    def _normalna_oblika(self):
+        posebni = {"č": "cc", "ć": "ccc", "đ": "dd", "š": "ss", "ž": "zz"}
+        return "".join(
+            [crka if crka not in posebni else posebni[crka] for crka in self.ime.lower()]
+        )
+
     def __lt__(self, other):
         if isinstance(other, IDTerIme):
-            return self.ime < other.ime
+            return self._normalna_oblika() < other._normalna_oblika()
         else:
             raise ValueError(f"IDTerIme ni primerljiv z {type(other).__name__}")
 
@@ -65,7 +71,26 @@ class Program(IDTerIme):
 
 
 class Letnik(IDTerIme):
-    pass
+    DOVOLJENI_LETNIKI = {
+        "1.": 1, "prvi": 1,
+        "2.": 2, "drugi": 2,
+        "3.": 3, "tretji": 3,
+        "4.": 4, "četrti": 4,
+        "5.": 5, "peti": 5
+    }
+
+    def __init__(self, ime):
+        super().__init__(ime)
+        if self.ime not in Letnik.DOVOLJENI_LETNIKI:
+            raise ValueError(
+                f"Nepravilen letnik: '{self.ime}'. Dovoljeni: {list(Letnik.DOVOLJENI_LETNIKI)}"
+            )
+
+    def __lt__(self, other):
+        if isinstance(other, IDTerIme):
+            return Letnik.DOVOLJENI_LETNIKI[self.ime] < Letnik.DOVOLJENI_LETNIKI[other.ime]
+        else:
+            raise ValueError(f"IDTerIme ni primerljiv z {type(other).__name__}")
 
 
 class Rok(IDTerIme):
@@ -102,8 +127,15 @@ class IzpitniRok:
 
     def prikazi_datum(self):
         dnevi = ["ponedeljek", "torek", "sreda", "četrtek", "petek", "sobota", "nedelja"]
+        meseci = [
+            "januar", "februar", "marec", "april",
+            "maj", "junij", "julij", "avgust",
+            "september", "oktober", "november", "december"
+
+        ]
         dan = dnevi[self.datum.weekday()]
-        oblikovan_datum = self.datum.strftime("%d. %m. %Y")
+        mesec = meseci[self.datum.month - 1]
+        oblikovan_datum = self.datum.strftime(f"{self.datum.day}. {mesec} {self.datum.year}")
         return f"{oblikovan_datum} ({dan})"
 
     def id(self):

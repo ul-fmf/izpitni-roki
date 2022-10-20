@@ -33,10 +33,8 @@ $(".opcija").on("click", function() {
 });
 
 $(".group-choice").on("click", function() {
-    const classList = getClasses($(this).closest("li"));
     const pikaRazred = "." + $(this).attr("data-group");
-    let isActive = contains(classList, 'active');
-    if (isActive){
+    if ($(this).text() === "Odstrani vse"){
         $(pikaRazred).removeClass("active");
         $(this).text("Izberi vse");
     } else {
