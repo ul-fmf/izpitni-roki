@@ -72,11 +72,11 @@ class Program(IDTerIme):
 
 class Letnik(IDTerIme):
     DOVOLJENI_LETNIKI = {
-        "1.": 1, "prvi": 1,
-        "2.": 2, "drugi": 2,
-        "3.": 3, "tretji": 3,
-        "4.": 4, "četrti": 4,
-        "5.": 5, "peti": 5
+        "prvi": 1,
+        "drugi": 2,
+        "tretji": 3,
+        "četrti": 4,
+        "peti": 5
     }
 
     def __init__(self, ime):
@@ -110,6 +110,8 @@ class IzpitniRok:
     letnik: Letnik
     rok: Rok
     izvajalci: List[Izvajalec]
+
+    ics_vrstice: str
 
     def preveri(self):
         for kljuc, vrednost in self.__dict__.items():
@@ -162,12 +164,26 @@ class IzpitniRok:
     def prikazi_izvajalce(self):
         return IzpitniRok._prikazi_neprazen_seznam(self.izvajalci)
 
+    def prilagodi_ics_opis(self) -> str:
+        ena_vrsta = self.ics_vrstice.replace("\n", "@@@@")
+        return re.sub("(\\\\, ?)?ni smeri", "", ena_vrsta)
+
 
 @dataclass
 class Koledar:
     """Osnovne informacije o koledarju"""
     smer: str
     izpitni_roki: List[IzpitniRok]
+
+    ics_vrstice: str
+
+    def prilagodi_ics_opis(self, nadomestno_ime: str) -> str:
+        vrstice_drugo_ime = re.sub(
+            "X-WR-CALNAME:.+(\\n)?( .+(\\n)?)*",   # poskrbimo za prelome vrstic
+            f"X-WR-CALNAME:{nadomestno_ime}\n",
+            self.ics_vrstice
+        )
+        return re.sub("\\n", "@@@@", vrstice_drugo_ime)
 
 
 class HtmlPredloga:

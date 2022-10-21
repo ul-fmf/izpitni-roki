@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple
 from datetime import datetime
 import re
 import os
@@ -18,8 +18,7 @@ from osnovno import (
 LOGGER = create_logger(__file__)
 
 
-
-def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Dict[str, str]:
+def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict[str, str], str]:
     kljucne_besede = [
         # dogodek
         "DTSTART;VALUE=DATE", "DTEND;VALUE=DATE", "DTSTAMP",
@@ -31,7 +30,9 @@ def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Dict[str, 
     ]
     pari = {}
     zadnja = ""
+    ics_raw = []
     for vrsta in vrstice:
+        ics_raw.append(vrsta)
         if any(vrsta.startswith((zacetek := kljucna)) for kljucna in kljucne_besede):
             zadnja = zacetek
             pari[zadnja] = vrsta[len(zacetek) + 1:]
@@ -45,7 +46,7 @@ def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Dict[str, 
     for nujen in nujni_kljuci:
         if nujen not in pari:
             raise ValueError(f"Ključ {nujen} manjka v {vrstice}")
-    return {n: pari[n] for n in nujni_kljuci}
+    return {n: pari[n] for n in nujni_kljuci}, "\n".join(ics_raw)
 
 
 def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
@@ -71,7 +72,7 @@ def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
         )
     zacetek = "DTSTART;VALUE=DATE"
     povzetek = "SUMMARY"
-    vrednosti = preberi_vrednosti(vrstice, [zacetek, povzetek])
+    vrednosti, ics_raw = preberi_vrednosti(vrstice, [zacetek, povzetek])
     datum = datetime.strptime(vrednosti[zacetek], "%Y%m%d")
     pricakovana_oblika = r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \
                          r"(?P<letnik>[^ ]+) letnik\\, " \
@@ -92,7 +93,8 @@ def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
         [IDTerIme.naredi_objekt(Program, smer) for smer in smeri],
         IDTerIme.naredi_objekt(Letnik, letnik),
         IDTerIme.naredi_objekt(Rok, rok),
-        [IDTerIme.naredi_objekt(Izvajalec, izvajalec) for izvajalec in izvajalci]
+        [IDTerIme.naredi_objekt(Izvajalec, izvajalec) for izvajalec in izvajalci],
+        "BEGIN:VEVENT\n" + ics_raw + "\nEND:VEVENT"
     )
     izpitni_rok.preveri()
     return izpitni_rok
@@ -106,9 +108,9 @@ def naredi_koledar(meta_vrstice_koledarja: List[str], izpitni_roki: List[Izpitni
     :return: koledar z izpitnimi roki za dano smer
     """
     polje_smer = "X-WR-CALNAME"
-    vrednosti = preberi_vrednosti(meta_vrstice_koledarja, [polje_smer])
+    vrednosti, ics_vrstice = preberi_vrednosti(meta_vrstice_koledarja, [polje_smer])
     smer = vrednosti[polje_smer]
-    return Koledar(smer, izpitni_roki)
+    return Koledar(smer, izpitni_roki, ics_vrstice)
 
 
 def nalozi_ics(pot: str) -> Koledar:

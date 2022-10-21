@@ -97,3 +97,28 @@ function posodobiGrupnoIzbiro(razred) {
     }
 }
 
+$(".izvoz-koledarja").on("click", function() {
+    let opisDogodkov = $.map(
+        $(".izpitna-vrstica:visible"),
+        function(vrsta){
+            return $(vrsta).attr("data-ics").split("@@@@");
+        }
+        ).join("\n");
+    let opisKoledarja = $(".table.izpiti").attr("data-ics").replaceAll("@@@@", "\n") + "\n";
+    let icsVsebina = "BEGIN:VCALENDAR\n" + opisKoledarja + opisDogodkov + "\nEND:VCALENDAR\n";
+
+
+    var element = document.createElement('a');
+      element.setAttribute('href', "data:text/calendar;charset=utf8," + encodeURIComponent(icsVsebina));
+      element.setAttribute('download', "izbrani_izpiti.ics");
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+  document.body.removeChild(element);
+
+    // window.open( "data:text/calendar;charset=utf8," + escape(icsVsebina), "abc");
+});
+

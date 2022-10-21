@@ -111,7 +111,8 @@ def naredi_spustni_meni(ime_menija: str, html_razred: str, moznosti: List[IDTerI
     )
 
 
-def naredi_tabelo(izpitni_roki: List[IzpitniRok]) -> str:
+def naredi_tabelo(koledarji: List[Koledar]) -> str:
+    izpitni_roki = [rok for koledar in koledarji for rok in koledar.izpitni_roki]
     izpitni_roki.sort()
     vrstice = []
     for izpitni_rok in izpitni_roki:
@@ -123,10 +124,19 @@ def naredi_tabelo(izpitni_roki: List[IzpitniRok]) -> str:
                 predmet=str(izpitni_rok.predmet),
                 letnik=izpitni_rok.prikazi_smer_in_letnik(),
                 rok=str(izpitni_rok.rok),
-                izvajalci=izpitni_rok.prikazi_izvajalce()
+                izvajalci=izpitni_rok.prikazi_izvajalce(),
+                ics_raw=izpitni_rok.prilagodi_ics_opis()
             ))
         )
-    return str(HtmlPredloga("tabela", vrstice="\n".join(vrstice)))
+    # ics opis skupnega koledarja bomo naredili iz enega od ics opisov
+    # koledarjev, pri čemer bomo ime koledarja zamenjali z generičnim imenom
+    return str(
+        HtmlPredloga(
+            "tabela",
+            ics_raw=koledarji[0].prilagodi_ics_opis("Izpitni roki"),
+            vrstice="\n".join(vrstice)
+        )
+    )
 
 
 def naredi_html(poti_do_urnikov: List[str], naslov: str):
@@ -144,9 +154,12 @@ def naredi_html(poti_do_urnikov: List[str], naslov: str):
     meni_predmeti = naredi_spustni_meni_po_crkah("Predmeti", "predmet", vsi_predmeti)
 
     meniji = "\n\n".join(
-        [meni_programi, meni_letniki, meni_roki, meni_izvajalci, meni_predmeti]
+        [
+            meni_programi, meni_letniki, meni_roki, meni_izvajalci, meni_predmeti,
+            str(HtmlPredloga("prenos"))
+         ]
     )
-    izpiti = naredi_tabelo([rok for koledar in koledarji for rok in koledar.izpitni_roki])
+    izpiti = naredi_tabelo(koledarji)
 
     html_stran = HtmlPredloga("stran", naslov=naslov, spustni_meniji=meniji, izpiti=izpiti)
     with open("out/izpitni_roki.html", "w", encoding="utf-8") as f:
@@ -155,7 +168,10 @@ def naredi_html(poti_do_urnikov: List[str], naslov: str):
 
 if __name__ == "__main__":
     naredi_html(
-        ["data/test.ics", "data/1FiMa2122.ics", "data/1Mate2PeMa2122.ics"][:1],
+        [
+            "data/test.ics",
+            "data/1FiMa2122.ics", "data/1Mate2PeMa2122.ics", "data/1PrMa2122.ics"
+        ][1:],
         "Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2022/23"
     )
 
