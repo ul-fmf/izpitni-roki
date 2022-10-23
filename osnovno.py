@@ -16,9 +16,17 @@ class IDGenerator:
 
 
 class IDTerIme:
-    PRIPADNIKI = {}
+    """
+    Nadrazred za razna polja v razredu IzpitniRok, ki poleg dejanske vrednosti (ime)
+    potrbujejo še id.
+    """
+    PRIPADNIKI = {}  # vsi elementi tega razreda, vsebuje pare ime: objekt
 
     def __init__(self, ime: str):
+        """
+        Konstruktor IDTerIme, ki mu podamo ime, IDGenerator pa poskrbi za njegov id.
+        :param ime: ime
+        """
         self.ime = ime
         self.id = str(IDGenerator.generiraj_id())
 
@@ -26,6 +34,10 @@ class IDTerIme:
         return self.ime
 
     def _normalna_oblika(self):
+        """
+        Uporabimo za urejanje po abecedi, ki vsebuje neangleške črke.
+        :return: normalizirana oblika imena, npr. 'Šečđežeć' se normalizira v 'sseccddezzeccc'
+        """
         posebni = {"č": "cc", "ć": "ccc", "đ": "dd", "š": "ss", "ž": "zz"}
         return "".join(
             [crka if crka not in posebni else posebni[crka] for crka in self.ime.lower()]
@@ -57,6 +69,12 @@ class IDTerIme:
             podrazred: Type[Union['Predmet', 'Program', 'Letnik', 'Rok', 'Izvajalec']],
             ime: str
     ):
+        """
+        Naredi objekt danega podrazreda razreda IDTerIme
+        :param podrazred: izbrani podrazred
+        :param ime: polje ime
+        :return: objekt danega podrazreda s podanim imenom
+        """
         if ime not in IDTerIme.PRIPADNIKI:
             IDTerIme.PRIPADNIKI[ime] = podrazred(ime)
         return IDTerIme.PRIPADNIKI[ime]
@@ -183,7 +201,7 @@ class Koledar:
             f"X-WR-CALNAME:{nadomestno_ime}\n",
             self.ics_vrstice
         )
-        return re.sub("\\n", "@@@@", vrstice_drugo_ime)
+        return vrstice_drugo_ime.replace("\n", "@@@@")
 
 
 class HtmlPredloga:
@@ -227,7 +245,7 @@ class HtmlPredloga:
         return niz
 
 
-def create_logger(name):
+def naredi_zapisnikarja(name):
     ch = logging.StreamHandler()
     formatter = logging.Formatter(
         "%(asctime)s %(levelname)s [%(filename)s:%(funcName)s:%(lineno)d]:  %(message)s",
@@ -238,15 +256,3 @@ def create_logger(name):
     logger.addHandler(ch)
     logger.setLevel(logging.INFO)
     return logger
-
-
-def test_predloga():
-    p = HtmlPredloga("spustni_spustni_nivo1")
-    print(p)
-    p.nastavi_parametre(razred="E", ime_skupine="Bla, bla, bla", moznosti="xyz")
-    print(p)
-
-
-if __name__ == "__main__":
-    test_predloga()
-    a = Izvajalec("Jan")

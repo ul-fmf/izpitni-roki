@@ -1,17 +1,27 @@
 import os
-from osnovno import create_logger, IzpitniRok, Koledar, HtmlPredloga, IDTerIme
+from osnovno import naredi_zapisnikarja, IzpitniRok, Koledar, HtmlPredloga, IDTerIme
 from nalozi_ics import nalozi_ics
 from typing import List, Callable
 
 
-LOGGER = create_logger(__file__)
-
-
+ZAPISNIKAR = naredi_zapisnikarja(__file__)
 CRKE = "ABCČDEFGHIJKLMNOPRSŠTUVZŽ"
-HTML_MAPA = "out"
+IZDODNA_MAPA = "out"
 
 
-def najdi_vse(koledarji: List[Koledar], izvleckar: Callable[[IzpitniRok], List[IDTerIme]]) -> List[IDTerIme]:
+def najdi_vse(
+        koledarji: List[Koledar],
+        izvleckar: Callable[[IzpitniRok], List[IDTerIme]]
+) -> List[IDTerIme]:
+    """
+    Najde vse prisotne vrednosti danega polja izpitnega roka.
+
+    :param koledarji: seznam objektov Koledar
+    :param izvleckar: funkcija, ki iz objekta IzpitniRok izvčleče vrednost željenega polja,
+    in ga vrne kot objekt IDTerIme
+    :return: urejen seznam prisotnih vrednosti (brez ponovitev), ki smo jih izvlekli. Seznam
+    je urejen glede na urejenost podrazreda IDTerIme.
+    """
     izvlecki = map(izvleckar, [rok for koledar in koledarji for rok in koledar.izpitni_roki])
     vrednosti = set(vrednost for izvlecek in izvlecki for vrednost in izvlecek)
     return sorted(vrednosti)
@@ -37,7 +47,11 @@ def najdi_vse_predmete(koledarji: List[Koledar]) -> List[IDTerIme]:
     return najdi_vse(koledarji, lambda rok: [rok.predmet])
 
 
-def naredi_spustni_meni_po_crkah(ime_menija: str, html_razred: str, moznosti: List[IDTerIme]) -> str:
+def naredi_spustni_meni_po_crkah(
+        ime_menija: str,
+        html_razred: str,
+        moznosti: List[IDTerIme]
+) -> str:
     """
     Naredi dvonivojski spustni meni.
 
@@ -112,6 +126,11 @@ def naredi_spustni_meni(ime_menija: str, html_razred: str, moznosti: List[IDTerI
 
 
 def naredi_tabelo(koledarji: List[Koledar]) -> str:
+    """
+    Html koda za tabelo vseh izpitnih rokov
+    :param koledarji: seznam objektov Koledar
+    :return: str(html predloga za tabelo)
+    """
     izpitni_roki = [rok for koledar in koledarji for rok in koledar.izpitni_roki]
     izpitni_roki.sort()
     vrstice = []
@@ -139,8 +158,24 @@ def naredi_tabelo(koledarji: List[Koledar]) -> str:
     )
 
 
-def naredi_html(poti_do_urnikov: List[str], naslov: str):
-    koledarji = [nalozi_ics(pot) for pot in poti_do_urnikov]
+def naredi_html(
+        poti_do_koledarjev: List[str],
+        naslov: str,
+        opis_strani: str
+):
+    """
+    Naredi celotno spletno stran.
+    :param poti_do_koledarjev: seznam poti do .ics datotek, ki vsebujejo izpitne roke
+    :param naslov: naslov spletne strani, npr. 'Izpitni roki na Oddelku za matematiko FMF
+    v študijskem letu 2022/23'
+    :param opis_strani: Kratek opis strani (npr. katere izpitne roke vsebuje), npr.
+    'Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa),
+    Matematika (1Mate) in Praktična matematika (1PrMa) in prvih treh letnikih programa
+    Pedagoška matematika (2PeMa) na Oddelku za matematiko FMF v študijskem letu 2022/23,
+    ki zadoščajo izbranim kriterijem.'
+    :return: str(predloga za stran)
+    """
+    koledarji = [nalozi_ics(pot) for pot in poti_do_koledarjev]
     vsi_programi = najdi_vse_programe(koledarji)
     vsi_letniki = najdi_vse_letnike(koledarji)
     vsi_roki = najdi_vse_roke(koledarji)
@@ -161,18 +196,13 @@ def naredi_html(poti_do_urnikov: List[str], naslov: str):
     )
     izpiti = naredi_tabelo(koledarji)
 
-    html_stran = HtmlPredloga("stran", naslov=naslov, spustni_meniji=meniji, izpiti=izpiti)
-    with open("out/izpitni_roki.html", "w", encoding="utf-8") as f:
-        print(html_stran, file=f)
-
-
-if __name__ == "__main__":
-    naredi_html(
-        [
-            "data/test.ics",
-            "data/1FiMa2122.ics", "data/1Mate2PeMa2122.ics", "data/1PrMa2122.ics"
-        ][1:],
-        "Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2022/23"
+    html_stran = HtmlPredloga(
+        "stran",
+        naslov=naslov,
+        opis_strani=opis_strani,
+        spustni_meniji=meniji,
+        izpiti=izpiti
     )
-
-
+    os.makedirs(IZDODNA_MAPA, exist_ok=True)
+    with open(os.path.join(IZDODNA_MAPA, "izpitni_roki.html"), "w", encoding="utf-8") as f:
+        print(html_stran, file=f)

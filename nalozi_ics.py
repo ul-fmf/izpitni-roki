@@ -3,7 +3,7 @@ from datetime import datetime
 import re
 import os
 from osnovno import (
-    create_logger,
+    naredi_zapisnikarja,
     IzpitniRok,
     Koledar,
     Predmet,
@@ -15,7 +15,7 @@ from osnovno import (
 )
 
 
-LOGGER = create_logger(__file__)
+LOGGER = naredi_zapisnikarja(__file__)
 
 
 def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict[str, str], str]:
