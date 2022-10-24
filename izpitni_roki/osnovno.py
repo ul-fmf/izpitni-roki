@@ -120,9 +120,10 @@ class IDTerIme:
         :param podrazred: izbrani podrazred
         :param ime: polje ime
         :param args: morebitni preostali parametri za konstruktor
-        (npr. pri :meth:`izpitni_roki.osnovno.Obdobje`).
+            (npr. pri :meth:`izpitni_roki.osnovno.Obdobje`).
 
         :return: objekt danega podrazreda s podanim imenom
+
         """
         if ime not in IDTerIme.PRIPADNIKI:
             IDTerIme.PRIPADNIKI[ime] = podrazred(ime, *args)

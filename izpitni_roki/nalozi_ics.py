@@ -40,12 +40,13 @@ def naredi_izpitna_obdobja(leto: int) -> Dict[str, Tuple[datetime, datetime]]:
 
     :param leto: leto, za katerega delamo izpitna obdobja, npr. 2022
     :return: Vrnemo slovar, ki pravi, da je zimsko januarja in februarja,
-        spomladansko junija in julija, ter jesensko avgusta in septembra.
+        spomladansko junija in julija, ter jesensko avgusta in septembra:
 
         .. code-block:: python
+
             {
                "zimsko": (datetime(leto, 1, 1), zadnji_februar),
-               "spomladansko": (datetime(leto, 6, 1), datetime(2022, 7, 31)),
+               "spomladansko": (datetime(leto, 6, 1), datetime(leto, 7, 31)),
                "jesensko": (datetime(leto, 8, 1), datetime(leto, 9, 30))
             }
 
