@@ -1,26 +1,50 @@
-name: CreatePages
+name: CreatePagesAndDeploy
 on: 
-- push
-- pull_request
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
 
 jobs:
-  docs:
+  # Build job
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+    
     - uses: actions/setup-python@v2
     - name: Install dependencies
       run: |
         pip install sphinx sphinx_rtd_theme
+    
     - name: Sphinx build
       run: |
         sphinx-build docs _build
-        echo "root files"
-        ls
-        cd _build
-        echo "build files:"
-        ls
-    - uses: JamesIves/github-pages-deploy-action@v4
+    - name: Artifact upload
+      uses: actions/upload-pages-artifact@v1.0.4
       with:
-        folder: _build
-        
+        path: _build
+  # Deploy job
+  deploy:
+    # Add a dependency to the build job
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1      
