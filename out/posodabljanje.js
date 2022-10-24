@@ -82,17 +82,25 @@ function posodobiTabeloIzbranih(){
 }
 
 function posodobiGrupnoIzbiro(razred) {
-    const filter = "." + razred + ".active";
-    const n = $(filter).length;
+    const vsi = $("." + razred);
+    const nVsi = vsi.length;
+    const nAktivni = vsi.filter(".active").length;
     const gumbID = "#gumb_" + razred;
     const grupaID = "#grupa_" + razred;
-    if (n > 0){
+    if (nAktivni > 0){
         $(grupaID).text(ODSTRANI_VSE);
         $(gumbID).removeClass("btn-secondary");
-        $(gumbID).addClass("btn-success");
+        if (nAktivni < nVsi){
+            $(gumbID).removeClass("btn-success");
+            $(gumbID).addClass("btn-warning");
+        } else {
+            $(gumbID).removeClass("btn-warning");
+            $(gumbID).addClass("btn-success");
+        }
     } else{
         $(grupaID).text(IZBERI_VSE);
         $(gumbID).removeClass("btn-success");
+        $(gumbID).removeClass("btn-warning");
         $(gumbID).addClass("btn-secondary");
     }
 }
@@ -107,18 +115,12 @@ $(".izvoz-koledarja").on("click", function() {
     let opisKoledarja = $(".table.izpiti").attr("data-ics").replaceAll("@@@@", "\n") + "\n";
     let icsVsebina = "BEGIN:VCALENDAR\n" + opisKoledarja + opisDogodkov + "\nEND:VCALENDAR\n";
 
-
     var element = document.createElement('a');
-      element.setAttribute('href', "data:text/calendar;charset=utf8," + encodeURIComponent(icsVsebina));
-      element.setAttribute('download', "izbrani_izpiti.ics");
-
-      element.style.display = 'none';
-      document.body.appendChild(element);
-
-      element.click();
-
-  document.body.removeChild(element);
-
-    // window.open( "data:text/calendar;charset=utf8," + escape(icsVsebina), "abc");
+    element.setAttribute('href', "data:text/calendar;charset=utf8," + encodeURIComponent(icsVsebina));
+    element.setAttribute('download', "izbrani_izpiti.ics");
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
 });
 
