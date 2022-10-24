@@ -64,6 +64,15 @@ class IDTerIme:
         self.ime = ime
         self.id = str(IDGenerator.generiraj_id())
 
+    @staticmethod
+    def vse_vsa() -> str:
+        """
+        Oblika besede "vse" glede na spol.
+
+        :return: ``"vse"``
+        """
+        return "vse"
+
     def __str__(self):
         return self.ime
 
@@ -179,7 +188,7 @@ class Izvajalec(IDTerIme):
                     f"da je tako prav, saj skupno število imen in priimkov presega 2. "
                     f"Če ni prav (ali če tega opozorila nočete več videti), prosimo, "
                     f"dodajte vrstico '{self.ime};prava oblika' "
-                    f"v datoteko 'izpitni_roki/problematicna_imena.txt'."
+                    f"v datoteko 'izpitni_roki/problematicna_imena.txt'.\n"
                 )
                 Izvajalec.IZDANA_OPOZORILA.add(self.ime)
         return ugib
@@ -196,6 +205,10 @@ class Obdobje(IDTerIme):
             return self.zacetek < other.zacetek
         else:
             raise ValueError(f"Obdobje je primerljivo le z Obdobje")
+
+    @staticmethod
+    def vse_vsa() -> str:
+        return "vsa"
 
     @staticmethod
     def doloci_obdobje(datum: datetime, obdobja: List['Obdobje']) -> 'Obdobje':

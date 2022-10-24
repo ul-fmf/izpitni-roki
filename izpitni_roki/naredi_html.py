@@ -148,7 +148,8 @@ def naredi_spustni_meni_po_crkah(
             "spustni_spustni",
             ime_menija=ime_menija,
             razred=html_razred,
-            skupine="\n".join(elementi_nivo1)
+            skupine="\n".join(elementi_nivo1),
+            vse=moznosti[0].vse_vsa()
         )
     )
 
@@ -177,7 +178,8 @@ def naredi_spustni_meni(ime_menija: str, html_razred: str, moznosti: List[IDTerI
             "spustni_spustni",
             ime_menija=ime_menija,
             razred=html_razred,
-            skupine="\n".join(elementi_nivo2)
+            skupine="\n".join(elementi_nivo2),
+            vse=moznosti[0].vse_vsa()
         )
     )
 
