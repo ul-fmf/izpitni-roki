@@ -9,6 +9,9 @@ permissions:
 
 jobs:
   docs:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -22,6 +25,7 @@ jobs:
     - name: Sphinx build
       run: |
         sphinx-build docs _build
+        echo ${{ steps.deployment.outputs.page_url }}
         
     - name: Deploy to pages
       uses: JamesIves/github-pages-deploy-action@v4
