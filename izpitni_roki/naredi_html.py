@@ -18,9 +18,10 @@ def najdi_vse(
 
     :param koledarji: seznam objektov Koledar
     :param izvleckar: funkcija, ki iz objekta IzpitniRok izvčleče vrednost željenega polja,
-    in ga vrne kot objekt IDTerIme
+        in ga vrne kot objekt IDTerIme
+
     :return: urejen seznam prisotnih vrednosti (brez ponovitev), ki smo jih izvlekli. Seznam
-    je urejen glede na urejenost podrazreda IDTerIme.
+        je urejen glede na urejenost podrazreda IDTerIme.
     """
     izvlecki = map(izvleckar, [rok for koledar in koledarji for rok in koledar.izpitni_roki])
     vrednosti = set(vrednost for izvlecek in izvlecki for vrednost in izvlecek)
@@ -28,22 +29,57 @@ def najdi_vse(
 
 
 def najdi_vse_programe(koledarji: List[Koledar]) -> List[IDTerIme]:
+    """
+    Najdemo vse programe, ki se pojavijo v izpiznih rokih v koledarju.
+
+    :param koledarji: seznam koledarjev
+
+    :return: (urejeni) programi (brez ponovitev)
+    """
     return najdi_vse(koledarji, lambda rok: rok.programi)
 
 
 def najdi_vse_letnike(koledarji: List[Koledar]) -> List[IDTerIme]:
+    """
+    Najdemo vse letnike, ki se pojavijo v izpiznih rokih v koledarju.
+
+    :param letniki: seznam koledarjev
+
+    :return: (urejeni) letniki (brez ponovitev)
+    """
     return najdi_vse(koledarji, lambda rok: [rok.letnik])
 
 
 def najdi_vse_roke(koledarji: List[Koledar]) -> List[IDTerIme]:
+    """
+    Najdemo vse roke (1., 2., ...), ki se pojavijo v izpiznih rokih v koledarju.
+
+    :param koledarji: seznam rokov
+
+    :return: (urejeni) roki (brez ponovitev)
+    """
     return najdi_vse(koledarji, lambda rok: [rok.rok])
 
 
 def najdi_vse_izvajalce(koledarji: List[Koledar]) -> List[IDTerIme]:
+    """
+    Najdemo vse izvajalce, ki se pojavijo v izpiznih rokih v koledarju.
+
+    :param koledarji: seznam izvajalcev
+
+    :return: (urejeni) izvajalci (brez ponovitev)
+    """
     return najdi_vse(koledarji, lambda rok: rok.izvajalci)
 
 
 def najdi_vse_predmete(koledarji: List[Koledar]) -> List[IDTerIme]:
+    """
+    Najdemo vse predmete, ki se pojavijo v izpiznih rokih v koledarju.
+
+    :param koledarji: seznam predmetov
+
+    :return: (urejeni) predmeti (brez ponovitev)
+    """
     return najdi_vse(koledarji, lambda rok: [rok.predmet])
 
 
@@ -56,8 +92,9 @@ def naredi_spustni_meni_po_crkah(
     Naredi dvonivojski spustni meni.
 
     :param ime_menija: napis na gumbu
-    :param html_razred: razred, ki ga dodatmo v class atribut vseh možnosti
+    :param html_razred: razred, ki ga dodatmo v ``class`` atribut vseh možnosti
     :param moznosti: Urejen seznam moznosti.
+
     :return: str(html predloga za dvonivojski spustni meni)
     """
     skupine: List[List[IDTerIme]] = [[] for _ in CRKE]
@@ -102,8 +139,9 @@ def naredi_spustni_meni(ime_menija: str, html_razred: str, moznosti: List[IDTerI
     Naredi enonivojski spustni meni.
 
     :param ime_menija: napis na gumbu
-    :param html_razred: razred, ki ga dodatmo v class atribut vseh možnosti
+    :param html_razred: razred, ki ga dodatmo v ``class`` atribut vseh možnosti
     :param moznosti: Urejen seznam moznosti.
+
     :return: str(html predloga enonivojski spustni meni)
     """
     elementi_nivo2 = []
@@ -128,7 +166,9 @@ def naredi_spustni_meni(ime_menija: str, html_razred: str, moznosti: List[IDTerI
 def naredi_tabelo(koledarji: List[Koledar]) -> str:
     """
     Html koda za tabelo vseh izpitnih rokov
+
     :param koledarji: seznam objektov Koledar
+
     :return: str(html predloga za tabelo)
     """
     izpitni_roki = [rok for koledar in koledarji for rok in koledar.izpitni_roki]
@@ -165,14 +205,23 @@ def naredi_html(
 ):
     """
     Naredi celotno spletno stran.
+
     :param poti_do_koledarjev: seznam poti do .ics datotek, ki vsebujejo izpitne roke
-    :param naslov: naslov spletne strani, npr. 'Izpitni roki na Oddelku za matematiko FMF
-    v študijskem letu 2022/23'
+    :param naslov: naslov spletne strani, npr.
+
+        .. code-block:: text
+
+            "Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2022/23"
+
     :param opis_strani: Kratek opis strani (npr. katere izpitne roke vsebuje), npr.
-    'Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa),
-    Matematika (1Mate) in Praktična matematika (1PrMa) in prvih treh letnikih programa
-    Pedagoška matematika (2PeMa) na Oddelku za matematiko FMF v študijskem letu 2022/23,
-    ki zadoščajo izbranim kriterijem.'
+
+        .. code-block:: text
+
+            "Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa),
+            Matematika (1Mate) in Praktična matematika (1PrMa) in prvih treh letnikih programa
+            Pedagoška matematika (2PeMa) na Oddelku za matematiko FMF v študijskem letu 2022/23,
+            ki zadoščajo izbranim kriterijem."
+
     :return: str(predloga za stran)
     """
     koledarji = [nalozi_ics(pot) for pot in poti_do_koledarjev]

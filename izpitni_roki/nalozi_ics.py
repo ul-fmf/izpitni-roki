@@ -1,7 +1,6 @@
 from typing import List, Optional, Dict, Tuple
 from datetime import datetime
 import re
-import os
 from osnovno import (
     naredi_zapisnikarja,
     IzpitniRok,
@@ -21,16 +20,19 @@ LOGGER = naredi_zapisnikarja(__file__)
 def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict[str, str], str]:
     """
     Vrstice, ki opisujejo dogodek (izpitni rok) ali pa koledar predela tako, da odstrani
-    morebitne prelome vrstic in jih združi v slovar {kljuc: vrednost, ...}, kjer so ključi
-    ključne besede iz .ics formata, npr. 'DTSTART;VALUE=DATE' ali 'X-WR-TIMEZONE'.
+        morebitne prelome vrstic in jih združi v slovar {kljuc: vrednost, ...}, kjer so ključi
+        ključne besede iz .ics formata, npr. ``DTSTART;VALUE=DATE`` ali ``X-WR-TIMEZONE``.
+
     :param vrstice: zaporedne vrstice iz ics datoteke, ki opisujejo dogodek ali koledar.
-    Seznam ne vsebuje ne začetne vrstice (BEGIN:VCALENDAR ali BEGIN:VEVENT) ne končne
-    vrstice (END:VCALENDAR ali END:VEVENT).
+        Seznam ne vsebuje ne začetne vrstice (BEGIN:VCALENDAR ali BEGIN:VEVENT) ne končne
+        vrstice (END:VCALENDAR ali END:VEVENT).
     :param nujni_kljuci: ključi, ki jih nujno potrebujemo, da bi lahko kasneje ustvarili
-    IzpitniRok ali Koledar
+        IzpitniRok ali Koledar
+
     :return: par (slovar, združene vrstice), kjer slovar podaja pare
-     <i>ključna beseda iz ics: pripadajoča vrednost</i> (v pripadajoči vrednosti so
-     bili odstranjeni prelomi vrstic), združene vrstice pa so dobljene kot '\n'.join(vrstice).
+        ključna beseda iz ics: pripadajoča vrednost (v pripadajoči vrednosti so
+        bili odstranjeni prelomi vrstic), združene vrstice pa so dobljene
+        kot ``"\\n".join(vrstice)``.
     """
     kljucne_besede = [
         # dogodek
@@ -64,14 +66,14 @@ def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
     """
     Iz vrstic dogodka ustvari izpitni rok.
 
-    Branje je bolj kot ne neposredno, le s poljem SUMMARY je nekaj dela, saj je njegova oblika
+    Branje je bolj kot ne neposredno, le s poljem ``SUMMARY`` je nekaj dela, saj je njegova oblika
     (po odstranitvi prelomov vrstic)
 
     .. code-block:: python
 
-        r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \
-        r"(?P<letnik>[^ ]+) letnik\\, " \
-        r"?(?P<izvajalci>([^\\]+\\, ?)+)" \
+        r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \\
+        r"(?P<letnik>[^ ]+) letnik\\, " \\
+        r"?(?P<izvajalci>([^\\]+\\, ?)+)" \\
         r"(?P<rok>\d+\.) rok ?$"
 
     Prave oblike je npr.
@@ -83,14 +85,19 @@ def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
 
     (prelom za vejico smo dodali zaradi berljivosti: sledi ji presledek v naslednji vrsti)
 
+    Oblika datumov (pri ``DTSTART;VALUE=DATE``) mora biti ``%Y%m%d``, npr. ``20231225``
+    za 25. 12. 2023.
+
     :param vrstice: surove vrstice, kot jih preberemo v ics datoteki. Opisujejo
-    koledar ali dogodek, v njih nista prisotna začena in končna vrstica
-    (``[BEGIN oz. END]:VEVENT``). Predpisana oblika vrednosti za ``SUMMARY`` je
+        koledar ali dogodek, v njih nista prisotna začena in končna vrstica
+        (``[BEGIN oz. END]:VEVENT``). Nujno morata biti v njih prisotna ključa
+        ``SUMARY`` in ``DTSTART;VALUE=DATE``.
 
 
     :return: IzpitniRok, ki ga opisujejo vrstice
 
     :raises: ValueError če ``SUMMARY`` dogodka ni predpisane oblike.
+
     """
     def razbij_na_dele(niz: str, prepovedano=None):
         if prepovedano is None:
@@ -134,8 +141,10 @@ def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
 def naredi_koledar(meta_vrstice_koledarja: List[str], izpitni_roki: List[IzpitniRok]) -> Koledar:
     """
     Iz meta-opisa koledarja prebere smer, doda še izpitne roke in ustvari nov objekt Koledar
+
     :param meta_vrstice_koledarja: vrstice v koledarju, ki niso del dogodka
     :param izpitni_roki: izpitni roki, ki smo jih prebrali iz dane ics datoteke
+
     :return: koledar z izpitnimi roki za dano smer
     """
     polje_smer = "X-WR-CALNAME"

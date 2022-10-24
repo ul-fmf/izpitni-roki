@@ -7,6 +7,7 @@ from datetime import datetime
 
 class IDGenerator:
     """Polepšajmo kodo in se izognimo dolgim guidom."""
+
     NASLEDNJI_ID = 0
 
     @staticmethod
@@ -17,14 +18,15 @@ class IDGenerator:
 
 class IDTerIme:
     """
-    Nadrazred za razna polja v razredu IzpitniRok, ki poleg dejanske vrednosti (ime)
-    potrbujejo še id.
+    Nadrazred za razna polja v razredu :meth:`izpitni_roki.osnovno.IzpitniRok`,
+    ki poleg dejanske vrednosti (ime) potrbujejo še id.
     """
     PRIPADNIKI = {}  # vsi elementi tega razreda, vsebuje pare ime: objekt
 
     def __init__(self, ime: str):
         """
         Konstruktor IDTerIme, ki mu podamo ime, IDGenerator pa poskrbi za njegov id.
+
         :param ime: ime
         """
         self.ime = ime
@@ -36,6 +38,7 @@ class IDTerIme:
     def _normalna_oblika(self):
         """
         Uporabimo za urejanje po abecedi, ki vsebuje neangleške črke.
+
         :return: normalizirana oblika imena, npr. 'Šečđežeć' se normalizira v 'sseccddezzeccc'
         """
         posebni = {"č": "cc", "ć": "ccc", "đ": "dd", "š": "ss", "ž": "zz"}
@@ -71,8 +74,10 @@ class IDTerIme:
     ):
         """
         Naredi objekt danega podrazreda razreda IDTerIme
+
         :param podrazred: izbrani podrazred
         :param ime: polje ime
+
         :return: objekt danega podrazreda s podanim imenom
         """
         if ime not in IDTerIme.PRIPADNIKI:
@@ -205,6 +210,16 @@ class Koledar:
 
 
 class HtmlPredloga:
+    """
+    Predloga za html kodo, ki ji podamo parametre in jo lahko lepo oblikujemo. Nekaj takega:
+
+    .. code-block:: html
+
+        <div class={{razred}}>
+            <p>{{besedilo}}</p>
+        </div>
+
+    """
     def __init__(self, ime_predloge, **kwargs):
         self.pot = f"predloge/{ime_predloge}.html"
         self.predloga = ""
@@ -246,6 +261,12 @@ class HtmlPredloga:
 
 
 def naredi_zapisnikarja(name):
+    """
+    Naredi zapisnikarja oz. loggerja.
+
+    :param name: ime zapisnikarja, po navadi kar ``__file__``
+    :return: zapisnikar
+    """
     ch = logging.StreamHandler()
     formatter = logging.Formatter(
         "%(asctime)s %(levelname)s [%(filename)s:%(funcName)s:%(lineno)d]:  %(message)s",
