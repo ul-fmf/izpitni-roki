@@ -96,9 +96,9 @@ def sprocesiraj_dogodek(
         ``SUMARY`` in ``DTSTART;VALUE=DATE``.
     :param obdobja: seznam izpitnih obdobij
     :param oblika_summary: regularni izraz, ki mu zadošča vrednost polja ``SUMMARY``.
-        Vsebovati mora iste poimenovane, kot jih (prednastavljena)
+        Vsebovati mora iste poimenovane skupine, kot jih (prednastavljeni)
 
-        .. code-block::python
+        .. code-block:: python
 
             r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \\
             r"(?P<letnik>[^ ]+) letnik\\, " \\
