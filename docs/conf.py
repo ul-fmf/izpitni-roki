@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = 'Izpitni roki'
-copyright = '2022, Matej Petković'
+copyright = '2022, UL FMF, Oddelek za matematiko'
 author = 'Matej Petković'
 
 
