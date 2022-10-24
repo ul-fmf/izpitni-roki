@@ -17,8 +17,8 @@ jobs:
         sphinx-build docs _build
         echo "root files"
         ls
-        cd docs
-        echo "docsf files"
+        cd _build
+        echo "build files:"
         ls
     - uses: actions/upload-artifact@v1
       with:
