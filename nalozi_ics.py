@@ -19,6 +19,19 @@ LOGGER = naredi_zapisnikarja(__file__)
 
 
 def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict[str, str], str]:
+    """
+    Vrstice, ki opisujejo dogodek (izpitni rok) ali pa koledar predela tako, da odstrani
+    morebitne prelome vrstic in jih združi v slovar {kljuc: vrednost, ...}, kjer so ključi
+    ključne besede iz .ics formata, npr. 'DTSTART;VALUE=DATE' ali 'X-WR-TIMEZONE'.
+    :param vrstice: zaporedne vrstice iz ics datoteke, ki opisujejo dogodek ali koledar.
+    Seznam ne vsebuje ne začetne vrstice (BEGIN:VCALENDAR ali BEGIN:VEVENT) ne končne
+    vrstice (END:VCALENDAR ali END:VEVENT).
+    :param nujni_kljuci: ključi, ki jih nujno potrebujemo, da bi lahko kasneje ustvarili
+    IzpitniRok ali Koledar
+    :return: par (slovar, združene vrstice), kjer slovar podaja pare
+     <i>ključna beseda iz ics: pripadajoča vrednost</i> (v pripadajoči vrednosti so
+     bili odstranjeni prelomi vrstic), združene vrstice pa so dobljene kot '\n'.join(vrstice).
+    """
     kljucne_besede = [
         # dogodek
         "DTSTART;VALUE=DATE", "DTEND;VALUE=DATE", "DTSTAMP",
@@ -30,9 +43,7 @@ def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict
     ]
     pari = {}
     zadnja = ""
-    ics_raw = []
     for vrsta in vrstice:
-        ics_raw.append(vrsta)
         if any(vrsta.startswith((zacetek := kljucna)) for kljucna in kljucne_besede):
             zadnja = zacetek
             pari[zadnja] = vrsta[len(zacetek) + 1:]
@@ -46,7 +57,7 @@ def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict
     for nujen in nujni_kljuci:
         if nujen not in pari:
             raise ValueError(f"Ključ {nujen} manjka v {vrstice}")
-    return {n: pari[n] for n in nujni_kljuci}, "\n".join(ics_raw)
+    return {n: pari[n] for n in nujni_kljuci}, "\n".join(vrstice)
 
 
 def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
@@ -54,12 +65,32 @@ def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
     Iz vrstic dogodka ustvari izpitni rok.
 
     Branje je bolj kot ne neposredno, le s poljem SUMMARY je nekaj dela, saj je njegova oblika
-    npr.<br>
-    "Uvod v programiranje (1Mate\\, 2PeMa\\, ni smeri)\\, prvi letnik\\,
-    Prisojnik Matjaž\\, Perko Martin\\, Pletna Marija\\, 3. rok"<br>
+    (po odstranitvi prelomov vrstic)
 
-    :param vrstice:
-    :return:
+    .. code-block:: python
+
+        r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \
+        r"(?P<letnik>[^ ]+) letnik\\, " \
+        r"?(?P<izvajalci>([^\\]+\\, ?)+)" \
+        r"(?P<rok>\d+\.) rok ?$"
+
+    Prave oblike je npr.
+
+    .. code-block:: text
+
+        Uvod v junaštva (Smer1\, Smer2\, Smer3)\, prvi letnik\,
+         Klepec Peter\, Krpan Martin\, Kekec Kekec\, 3. rok
+
+    (prelom za vejico smo dodali zaradi berljivosti: sledi ji presledek v naslednji vrsti)
+
+    :param vrstice: surove vrstice, kot jih preberemo v ics datoteki. Opisujejo
+    koledar ali dogodek, v njih nista prisotna začena in končna vrstica
+    (``[BEGIN oz. END]:VEVENT``). Predpisana oblika vrednosti za ``SUMMARY`` je
+
+
+    :return: IzpitniRok, ki ga opisujejo vrstice
+
+    :raises: ValueError če ``SUMMARY`` dogodka ni predpisane oblike.
     """
     def razbij_na_dele(niz: str, prepovedano=None):
         if prepovedano is None:
@@ -115,38 +146,43 @@ def naredi_koledar(meta_vrstice_koledarja: List[str], izpitni_roki: List[Izpitni
 
 def nalozi_ics(pot: str) -> Koledar:
     """
-    Pričakovana oblika datoteke je
+    Naloži ics datoteko v Koledar. Pričakovana oblika vsebine datoteke je
 
-    BEGIN:VCALENDAR
-    PRODID:-//Google Inc//Google Calendar 70.9054//EN
-    VERSION:2.0
-    CALSCALE:GREGORIAN
-    METHOD:PUBLISH
-    X-WR-CALNAME:Finančna matematika 2021/22
-    X-WR-TIMEZONE:Europe/Belgrade
-    [dogodki]
-    END:VCALENDAR
+
+    .. code-block:: text
+
+        BEGIN:VCALENDAR
+        PRODID:-//Google Inc//Google Calendar 70.9054//EN
+        VERSION:2.0
+        CALSCALE:GREGORIAN
+        METHOD:PUBLISH
+        X-WR-CALNAME:Finančna matematika 2021/22
+        X-WR-TIMEZONE:Europe/Belgrade
+        [dogodki]
+        END:VCALENDAR
 
     kjer so dogodki oblike
 
-    BEGIN:VEVENT
-    DTSTART;VALUE=DATE:20220629
-    DTEND;VALUE=DATE:20220630
-    DTSTAMP:20220209T150954Z
-    UID:fdsfsdfsdfsd@google.com
-    CREATED:20210325T080359Z
-    DESCRIPTION:
-    LAST-MODIFIED:20210913T125706Z
-    LOCATION: morda kaj, a ni pomembno
-    SEQUENCE:4
-    STATUS:CONFIRMED
-    SUMMARY:Uvod v programiranje (1Mate\\, 2PeMa\\, ni smeri)\\, prvi letnik\\, Pris
-        ojnik Matjaž\\, Perko Martin\\, Pletna Marija\\, 3. rok
-    TRANSP:TRANSPARENT
-    END:VEVENT
+    .. code-block:: text
+
+        BEGIN:VEVENT
+        DTSTART;VALUE=DATE:20220629
+        DTEND;VALUE=DATE:20220630
+        DTSTAMP:20220209T150954Z
+        UID:fdsfsdfsdfsd@google.com
+        CREATED:20210325T080359Z
+        DESCRIPTION:
+        LAST-MODIFIED:20210913T125706Z
+        LOCATION: morda kaj, a ni pomembno
+        SEQUENCE:4
+        STATUS:CONFIRMED
+        SUMMARY:Uvod v programiranje (1Mate\\, 2PeMa\\, ni smeri)\\, prvi letnik\\, Pris
+            ojnik Matjaž\\, Perko Martin\\, Pletna Marija\\, 3. rok
+        TRANSP:TRANSPARENT
+        END:VEVENT
 
     :param pot: pot do ics datoteke
-    :return:
+    :return: Koledar, ki vsebuje vse dogodke v ics datoteki.
     """
     v_koledarju = False
     v_dogodku = False
@@ -181,14 +217,3 @@ def nalozi_ics(pot: str) -> Koledar:
             f"ne ujema s številom rokov v datoteki ({n_rokov})."
         )
     return koledar
-
-
-def test_nalozi_ics():
-    testni_izpiti = ["1FiMa2122", "1Mate2PeMa2122", "1PrMa2122"]
-    for izpiti in testni_izpiti:
-        _ = nalozi_ics(os.path.join("data", f"{izpiti}.ics"))
-        print("Prebral", izpiti)
-
-
-if __name__ == "__main__":
-    test_nalozi_ics()
