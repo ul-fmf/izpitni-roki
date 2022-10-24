@@ -1,6 +1,6 @@
 import re
 import logging
-from typing import List, Type, Union
+from typing import List, Type, Union, Dict, Tuple
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -133,15 +133,41 @@ class Izvajalec(IDTerIme):
     pass
 
 
+class Obdobje(IDTerIme):
+    def __init__(self, ime: str, zacetek: datetime, konec: datetime):
+        super().__init__(ime)
+        self.zacetek = zacetek
+        self.konec = konec
+
+    def __lt__(self, other):
+        if isinstance(other, Obdobje):
+            return self.zacetek < other.zacetek
+        else:
+            raise ValueError(f"Obdobje je primerljivo le z Obdobje")
+
+    @staticmethod
+    def doloci_obdobje(datum: datetime, obdobja: List['Obdobje']) -> 'Obdobje':
+        for obdobje in obdobja:
+            if obdobje.zacetek <= datum <= obdobje.konec:
+                return obdobje
+        return OBDOBJE_IZVEN
+
+
+# daj ga nekam v prihodnost
+OBDOBJE_IZVEN = Obdobje("izven izpitnih obdobij", datetime(3000, 1, 1), datetime(3000, 1, 1))
+
+
 @dataclass
 class IzpitniRok:
     """Osnovne informacije o izpitnem roku"""
     datum: datetime
+
     predmet: Predmet
     programi: List[Program]
     letnik: Letnik
     rok: Rok
     izvajalci: List[Izvajalec]
+    obdobje: Obdobje
 
     ics_vrstice: str
 
@@ -190,16 +216,17 @@ class IzpitniRok:
         Iz id-jev polj tega objekta ustvari id tega objekta. Vsebuje le knjižnici `jQuery` prijazne
         znake.
 
-        :return: S podčrtaji ločeni id-ji polj predmet, programi, letnik, rokin izvajalci. Id-ji za
-            polja, ki so seznami (programi, izvajalci), so id-ji elementov danega seznama, ločeni
-            z ``x``.
+        :return: S podčrtaji ločeni id-ji polj predmet, programi, letnik, rok, izvajalci
+            in obdobje. Id-ji za polja, ki so seznami (programi, izvajalci),
+            so id-ji elementov danega seznama, ločeni z ``x``.
         """
         id_predmet = self.predmet.id
         id_programi = "x".join(map(lambda p: p.id, self.programi))
         id_letnik = self.letnik.id
         id_rok = self.rok.id
         id_izvajalci = "x".join(map(lambda i: i.id, self.izvajalci))
-        return "_".join([id_predmet, id_programi, id_letnik, id_rok, id_izvajalci])
+        id_obdobje = self.obdobje.id
+        return "_".join([id_predmet, id_programi, id_letnik, id_rok, id_izvajalci, id_obdobje])
 
     @staticmethod
     def _prikazi_neprazen_seznam(seznam: List[IDTerIme]):
@@ -271,6 +298,7 @@ class HtmlPredloga:
 
     Ključne besede (obdane z dvojnimi zavitimi oklepaji) kasneje nadomestimo z dejansko vsebino,
     npr.
+
     .. code-block:: python
 
         >>> str(HtmlPredloga("odstavek", razred="raz", besedilo="Hojla, bralec!"))
@@ -355,3 +383,4 @@ def naredi_zapisnikarja(name):
     logger.addHandler(ch)
     logger.setLevel(logging.INFO)
     return logger
+

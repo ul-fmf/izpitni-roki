@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict, Tuple
 from datetime import datetime
 import re
-from osnovno import (
+from izpitni_roki.osnovno import (
     naredi_zapisnikarja,
     IzpitniRok,
     Koledar,
@@ -9,6 +9,7 @@ from osnovno import (
     Program,
     Letnik,
     Rok,
+    Obdobje,
     Izvajalec,
     IDTerIme
 )
@@ -62,7 +63,7 @@ def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict
     return {n: pari[n] for n in nujni_kljuci}, "\n".join(vrstice)
 
 
-def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
+def sprocesiraj_dogodek(vrstice: List[str], obdobja: List[Obdobje]) -> IzpitniRok:
     """
     Iz vrstic dogodka ustvari izpitni rok.
 
@@ -92,7 +93,7 @@ def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
         koledar ali dogodek, v njih nista prisotna začena in končna vrstica
         (``[BEGIN oz. END]:VEVENT``). Nujno morata biti v njih prisotna ključa
         ``SUMARY`` in ``DTSTART;VALUE=DATE``.
-
+    :param obdobja: seznam izpitnih obdobij
 
     :return: IzpitniRok, ki ga opisujejo vrstice
 
@@ -132,6 +133,7 @@ def sprocesiraj_dogodek(vrstice: List[str]) -> IzpitniRok:
         IDTerIme.naredi_objekt(Letnik, letnik),
         IDTerIme.naredi_objekt(Rok, rok),
         [IDTerIme.naredi_objekt(Izvajalec, izvajalec) for izvajalec in izvajalci],
+        Obdobje.doloci_obdobje(datum, obdobja),
         "BEGIN:VEVENT\n" + ics_raw + "\nEND:VEVENT"
     )
     izpitni_rok.preveri()
@@ -153,7 +155,7 @@ def naredi_koledar(meta_vrstice_koledarja: List[str], izpitni_roki: List[Izpitni
     return Koledar(smer, izpitni_roki, ics_vrstice)
 
 
-def nalozi_ics(pot: str) -> Koledar:
+def nalozi_ics(pot: str, obdobja: List[Obdobje]) -> Koledar:
     """
     Naloži ics datoteko v Koledar. Pričakovana oblika vsebine datoteke je
 
@@ -191,6 +193,9 @@ def nalozi_ics(pot: str) -> Koledar:
         END:VEVENT
 
     :param pot: pot do ics datoteke
+    :param obdobja: seznam izpitnih obdobij. Izpitni roki, ki so izven vseh,
+        bodo v posebni kategoriji.
+
     :return: Koledar, ki vsebuje vse dogodke v ics datoteki.
     """
     v_koledarju = False
@@ -206,7 +211,7 @@ def nalozi_ics(pot: str) -> Koledar:
                 v_dogodku = True
                 n_rokov += 1
             elif vrsta.startswith("END:VEVENT"):
-                izpiti.append(sprocesiraj_dogodek(vrstice_dogodka))
+                izpiti.append(sprocesiraj_dogodek(vrstice_dogodka, obdobja))
                 vrstice_dogodka = []
                 v_dogodku = False
             elif vrsta.startswith("BEGIN:VCALENDAR"):

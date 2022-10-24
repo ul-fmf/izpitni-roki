@@ -1,7 +1,15 @@
 import os
-from osnovno import naredi_zapisnikarja, IzpitniRok, Koledar, HtmlPredloga, IDTerIme
-from nalozi_ics import nalozi_ics
-from typing import List, Callable
+from izpitni_roki.osnovno import (
+    naredi_zapisnikarja,
+    IzpitniRok,
+    Koledar,
+    HtmlPredloga,
+    IDTerIme,
+    Obdobje
+)
+from izpitni_roki.nalozi_ics import nalozi_ics
+from typing import List, Callable, Dict, Tuple
+from datetime import datetime
 
 
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
@@ -81,6 +89,17 @@ def najdi_vse_predmete(koledarji: List[Koledar]) -> List[IDTerIme]:
     :return: (urejeni) predmeti (brez ponovitev)
     """
     return najdi_vse(koledarji, lambda rok: [rok.predmet])
+
+
+def najdi_vsa_obdobja(koledarji: List[Koledar]) -> List[IDTerIme]:
+    """
+    Najdemo vsa obdobja, ki se pojavijo v izpiznih rokih v koledarju.
+
+    :param koledarji: seznam obdobij
+
+    :return: (urejena) obdobja (brez ponovitev)
+    """
+    return najdi_vse(koledarji, lambda rok: [rok.obdobje])
 
 
 def naredi_spustni_meni_po_crkah(
@@ -200,8 +219,9 @@ def naredi_tabelo(koledarji: List[Koledar]) -> str:
 
 def naredi_html(
         poti_do_koledarjev: List[str],
-        naslov: str,
-        opis_strani: str
+        naslov: str = "Naslov strani",
+        opis_strani: str = "Opis strani",
+        obdobja: Dict[str, Tuple[datetime, datetime]] = None
 ):
     """
     Naredi celotno spletno stran.
@@ -222,24 +242,39 @@ def naredi_html(
             Pedagoška matematika (2PeMa) na Oddelku za matematiko FMF v študijskem letu 2022/23,
             ki zadoščajo izbranim kriterijem."
 
-    :return: str(predloga za stran)
+    :param obdobja: slovar, ki podaja imena in intervale izpitnih obdobij, npr.
+        ``{"zimsko izpitno obdobje": (datetime(2022, 1, 15), datetime(2022, 2, 15), ...}``.
+        Izpiti, ki ne bodo padli v nobeno od naštetih obdobij, bodo imeli kategorijo
+        ``izven izpitnega obdobja``.
+
+    :return: Ne vrne ničesar, se pa str(predloga za stran) pojavi v izhodni mapi.
     """
-    koledarji = [nalozi_ics(pot) for pot in poti_do_koledarjev]
+    if obdobja is None:
+        ZAPISNIKAR.warning("Izpitna obdobja niso nastavljena, vsi izpiti bodo torej izven njih.")
+        obdobja = {}
+    seznam_obdobij = []
+    for ime_obdobja, (zacetek, konec) in obdobja.items():
+        seznam_obdobij.append(Obdobje(ime_obdobja, zacetek, konec))
+
+    koledarji = [nalozi_ics(pot, seznam_obdobij) for pot in poti_do_koledarjev]
     vsi_programi = najdi_vse_programe(koledarji)
     vsi_letniki = najdi_vse_letnike(koledarji)
     vsi_roki = najdi_vse_roke(koledarji)
     vsi_izvajalci = najdi_vse_izvajalce(koledarji)
     vsi_predmeti = najdi_vse_predmete(koledarji)
+    vsa_obdobja = najdi_vsa_obdobja(koledarji)
 
     meni_programi = naredi_spustni_meni("Programi", "program", vsi_programi)
     meni_letniki = naredi_spustni_meni("Letniki", "letnik", vsi_letniki)
-    meni_roki = naredi_spustni_meni("Roki", "rok", vsi_roki)
-    meni_izvajalci = naredi_spustni_meni_po_crkah("Izvajalci", "izvajalec", vsi_izvajalci)
+    meni_obdobja = naredi_spustni_meni("Obdobja", "obdobje", vsa_obdobja)
     meni_predmeti = naredi_spustni_meni_po_crkah("Predmeti", "predmet", vsi_predmeti)
+    meni_izvajalci = naredi_spustni_meni_po_crkah("Izvajalci", "izvajalec", vsi_izvajalci)
+    meni_roki = naredi_spustni_meni("Roki", "rok", vsi_roki)
 
     meniji = "\n\n".join(
         [
-            meni_programi, meni_letniki, meni_roki, meni_izvajalci, meni_predmeti,
+            meni_programi, meni_letniki, meni_obdobja, meni_predmeti, meni_izvajalci, meni_roki,
+
             str(HtmlPredloga("prenos"))
          ]
     )
