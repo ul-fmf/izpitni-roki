@@ -165,22 +165,24 @@ def nalozi_problematicna_imena():
 
 class Izvajalec(IDTerIme):
     PROBLEMATICNI = nalozi_problematicna_imena()
+    IZDANA_OPOZORILA = set()
 
     def __str__(self):
         besede = self.ime.split(" ")
+        ugib = " ".join(besede[-1:] + besede[:-1])
         if len(besede) > 2:
             if self.ime in Izvajalec.PROBLEMATICNI:
                 return Izvajalec.PROBLEMATICNI[self.ime]
-            else:
-                raise ValueError(
-                    f"Izvajalce bi radi predstavili z nizom 'Ana Mayer' in ne 'Mayer Ana', "
-                    f"a pri '{self.ime}' ne vemo, kako to storiti, saj skupno število "
-                    f"imen in priimkov presega 2. Prosimo, dodajte izvajalca v datoteko "
-                    f"'izpitni_roki/problematicna_imena.txt'."
+            elif self.ime not in Izvajalec.IZDANA_OPOZORILA:
+                ZAPISNIKAR.warning(
+                    f"Izvajalec '{self.ime}' bo predstavljen kot '{ugib}', a nismo prepričani, "
+                    f"da je tako prav, saj skupno število imen in priimkov presega 2. "
+                    f"Če ni prav (ali če tega opozorila nočete več videti), prosimo, "
+                    f"dodajte vrstico '{self.ime};prava oblika' "
+                    f"v datoteko 'izpitni_roki/problematicna_imena.txt'."
                 )
-        else:
-            besede = besede[::-1]
-            return " ".join(besede)
+                Izvajalec.IZDANA_OPOZORILA.add(self.ime)
+        return ugib
 
 
 class Obdobje(IDTerIme):

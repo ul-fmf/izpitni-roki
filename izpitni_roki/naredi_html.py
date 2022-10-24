@@ -129,7 +129,7 @@ def naredi_spustni_meni_po_crkah(
             element = HtmlPredloga(
                 "spustni_spustni_nivo2",
                 razred=html_razred,
-                besedilo=moznost.ime,
+                besedilo=str(moznost),
                 id=moznost.id
             )
             elementi_nivo2.append(str(element))
