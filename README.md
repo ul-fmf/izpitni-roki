@@ -4,4 +4,4 @@ Koda, ki zgenerira spletno stran z izpitnimi roki. Morda nekoč tudi koda, ki bo
 
 # Dokumentacija
 
-
+je dostopna na naslovu 
