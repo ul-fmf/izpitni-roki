@@ -110,19 +110,22 @@ class IDTerIme:
 
     @staticmethod
     def naredi_objekt(
-            podrazred: Type[Union['Predmet', 'Program', 'Letnik', 'Rok', 'Izvajalec']],
-            ime: str
+            podrazred: Type[Union['Predmet', 'Program', 'Letnik', 'Rok', 'Izvajalec', 'Obdobje']],
+            ime: str,
+            *args
     ):
         """
         Naredi objekt danega podrazreda razreda IDTerIme
 
         :param podrazred: izbrani podrazred
         :param ime: polje ime
+        :param args: morebitni preostali parametri za konstruktor
+        (npr. pri :meth:`izpitni_roki.osnovno.Obdobje`).
 
         :return: objekt danega podrazreda s podanim imenom
         """
         if ime not in IDTerIme.PRIPADNIKI:
-            IDTerIme.PRIPADNIKI[ime] = podrazred(ime)
+            IDTerIme.PRIPADNIKI[ime] = podrazred(ime, *args)
         return IDTerIme.PRIPADNIKI[ime]
 
 

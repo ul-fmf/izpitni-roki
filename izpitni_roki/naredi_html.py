@@ -256,15 +256,9 @@ def naredi_html(
 
     :return: Ne vrne ničesar, se pa str(predloga za stran) pojavi v izhodni mapi ``out``.
     """
-    if obdobja is None:
-        ZAPISNIKAR.warning("Izpitna obdobja niso nastavljena, vsi izpiti bodo torej izven njih.")
-        obdobja = {}
-    seznam_obdobij = []
-    for ime_obdobja, (zacetek, konec) in obdobja.items():
-        seznam_obdobij.append(Obdobje(ime_obdobja, zacetek, konec))
 
     koledarji = [
-        nalozi_ics(pot, seznam_obdobij, oblika_summary, oblika_datum) for pot in poti_do_koledarjev
+        nalozi_ics(pot, obdobja, oblika_summary, oblika_datum) for pot in poti_do_koledarjev
     ]
     vsi_programi = najdi_vse_programe(koledarji)
     vsi_letniki = najdi_vse_letnike(koledarji)
