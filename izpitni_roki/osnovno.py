@@ -6,12 +6,17 @@ from datetime import datetime
 
 
 class IDGenerator:
-    """Polepšajmo kodo in se izognimo dolgim guidom."""
+    """Razred, s katerim polepšamo kodo in se izognemo dolgim guidom."""
 
     NASLEDNJI_ID = 0
 
     @staticmethod
-    def generiraj_id():
+    def generiraj_id() -> int:
+        """
+        Zgenerira naslednji id. Zaporedni klici vrnejo id-je 1, 2, 3 ...
+
+        :return: naslednji id
+        """
         IDGenerator.NASLEDNJI_ID += 1
         return IDGenerator.NASLEDNJI_ID
 
@@ -20,12 +25,16 @@ class IDTerIme:
     """
     Nadrazred za razna polja v razredu :meth:`izpitni_roki.osnovno.IzpitniRok`,
     ki poleg dejanske vrednosti (ime) potrbujejo še id.
+
+    Implementira tudi leksikografsko urejenost nizov, ki upošteva slovensko abecedo,
+    razširjeno s črkama `ć` in `đ` (a b c č ć d đ e f ...).
     """
     PRIPADNIKI = {}  # vsi elementi tega razreda, vsebuje pare ime: objekt
 
     def __init__(self, ime: str):
         """
-        Konstruktor IDTerIme, ki mu podamo ime, IDGenerator pa poskrbi za njegov id.
+        Konstruktor IDTerIme, ki mu podamo ime, :meth:`izpitni_roki.osnovno.IDGenerator`
+        pa poskrbi za njegov id.
 
         :param ime: ime
         """
@@ -37,9 +46,9 @@ class IDTerIme:
 
     def _normalna_oblika(self):
         """
-        Uporabimo za urejanje po abecedi, ki vsebuje neangleške črke.
+        Uporabimo za urejanje po abecedi, ki vsebuje neangleške črke (č, ć, đ, š, ž).
 
-        :return: normalizirana oblika imena, npr. 'Šečđežeć' se normalizira v 'sseccddezzeccc'
+        :return: normalizirana oblika imena, npr. ``Šečđežeć`` se normalizira v ``sseccddezzeccc``
         """
         posebni = {"č": "cc", "ć": "ccc", "đ": "dd", "š": "ss", "ž": "zz"}
         return "".join(
@@ -137,6 +146,13 @@ class IzpitniRok:
     ics_vrstice: str
 
     def preveri(self):
+        """
+        Preveri, ali so vsa polja neprazna.
+
+        :return:
+
+        :raises: ValueError, če je katero od polj prazno
+        """
         for kljuc, vrednost in self.__dict__.items():
             if not vrednost:
                 raise ValueError(f"Atribut {kljuc} je prazen v {self}")
@@ -150,7 +166,13 @@ class IzpitniRok:
         else:
             raise ValueError(f"IzpitniRok ni primerljiv z {type(other).__name__}")
 
-    def prikazi_datum(self):
+    def prikazi_datum(self) -> str:
+        """
+        Polje datum pretvori v berljiv niz. Tako se npr. 3. 10. 2022 pretvori v niz
+        ``"3. oktober 2022 (ponedeljek)"``.
+
+        :return: berljiva predstavitev datuma
+        """
         dnevi = ["ponedeljek", "torek", "sreda", "četrtek", "petek", "sobota", "nedelja"]
         meseci = [
             "januar", "februar", "marec", "april",
@@ -163,7 +185,15 @@ class IzpitniRok:
         oblikovan_datum = self.datum.strftime(f"{self.datum.day}. {mesec} {self.datum.year}")
         return f"{oblikovan_datum} ({dan})"
 
-    def id(self):
+    def id(self) -> str:
+        """
+        Iz id-jev polj tega objekta ustvari id tega objekta. Vsebuje le knjižnici `jQuery` prijazne
+        znake.
+
+        :return: S podčrtaji ločeni id-ji polj predmet, programi, letnik, rokin izvajalci. Id-ji za
+            polja, ki so seznami (programi, izvajalci), so id-ji elementov danega seznama, ločeni
+            z ``x``.
+        """
         id_predmet = self.predmet.id
         id_programi = "x".join(map(lambda p: p.id, self.programi))
         id_letnik = self.letnik.id
@@ -173,6 +203,16 @@ class IzpitniRok:
 
     @staticmethod
     def _prikazi_neprazen_seznam(seznam: List[IDTerIme]):
+        """
+        Nezadnje elemente seznama loči z znakoma ``, ``, zadnji element paod ostalih (če obstajajo)
+        z `` in ``.
+
+        :param seznam: seznam vredonsti, npr.
+            ``[Izvajalec("Ana"), Izvajalec("Beno)", Izvajalec("Cene")]``
+
+        :return: lepo oblikovan niz, ki našteje elemente seznama, npr.
+            ``"Ana, Beno in Cene"``
+        """
         if not seznam:
             raise ValueError(f"Portebujem vsaj en element v seznamu!")
         if len(seznam) == 1:
@@ -181,10 +221,21 @@ class IzpitniRok:
             return ", ".join(map(str, seznam[:-1])) + f" in {seznam[-1]}"
 
     def prikazi_smer_in_letnik(self):
+        """
+        Prikaže smer(i) ter letnik v lepo berljivi obliki.
+
+        :return: npr. ``"1FiMa, 2PeMa (3. letnik)"``
+        """
         prikaz_smeri = IzpitniRok._prikazi_neprazen_seznam(self.programi)
         return f"{prikaz_smeri} ({self.letnik} letnik)"
 
     def prikazi_izvajalce(self):
+        """
+        Lepo prikaže izvajalce v skladu z :meth:`izpitni_roki.osnovno.IzpitniRok._prikazi_neprazen_seznam`
+
+        :return: npr. ``"Ana, Beno in Cene"``
+
+        """
         return IzpitniRok._prikazi_neprazen_seznam(self.izvajalci)
 
     def prilagodi_ics_opis(self) -> str:
@@ -211,16 +262,30 @@ class Koledar:
 
 class HtmlPredloga:
     """
-    Predloga za html kodo, ki ji podamo parametre in jo lahko lepo oblikujemo. Nekaj takega:
+    Predloga za html kodo, ki ji podamo parametre in jo lahko lepo oblikujemo. Pripadajoča
+    html datoteka ``predloge/odstavek.html`` je npr.
 
     .. code-block:: html
 
-        <div class={{razred}}>
-            <p>{{besedilo}}</p>
-        </div>
+        <div class="{{razred}}"> <p>{{besedilo}}</p> </div>
+
+    Ključne besede (obdane z dvojnimi zavitimi oklepaji) kasneje nadomestimo z dejansko vsebino,
+    npr.
+    .. code-block:: python
+
+        >>> str(HtmlPredloga("odstavek", razred="raz", besedilo="Hojla, bralec!"))
+        <div class="raz"> <p>Hojla, bralec!</p> </div>
 
     """
     def __init__(self, ime_predloge, **kwargs):
+        """
+        Konstruktor za ta razred.
+
+        :param ime_predloge: ime html datoteke (brez končnice) v mapi ``predloge``,
+            npr. ``abc``, če želimo predlogo ``predloge/abc.html``
+        :param kwargs: dovoljeni so tisti ključi, ki se pojavijo v predlogi.
+
+        """
         self.pot = f"predloge/{ime_predloge}.html"
         self.predloga = ""
         self.parametri = {}
@@ -238,6 +303,19 @@ class HtmlPredloga:
             self.zamiki[zadetek] = zamik
 
     def nastavi_parametre(self, **kwargs):
+        """
+        Prepiše trenutne vrednosti, ki pripadajo ključnim besedam, s podanimi.
+        Pri nastavljanju parametrov poskrbimo, da se zamiki vrstic ohranjajo, tj.
+
+        ``zamik vstavljene vrtice = zamik ključa + prejšnji zamik vstavljene vrstice``
+
+        :param kwargs: (nekateri ali pa vsi) ključi, ki se pojavijo v predlogi
+
+        :return:
+
+        :raises: ValueError, če podani kwarg in med ključi v predlogi.
+
+        """
         for kljuc, vrednost in kwargs.items():
             parameter = "{{" + kljuc + "}}"
             if parameter not in self.parametri:
