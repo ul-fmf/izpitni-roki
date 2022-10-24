@@ -1,6 +1,9 @@
 data/*2122.ics
 .idea
 out/izpitni_roki.html
+**/_build
+**/_static
+**/_templates
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
