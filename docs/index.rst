@@ -3,16 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Dokumentacija za projekr Izpitni roki!
-======================================
+Dokumentacija za projekt Izpitni roki
+=====================================
 
-Tu in tam se bo znašla v navodilih kakšna angleška beseda,
-za kar se opravičujemo.
-
-Uporaba
-=======
-
-Uporaba kode, ki se skriva na repozitoriju, je prikazana spodaj::
+Dobrodošli! Uporaba kode, ki se skriva na repozitoriju, je prikazana spodaj::
 
    from izpitni_roki.naredi_html import naredi_html
    from datetime import datetime
@@ -40,6 +34,9 @@ uporablja Oddelek za matematiko Univerze v Ljubljani, boste morali popraviti
 tudi to. Enako velja za format datumov, ki je v vašem ics.
 V tem primeru je treba funkciji ``naredi_html`` podati še ustrezna formata,
 ki sta natančneje opisana v dokumentaciji.
+
+Tu in tam se bo znašla v tem dokumentu kakšna angleška beseda,
+za kar se opravičujemo.
 
 .. toctree::
    :maxdepth: 2

@@ -4,6 +4,7 @@ out/izpitni_roki.html
 **/_build
 **/_static
 **/_templates
+hacks.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

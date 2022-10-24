@@ -1,8 +1,31 @@
+import os
 import re
 import logging
 from typing import List, Type, Union
 from dataclasses import dataclass
 from datetime import datetime
+
+
+def naredi_zapisnikarja(name):
+    """
+    Naredi zapisnikarja oz. loggerja.
+
+    :param name: ime zapisnikarja, po navadi kar ``__file__``
+    :return: zapisnikar
+    """
+    ch = logging.StreamHandler()
+    formatter = logging.Formatter(
+        "%(asctime)s %(levelname)s [%(filename)s:%(funcName)s:%(lineno)d]:  %(message)s",
+        "%Y-%m-%d %H:%M:%S"
+    )
+    ch.setFormatter(formatter)
+    logger = logging.getLogger(name)
+    logger.addHandler(ch)
+    logger.setLevel(logging.INFO)
+    return logger
+
+
+ZAPISNIKAR = naredi_zapisnikarja(__file__)
 
 
 class IDGenerator:
@@ -129,8 +152,35 @@ class Rok(IDTerIme):
     pass
 
 
+def nalozi_problematicna_imena():
+    slovarcek = {}
+    problematicna_imena = os.path.join(os.path.dirname(__file__), "problematicna_imena.txt")
+    with open(problematicna_imena, encoding="utf-8") as f:
+        f.readline()
+        for vrsta in f:
+            grdo, lepo = vrsta.strip().split(";")
+            slovarcek[grdo] = lepo
+    return slovarcek
+
+
 class Izvajalec(IDTerIme):
-    pass
+    PROBLEMATICNI = nalozi_problematicna_imena()
+
+    def __str__(self):
+        besede = self.ime.split(" ")
+        if len(besede) > 2:
+            if self.ime in Izvajalec.PROBLEMATICNI:
+                return Izvajalec.PROBLEMATICNI[self.ime]
+            else:
+                raise ValueError(
+                    f"Izvajalce bi radi predstavili z nizom 'Ana Mayer' in ne 'Mayer Ana', "
+                    f"a pri '{self.ime}' ne vemo, kako to storiti, saj skupno število "
+                    f"imen in priimkov presega 2. Prosimo, dodajte izvajalca v datoteko "
+                    f"'izpitni_roki/problematicna_imena.txt'."
+                )
+        else:
+            besede = besede[::-1]
+            return " ".join(besede)
 
 
 class Obdobje(IDTerIme):
@@ -373,22 +423,3 @@ class HtmlPredloga:
                 vrednost = parameter
             niz = niz.replace(parameter, vrednost)
         return niz
-
-
-def naredi_zapisnikarja(name):
-    """
-    Naredi zapisnikarja oz. loggerja.
-
-    :param name: ime zapisnikarja, po navadi kar ``__file__``
-    :return: zapisnikar
-    """
-    ch = logging.StreamHandler()
-    formatter = logging.Formatter(
-        "%(asctime)s %(levelname)s [%(filename)s:%(funcName)s:%(lineno)d]:  %(message)s",
-        "%Y-%m-%d %H:%M:%S"
-    )
-    ch.setFormatter(formatter)
-    logger = logging.getLogger(name)
-    logger.addHandler(ch)
-    logger.setLevel(logging.INFO)
-    return logger
