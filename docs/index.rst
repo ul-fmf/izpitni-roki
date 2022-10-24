@@ -19,11 +19,6 @@ Dobrodošli! Uporaba kode, ki se skriva na repozitoriju, je prikazana spodaj::
        " Matematika (1Mate) in Praktična matematika (1PrMa) in "
        "prvih treh letnikih programa Pedagoška matematika (2PeMa) "
        "na Oddelku za matematiko FMF v študijskem letu 2022/23, ki zadoščajo izbranim kriterijem.",
-       obdobja={
-           "zimsko": (datetime(2022, 1, 15), datetime(2022, 2, 15)),
-           "letno": (datetime(2022, 6, 15), datetime(2022, 7, 15)),
-           "jesensko": (datetime(2022, 8, 15), datetime(2022, 9, 6))
-       }
    )
 
 Načeloma je funkcija ``naredi_html`` edina, ki bi jo moral uporabnik
@@ -34,6 +29,19 @@ uporablja Oddelek za matematiko Univerze v Ljubljani, boste morali popraviti
 tudi to. Enako velja za format datumov, ki je v vašem ics.
 V tem primeru je treba funkciji ``naredi_html`` podati še ustrezna formata,
 ki sta natančneje opisana v dokumentaciji.
+
+Če želite prednastavljene meje izpitnih obdobij prilagoditi, lahko gornji funkciji
+podate še argument ``obdobja``, npr.::
+
+   naredi_html(
+      ...,
+      obdobja={
+        "zimsko": (datetime(2022, 1, 15), datetime(2022, 2, 15)),
+        "spomladansko": (datetime(2022, 6, 15), datetime(2022, 7, 15)),
+        "jesensko": (datetime(2022, 8, 15), datetime(2022, 9, 6))
+      }
+   )
+
 
 Tu in tam se bo znašla v tem dokumentu kakšna angleška beseda,
 za kar se opravičujemo.
