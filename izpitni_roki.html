@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>izpitni_roki &mdash; Izpitni roki  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to Izpitni roki’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Izpitni roki
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">izpitni_roki</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#izpitni-roki-osnovno">izpitni_roki.osnovno</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.HtmlPredloga"><code class="docutils literal notranslate"><span class="pre">HtmlPredloga</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.HtmlPredloga.nastavi_parametre"><code class="docutils literal notranslate"><span class="pre">HtmlPredloga.nastavi_parametre()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.IDGenerator"><code class="docutils literal notranslate"><span class="pre">IDGenerator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IDGenerator.NASLEDNJI_ID"><code class="docutils literal notranslate"><span class="pre">IDGenerator.NASLEDNJI_ID</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IDGenerator.generiraj_id"><code class="docutils literal notranslate"><span class="pre">IDGenerator.generiraj_id()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme"><code class="docutils literal notranslate"><span class="pre">IDTerIme</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme.PRIPADNIKI"><code class="docutils literal notranslate"><span class="pre">IDTerIme.PRIPADNIKI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme.naredi_objekt"><code class="docutils literal notranslate"><span class="pre">IDTerIme.naredi_objekt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok"><code class="docutils literal notranslate"><span class="pre">IzpitniRok</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.datum"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.datum</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.ics_vrstice"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.ics_vrstice</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.id"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.izvajalci"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.izvajalci</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.letnik"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.letnik</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.predmet"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.predmet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.preveri"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.preveri()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.prikazi_datum"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.prikazi_datum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.prikazi_izvajalce"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.prikazi_izvajalce()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.prikazi_smer_in_letnik"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.prikazi_smer_in_letnik()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.prilagodi_ics_opis"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.prilagodi_ics_opis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.programi"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.programi</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok.rok"><code class="docutils literal notranslate"><span class="pre">IzpitniRok.rok</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.Izvajalec"><code class="docutils literal notranslate"><span class="pre">Izvajalec</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.Koledar"><code class="docutils literal notranslate"><span class="pre">Koledar</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.Koledar.ics_vrstice"><code class="docutils literal notranslate"><span class="pre">Koledar.ics_vrstice</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.Koledar.izpitni_roki"><code class="docutils literal notranslate"><span class="pre">Koledar.izpitni_roki</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.Koledar.prilagodi_ics_opis"><code class="docutils literal notranslate"><span class="pre">Koledar.prilagodi_ics_opis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.Koledar.smer"><code class="docutils literal notranslate"><span class="pre">Koledar.smer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.Letnik"><code class="docutils literal notranslate"><span class="pre">Letnik</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#izpitni_roki.osnovno.Letnik.DOVOLJENI_LETNIKI"><code class="docutils literal notranslate"><span class="pre">Letnik.DOVOLJENI_LETNIKI</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.Predmet"><code class="docutils literal notranslate"><span class="pre">Predmet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.Program"><code class="docutils literal notranslate"><span class="pre">Program</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.Rok"><code class="docutils literal notranslate"><span class="pre">Rok</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.osnovno.naredi_zapisnikarja"><code class="docutils literal notranslate"><span class="pre">naredi_zapisnikarja()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#izpitni-roki-nalozi-ics">izpitni_roki.nalozi_ics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.nalozi_ics.nalozi_ics"><code class="docutils literal notranslate"><span class="pre">nalozi_ics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.nalozi_ics.naredi_koledar"><code class="docutils literal notranslate"><span class="pre">naredi_koledar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.nalozi_ics.preberi_vrednosti"><code class="docutils literal notranslate"><span class="pre">preberi_vrednosti()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.nalozi_ics.sprocesiraj_dogodek"><code class="docutils literal notranslate"><span class="pre">sprocesiraj_dogodek()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#izpitni-roki-naredi-html">izpitni_roki.naredi_html</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.naredi_html.najdi_vse"><code class="docutils literal notranslate"><span class="pre">najdi_vse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.naredi_html.najdi_vse_izvajalce"><code class="docutils literal notranslate"><span class="pre">najdi_vse_izvajalce()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.naredi_html.najdi_vse_letnike"><code class="docutils literal notranslate"><span class="pre">najdi_vse_letnike()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.naredi_html.najdi_vse_predmete"><code class="docutils literal notranslate"><span class="pre">najdi_vse_predmete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.naredi_html.najdi_vse_programe"><code class="docutils literal notranslate"><span class="pre">najdi_vse_programe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.naredi_html.najdi_vse_roke"><code class="docutils literal notranslate"><span class="pre">najdi_vse_roke()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.naredi_html.naredi_html"><code class="docutils literal notranslate"><span class="pre">naredi_html()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.naredi_html.naredi_spustni_meni"><code class="docutils literal notranslate"><span class="pre">naredi_spustni_meni()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.naredi_html.naredi_spustni_meni_po_crkah"><code class="docutils literal notranslate"><span class="pre">naredi_spustni_meni_po_crkah()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#izpitni_roki.naredi_html.naredi_tabelo"><code class="docutils literal notranslate"><span class="pre">naredi_tabelo()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Izpitni roki</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>izpitni_roki</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/izpitni_roki.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="izpitni-roki">
+<h1>izpitni_roki<a class="headerlink" href="#izpitni-roki" title="Permalink to this heading"></a></h1>
+<p>V tem (komajda) modulu so v nekaj datotekah shranjene
+pomožne in glavne funkcije, s katerimi naredimo <code class="docutils literal notranslate"><span class="pre">html</span></code> stran.</p>
+<section id="izpitni-roki-osnovno">
+<h2>izpitni_roki.osnovno<a class="headerlink" href="#izpitni-roki-osnovno" title="Permalink to this heading"></a></h2>
+<p>V tej datoteki so definirani razni razredi in funkcije, ki jih potrebujemo
+za lažje generiranje končne html strani.</p>
+<span class="target" id="module-izpitni_roki.osnovno"></span><dl class="py class">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.HtmlPredloga">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">HtmlPredloga</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ime_predloge</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.HtmlPredloga" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Predloga za html kodo, ki ji podamo parametre in jo lahko lepo oblikujemo. Nekaj takega:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">{{razred}}</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>{{besedilo}}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.HtmlPredloga.nastavi_parametre">
+<span class="sig-name descname"><span class="pre">nastavi_parametre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.HtmlPredloga.nastavi_parametre" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IDGenerator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">IDGenerator</span></span><a class="headerlink" href="#izpitni_roki.osnovno.IDGenerator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Polepšajmo kodo in se izognimo dolgim guidom.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IDGenerator.NASLEDNJI_ID">
+<span class="sig-name descname"><span class="pre">NASLEDNJI_ID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#izpitni_roki.osnovno.IDGenerator.NASLEDNJI_ID" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IDGenerator.generiraj_id">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generiraj_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.IDGenerator.generiraj_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IDTerIme">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">IDTerIme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.IDTerIme" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Nadrazred za razna polja v razredu <a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok" title="izpitni_roki.osnovno.IzpitniRok"><code class="xref py py-meth docutils literal notranslate"><span class="pre">izpitni_roki.osnovno.IzpitniRok()</span></code></a>,
+ki poleg dejanske vrednosti (ime) potrbujejo še id.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IDTerIme.PRIPADNIKI">
+<span class="sig-name descname"><span class="pre">PRIPADNIKI</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#izpitni_roki.osnovno.IDTerIme.PRIPADNIKI" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IDTerIme.naredi_objekt">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">naredi_objekt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">podrazred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Predmet" title="izpitni_roki.osnovno.Predmet"><span class="pre">Predmet</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#izpitni_roki.osnovno.Program" title="izpitni_roki.osnovno.Program"><span class="pre">Program</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#izpitni_roki.osnovno.Letnik" title="izpitni_roki.osnovno.Letnik"><span class="pre">Letnik</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#izpitni_roki.osnovno.Rok" title="izpitni_roki.osnovno.Rok"><span class="pre">Rok</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#izpitni_roki.osnovno.Izvajalec" title="izpitni_roki.osnovno.Izvajalec"><span class="pre">Izvajalec</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.IDTerIme.naredi_objekt" title="Permalink to this definition"></a></dt>
+<dd><p>Naredi objekt danega podrazreda razreda IDTerIme</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>podrazred</strong> – izbrani podrazred</p></li>
+<li><p><strong>ime</strong> – polje ime</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>objekt danega podrazreda s podanim imenom</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">IzpitniRok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predmet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#izpitni_roki.osnovno.Predmet" title="izpitni_roki.osnovno.Predmet"><span class="pre">Predmet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">programi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Program" title="izpitni_roki.osnovno.Program"><span class="pre">Program</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">letnik</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#izpitni_roki.osnovno.Letnik" title="izpitni_roki.osnovno.Letnik"><span class="pre">Letnik</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rok</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#izpitni_roki.osnovno.Rok" title="izpitni_roki.osnovno.Rok"><span class="pre">Rok</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">izvajalci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Izvajalec" title="izpitni_roki.osnovno.Izvajalec"><span class="pre">Izvajalec</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ics_vrstice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Osnovne informacije o izpitnem roku</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.datum">
+<span class="sig-name descname"><span class="pre">datum</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.datum" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.ics_vrstice">
+<span class="sig-name descname"><span class="pre">ics_vrstice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.ics_vrstice" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.izvajalci">
+<span class="sig-name descname"><span class="pre">izvajalci</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Izvajalec" title="izpitni_roki.osnovno.Izvajalec"><span class="pre">Izvajalec</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.izvajalci" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.letnik">
+<span class="sig-name descname"><span class="pre">letnik</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#izpitni_roki.osnovno.Letnik" title="izpitni_roki.osnovno.Letnik"><span class="pre">Letnik</span></a></em><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.letnik" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.predmet">
+<span class="sig-name descname"><span class="pre">predmet</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#izpitni_roki.osnovno.Predmet" title="izpitni_roki.osnovno.Predmet"><span class="pre">Predmet</span></a></em><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.predmet" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.preveri">
+<span class="sig-name descname"><span class="pre">preveri</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.preveri" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.prikazi_datum">
+<span class="sig-name descname"><span class="pre">prikazi_datum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.prikazi_datum" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.prikazi_izvajalce">
+<span class="sig-name descname"><span class="pre">prikazi_izvajalce</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.prikazi_izvajalce" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.prikazi_smer_in_letnik">
+<span class="sig-name descname"><span class="pre">prikazi_smer_in_letnik</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.prikazi_smer_in_letnik" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.prilagodi_ics_opis">
+<span class="sig-name descname"><span class="pre">prilagodi_ics_opis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.prilagodi_ics_opis" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.programi">
+<span class="sig-name descname"><span class="pre">programi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Program" title="izpitni_roki.osnovno.Program"><span class="pre">Program</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.programi" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.IzpitniRok.rok">
+<span class="sig-name descname"><span class="pre">rok</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#izpitni_roki.osnovno.Rok" title="izpitni_roki.osnovno.Rok"><span class="pre">Rok</span></a></em><a class="headerlink" href="#izpitni_roki.osnovno.IzpitniRok.rok" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Izvajalec">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">Izvajalec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.Izvajalec" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><code class="xref py py-class docutils literal notranslate"><span class="pre">IDTerIme</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Koledar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">Koledar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">izpitni_roki</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok" title="izpitni_roki.osnovno.IzpitniRok"><span class="pre">IzpitniRok</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ics_vrstice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.Koledar" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Osnovne informacije o koledarju</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Koledar.ics_vrstice">
+<span class="sig-name descname"><span class="pre">ics_vrstice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#izpitni_roki.osnovno.Koledar.ics_vrstice" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Koledar.izpitni_roki">
+<span class="sig-name descname"><span class="pre">izpitni_roki</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok" title="izpitni_roki.osnovno.IzpitniRok"><span class="pre">IzpitniRok</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#izpitni_roki.osnovno.Koledar.izpitni_roki" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Koledar.prilagodi_ics_opis">
+<span class="sig-name descname"><span class="pre">prilagodi_ics_opis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nadomestno_ime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#izpitni_roki.osnovno.Koledar.prilagodi_ics_opis" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Koledar.smer">
+<span class="sig-name descname"><span class="pre">smer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#izpitni_roki.osnovno.Koledar.smer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Letnik">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">Letnik</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.Letnik" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><code class="xref py py-class docutils literal notranslate"><span class="pre">IDTerIme</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Letnik.DOVOLJENI_LETNIKI">
+<span class="sig-name descname"><span class="pre">DOVOLJENI_LETNIKI</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'drugi':</span> <span class="pre">2,</span> <span class="pre">'peti':</span> <span class="pre">5,</span> <span class="pre">'prvi':</span> <span class="pre">1,</span> <span class="pre">'tretji':</span> <span class="pre">3,</span> <span class="pre">'četrti':</span> <span class="pre">4}</span></em><a class="headerlink" href="#izpitni_roki.osnovno.Letnik.DOVOLJENI_LETNIKI" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Predmet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">Predmet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.Predmet" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><code class="xref py py-class docutils literal notranslate"><span class="pre">IDTerIme</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Program">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">Program</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.Program" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><code class="xref py py-class docutils literal notranslate"><span class="pre">IDTerIme</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.Rok">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">Rok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.Rok" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><code class="xref py py-class docutils literal notranslate"><span class="pre">IDTerIme</span></code></a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.osnovno.naredi_zapisnikarja">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.osnovno.</span></span><span class="sig-name descname"><span class="pre">naredi_zapisnikarja</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.osnovno.naredi_zapisnikarja" title="Permalink to this definition"></a></dt>
+<dd><p>Naredi zapisnikarja oz. loggerja.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – ime zapisnikarja, po navadi kar <code class="docutils literal notranslate"><span class="pre">__file__</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>zapisnikar</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="izpitni-roki-nalozi-ics">
+<h2>izpitni_roki.nalozi_ics<a class="headerlink" href="#izpitni-roki-nalozi-ics" title="Permalink to this heading"></a></h2>
+<p>V tej datoteki so funkcije, ki preberejo <code class="docutils literal notranslate"><span class="pre">ics</span></code> datoteko in njeno
+vsebino shranijo v objekt tipa <a class="reference internal" href="#izpitni_roki.osnovno.Koledar" title="izpitni_roki.osnovno.Koledar"><code class="xref py py-meth docutils literal notranslate"><span class="pre">izpitni_roki.osnovno.Koledar()</span></code></a>.</p>
+<span class="target" id="module-izpitni_roki.nalozi_ics"></span><dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.nalozi_ics.nalozi_ics">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.nalozi_ics.</span></span><span class="sig-name descname"><span class="pre">nalozi_ics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#izpitni_roki.osnovno.Koledar" title="izpitni_roki.osnovno.Koledar"><span class="pre">Koledar</span></a></span></span><a class="headerlink" href="#izpitni_roki.nalozi_ics.nalozi_ics" title="Permalink to this definition"></a></dt>
+<dd><p>Naloži ics datoteko v Koledar. Pričakovana oblika vsebine datoteke je</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>BEGIN:VCALENDAR
+PRODID:-//Google Inc//Google Calendar 70.9054//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Finančna matematika 2021/22
+X-WR-TIMEZONE:Europe/Belgrade
+[dogodki]
+END:VCALENDAR
+</pre></div>
+</div>
+<p>kjer so dogodki oblike</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>BEGIN:VEVENT
+DTSTART;VALUE=DATE:20220629
+DTEND;VALUE=DATE:20220630
+DTSTAMP:20220209T150954Z
+UID:fdsfsdfsdfsd@google.com
+CREATED:20210325T080359Z
+DESCRIPTION:
+LAST-MODIFIED:20210913T125706Z
+LOCATION: morda kaj, a ni pomembno
+SEQUENCE:4
+STATUS:CONFIRMED
+SUMMARY:Uvod v programiranje (1Mate\, 2PeMa\, ni smeri)\, prvi letnik\, Pris
+    ojnik Matjaž\, Perko Martin\, Pletna Marija\, 3. rok
+TRANSP:TRANSPARENT
+END:VEVENT
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pot</strong> – pot do ics datoteke</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Koledar, ki vsebuje vse dogodke v ics datoteki.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.nalozi_ics.naredi_koledar">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.nalozi_ics.</span></span><span class="sig-name descname"><span class="pre">naredi_koledar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta_vrstice_koledarja</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">izpitni_roki</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok" title="izpitni_roki.osnovno.IzpitniRok"><span class="pre">IzpitniRok</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#izpitni_roki.osnovno.Koledar" title="izpitni_roki.osnovno.Koledar"><span class="pre">Koledar</span></a></span></span><a class="headerlink" href="#izpitni_roki.nalozi_ics.naredi_koledar" title="Permalink to this definition"></a></dt>
+<dd><p>Iz meta-opisa koledarja prebere smer, doda še izpitne roke in ustvari nov objekt Koledar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meta_vrstice_koledarja</strong> – vrstice v koledarju, ki niso del dogodka</p></li>
+<li><p><strong>izpitni_roki</strong> – izpitni roki, ki smo jih prebrali iz dane ics datoteke</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>koledar z izpitnimi roki za dano smer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.nalozi_ics.preberi_vrednosti">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.nalozi_ics.</span></span><span class="sig-name descname"><span class="pre">preberi_vrednosti</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vrstice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nujni_kljuci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#izpitni_roki.nalozi_ics.preberi_vrednosti" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Vrstice, ki opisujejo dogodek (izpitni rok) ali pa koledar predela tako, da odstrani</dt><dd><p>morebitne prelome vrstic in jih združi v slovar {kljuc: vrednost, …}, kjer so ključi
+ključne besede iz .ics formata, npr. <code class="docutils literal notranslate"><span class="pre">DTSTART;VALUE=DATE</span></code> ali <code class="docutils literal notranslate"><span class="pre">X-WR-TIMEZONE</span></code>.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vrstice</strong> – zaporedne vrstice iz ics datoteke, ki opisujejo dogodek ali koledar.
+Seznam ne vsebuje ne začetne vrstice (BEGIN:VCALENDAR ali BEGIN:VEVENT) ne končne
+vrstice (END:VCALENDAR ali END:VEVENT).</p></li>
+<li><p><strong>nujni_kljuci</strong> – ključi, ki jih nujno potrebujemo, da bi lahko kasneje ustvarili
+IzpitniRok ali Koledar</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>par (slovar, združene vrstice), kjer slovar podaja pare
+ključna beseda iz ics: pripadajoča vrednost (v pripadajoči vrednosti so
+bili odstranjeni prelomi vrstic), združene vrstice pa so dobljene
+kot <code class="docutils literal notranslate"><span class="pre">&quot;\n&quot;.join(vrstice)</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.nalozi_ics.sprocesiraj_dogodek">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.nalozi_ics.</span></span><span class="sig-name descname"><span class="pre">sprocesiraj_dogodek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vrstice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok" title="izpitni_roki.osnovno.IzpitniRok"><span class="pre">IzpitniRok</span></a></span></span><a class="headerlink" href="#izpitni_roki.nalozi_ics.sprocesiraj_dogodek" title="Permalink to this definition"></a></dt>
+<dd><p>Iz vrstic dogodka ustvari izpitni rok.</p>
+<p>Branje je bolj kot ne neposredno, le s poljem <code class="docutils literal notranslate"><span class="pre">SUMMARY</span></code> je nekaj dela, saj je njegova oblika
+(po odstranitvi prelomov vrstic)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sa">r</span><span class="s2">&quot;^(?P&lt;predmet&gt;[^(]+)\((?P&lt;smeri&gt;[^)]+)\)\, ?&quot;</span> \
+<span class="sa">r</span><span class="s2">&quot;(?P&lt;letnik&gt;[^ ]+) letnik\, &quot;</span> \
+<span class="sa">r</span><span class="s2">&quot;?(?P&lt;izvajalci&gt;([^\]+\, ?)+)&quot;</span> \
+<span class="sa">r</span><span class="s2">&quot;(?P&lt;rok&gt;\d+\.) rok ?$&quot;</span>
+</pre></div>
+</div>
+<p>Prave oblike je npr.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Uvod v junaštva (Smer1\, Smer2\, Smer3)\, prvi letnik\,
+ Klepec Peter\, Krpan Martin\, Kekec Kekec\, 3. rok
+</pre></div>
+</div>
+<p>(prelom za vejico smo dodali zaradi berljivosti: sledi ji presledek v naslednji vrsti)</p>
+<p>Oblika datumov (pri <code class="docutils literal notranslate"><span class="pre">DTSTART;VALUE=DATE</span></code>) mora biti <code class="docutils literal notranslate"><span class="pre">%Y%m%d</span></code>, npr. <code class="docutils literal notranslate"><span class="pre">20231225</span></code>
+za 25. 12. 2023.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vrstice</strong> – surove vrstice, kot jih preberemo v ics datoteki. Opisujejo
+koledar ali dogodek, v njih nista prisotna začena in končna vrstica
+(<code class="docutils literal notranslate"><span class="pre">[BEGIN</span> <span class="pre">oz.</span> <span class="pre">END]:VEVENT</span></code>). Nujno morata biti v njih prisotna ključa
+<code class="docutils literal notranslate"><span class="pre">SUMARY</span></code> in <code class="docutils literal notranslate"><span class="pre">DTSTART;VALUE=DATE</span></code>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>IzpitniRok, ki ga opisujejo vrstice</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p>ValueError če <code class="docutils literal notranslate"><span class="pre">SUMMARY</span></code> dogodka ni predpisane oblike.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="izpitni-roki-naredi-html">
+<h2>izpitni_roki.naredi_html<a class="headerlink" href="#izpitni-roki-naredi-html" title="Permalink to this heading"></a></h2>
+<p>V tej datoteki so funkcije, ki ustvarijo html stran.</p>
+<span class="target" id="module-izpitni_roki.naredi_html"></span><dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.naredi_html.najdi_vse">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.naredi_html.</span></span><span class="sig-name descname"><span class="pre">najdi_vse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">koledarji</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Koledar" title="izpitni_roki.osnovno.Koledar"><span class="pre">Koledar</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">izvleckar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IzpitniRok" title="izpitni_roki.osnovno.IzpitniRok"><span class="pre">IzpitniRok</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><span class="pre">IDTerIme</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><span class="pre">IDTerIme</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#izpitni_roki.naredi_html.najdi_vse" title="Permalink to this definition"></a></dt>
+<dd><p>Najde vse prisotne vrednosti danega polja izpitnega roka.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>koledarji</strong> – seznam objektov Koledar</p></li>
+<li><p><strong>izvleckar</strong> – funkcija, ki iz objekta IzpitniRok izvčleče vrednost željenega polja,
+in ga vrne kot objekt IDTerIme</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>urejen seznam prisotnih vrednosti (brez ponovitev), ki smo jih izvlekli. Seznam
+je urejen glede na urejenost podrazreda IDTerIme.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.naredi_html.najdi_vse_izvajalce">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.naredi_html.</span></span><span class="sig-name descname"><span class="pre">najdi_vse_izvajalce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">koledarji</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Koledar" title="izpitni_roki.osnovno.Koledar"><span class="pre">Koledar</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><span class="pre">IDTerIme</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#izpitni_roki.naredi_html.najdi_vse_izvajalce" title="Permalink to this definition"></a></dt>
+<dd><p>Najdemo vse izvajalce, ki se pojavijo v izpiznih rokih v koledarju.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>koledarji</strong> – seznam izvajalcev</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(urejeni) izvajalci (brez ponovitev)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.naredi_html.najdi_vse_letnike">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.naredi_html.</span></span><span class="sig-name descname"><span class="pre">najdi_vse_letnike</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">koledarji</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Koledar" title="izpitni_roki.osnovno.Koledar"><span class="pre">Koledar</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><span class="pre">IDTerIme</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#izpitni_roki.naredi_html.najdi_vse_letnike" title="Permalink to this definition"></a></dt>
+<dd><p>Najdemo vse letnike, ki se pojavijo v izpiznih rokih v koledarju.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>letniki</strong> – seznam koledarjev</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(urejeni) letniki (brez ponovitev)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.naredi_html.najdi_vse_predmete">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.naredi_html.</span></span><span class="sig-name descname"><span class="pre">najdi_vse_predmete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">koledarji</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Koledar" title="izpitni_roki.osnovno.Koledar"><span class="pre">Koledar</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><span class="pre">IDTerIme</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#izpitni_roki.naredi_html.najdi_vse_predmete" title="Permalink to this definition"></a></dt>
+<dd><p>Najdemo vse predmete, ki se pojavijo v izpiznih rokih v koledarju.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>koledarji</strong> – seznam predmetov</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(urejeni) predmeti (brez ponovitev)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.naredi_html.najdi_vse_programe">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.naredi_html.</span></span><span class="sig-name descname"><span class="pre">najdi_vse_programe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">koledarji</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Koledar" title="izpitni_roki.osnovno.Koledar"><span class="pre">Koledar</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><span class="pre">IDTerIme</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#izpitni_roki.naredi_html.najdi_vse_programe" title="Permalink to this definition"></a></dt>
+<dd><p>Najdemo vse programe, ki se pojavijo v izpiznih rokih v koledarju.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>koledarji</strong> – seznam koledarjev</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(urejeni) programi (brez ponovitev)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.naredi_html.najdi_vse_roke">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.naredi_html.</span></span><span class="sig-name descname"><span class="pre">najdi_vse_roke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">koledarji</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Koledar" title="izpitni_roki.osnovno.Koledar"><span class="pre">Koledar</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><span class="pre">IDTerIme</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#izpitni_roki.naredi_html.najdi_vse_roke" title="Permalink to this definition"></a></dt>
+<dd><p>Najdemo vse roke (1., 2., …), ki se pojavijo v izpiznih rokih v koledarju.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>koledarji</strong> – seznam rokov</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(urejeni) roki (brez ponovitev)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.naredi_html.naredi_html">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.naredi_html.</span></span><span class="sig-name descname"><span class="pre">naredi_html</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">poti_do_koledarjev</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">naslov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opis_strani</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#izpitni_roki.naredi_html.naredi_html" title="Permalink to this definition"></a></dt>
+<dd><p>Naredi celotno spletno stran.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>poti_do_koledarjev</strong> – seznam poti do .ics datotek, ki vsebujejo izpitne roke</p></li>
+<li><p><strong>naslov</strong> – <p>naslov spletne strani, npr.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&quot;Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2022/23&quot;
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>opis_strani</strong> – <p>Kratek opis strani (npr. katere izpitne roke vsebuje), npr.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&quot;Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa),
+Matematika (1Mate) in Praktična matematika (1PrMa) in prvih treh letnikih programa
+Pedagoška matematika (2PeMa) na Oddelku za matematiko FMF v študijskem letu 2022/23,
+ki zadoščajo izbranim kriterijem.&quot;
+</pre></div>
+</div>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>str(predloga za stran)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.naredi_html.naredi_spustni_meni">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.naredi_html.</span></span><span class="sig-name descname"><span class="pre">naredi_spustni_meni</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ime_menija</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html_razred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moznosti</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><span class="pre">IDTerIme</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#izpitni_roki.naredi_html.naredi_spustni_meni" title="Permalink to this definition"></a></dt>
+<dd><p>Naredi enonivojski spustni meni.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ime_menija</strong> – napis na gumbu</p></li>
+<li><p><strong>html_razred</strong> – razred, ki ga dodatmo v <code class="docutils literal notranslate"><span class="pre">class</span></code> atribut vseh možnosti</p></li>
+<li><p><strong>moznosti</strong> – Urejen seznam moznosti.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>str(html predloga enonivojski spustni meni)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.naredi_html.naredi_spustni_meni_po_crkah">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.naredi_html.</span></span><span class="sig-name descname"><span class="pre">naredi_spustni_meni_po_crkah</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ime_menija</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html_razred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moznosti</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.IDTerIme" title="izpitni_roki.osnovno.IDTerIme"><span class="pre">IDTerIme</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#izpitni_roki.naredi_html.naredi_spustni_meni_po_crkah" title="Permalink to this definition"></a></dt>
+<dd><p>Naredi dvonivojski spustni meni.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ime_menija</strong> – napis na gumbu</p></li>
+<li><p><strong>html_razred</strong> – razred, ki ga dodatmo v <code class="docutils literal notranslate"><span class="pre">class</span></code> atribut vseh možnosti</p></li>
+<li><p><strong>moznosti</strong> – Urejen seznam moznosti.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>str(html predloga za dvonivojski spustni meni)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="izpitni_roki.naredi_html.naredi_tabelo">
+<span class="sig-prename descclassname"><span class="pre">izpitni_roki.naredi_html.</span></span><span class="sig-name descname"><span class="pre">naredi_tabelo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">koledarji</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#izpitni_roki.osnovno.Koledar" title="izpitni_roki.osnovno.Koledar"><span class="pre">Koledar</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#izpitni_roki.naredi_html.naredi_tabelo" title="Permalink to this definition"></a></dt>
+<dd><p>Html koda za tabelo vseh izpitnih rokov</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>koledarji</strong> – seznam objektov Koledar</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>str(html predloga za tabelo)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Izpitni roki’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Matej Petković.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
