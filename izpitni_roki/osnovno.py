@@ -266,7 +266,8 @@ class IzpitniRok:
 
     def prikazi_izvajalce(self):
         """
-        Lepo prikaže izvajalce v skladu z :meth:`izpitni_roki.osnovno.IzpitniRok._prikazi_neprazen_seznam`
+        Lepo prikaže izvajalce v skladu z
+        :meth:`izpitni_roki.osnovno.IzpitniRok._prikazi_neprazen_seznam`
 
         :return: npr. ``"Ana, Beno in Cene"``
 
@@ -391,4 +392,3 @@ def naredi_zapisnikarja(name):
     logger.addHandler(ch)
     logger.setLevel(logging.INFO)
     return logger
-
