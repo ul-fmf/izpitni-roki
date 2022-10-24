@@ -1,6 +1,6 @@
 import re
 import logging
-from typing import List, Type, Union, Dict, Tuple
+from typing import List, Type, Union
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -147,13 +147,21 @@ class Obdobje(IDTerIme):
 
     @staticmethod
     def doloci_obdobje(datum: datetime, obdobja: List['Obdobje']) -> 'Obdobje':
+        """
+        Najde obdobje, v katero spada dani datum.
+
+        :param datum: neki datum
+        :param obdobja: seznam izpitnih obdobij
+        :return: obdobje, v katerega spada datum. Če takega obdobja ni, potem vrnemo OBDOBJE_IZVEN.
+        """
         for obdobje in obdobja:
             if obdobje.zacetek <= datum <= obdobje.konec:
                 return obdobje
         return OBDOBJE_IZVEN
 
 
-# daj ga nekam v prihodnost
+# Obdobje, ki ga uporabimo za roke izven uradnih izpitnih obdobij. Mora biti v prihodnosti,
+# zato bo treba čez slabih 1000 let kodo popraviti.
 OBDOBJE_IZVEN = Obdobje("izven izpitnih obdobij", datetime(3000, 1, 1), datetime(3000, 1, 1))
 
 
@@ -341,7 +349,7 @@ class HtmlPredloga:
 
         :return:
 
-        :raises: ValueError, če podani kwarg in med ključi v predlogi.
+        :raises: ValueError, če katerih od podanih kwargov ni med ključi v predlogi.
 
         """
         for kljuc, vrednost in kwargs.items():

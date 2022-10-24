@@ -13,7 +13,7 @@ naredi_html(
         "zimsko": (datetime(2022, 1, 15), datetime(2022, 2, 15)),
         "letno": (datetime(2022, 6, 15), datetime(2022, 7, 15)),
         "jesensko": (datetime(2022, 8, 15), datetime(2022, 9, 6))
-    }
-
-
+    },
+    oblika_summary=None,
+    oblika_datum=None
 )

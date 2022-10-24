@@ -17,6 +17,11 @@ from izpitni_roki.osnovno import (
 
 LOGGER = naredi_zapisnikarja(__file__)
 
+OBLIKA_SUMMARY = r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \
+                 r"(?P<letnik>[^ ]+) letnik\\, " \
+                 r"?(?P<izvajalci>([^\\]+\\, ?)+)" \
+                 r"(?P<rok>\d+\.) rok ?$"
+
 
 def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict[str, str], str]:
     """
@@ -63,37 +68,43 @@ def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict
     return {n: pari[n] for n in nujni_kljuci}, "\n".join(vrstice)
 
 
-def sprocesiraj_dogodek(vrstice: List[str], obdobja: List[Obdobje]) -> IzpitniRok:
+def sprocesiraj_dogodek(
+        vrstice: List[str],
+        obdobja: List[Obdobje],
+        oblika_summary: Optional[str],
+        oblika_datum: Optional[str]
+) -> IzpitniRok:
     """
     Iz vrstic dogodka ustvari izpitni rok.
 
-    Branje je bolj kot ne neposredno, le s poljem ``SUMMARY`` je nekaj dela, saj je njegova oblika
-    (po odstranitvi prelomov vrstic)
-
-    .. code-block:: python
-
-        r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \\
-        r"(?P<letnik>[^ ]+) letnik\\, " \\
-        r"?(?P<izvajalci>([^\\]+\\, ?)+)" \\
-        r"(?P<rok>\d+\.) rok ?$"
-
-    Prave oblike je npr.
+    Branje je bolj kot ne neposredno, le s poljem ``SUMMARY`` je nekaj dela, saj je njegova
+    vsebina npr.
 
     .. code-block:: text
 
         Uvod v junaštva (Smer1\, Smer2\, Smer3)\, prvi letnik\,
          Klepec Peter\, Krpan Martin\, Kekec Kekec\, 3. rok
 
-    (prelom za vejico smo dodali zaradi berljivosti: sledi ji presledek v naslednji vrsti)
+    (prelom za vejico smo dodali zaradi berljivosti: sledi ji presledek v naslednji vrsti).
 
-    Oblika datumov (pri ``DTSTART;VALUE=DATE``) mora biti ``%Y%m%d``, npr. ``20231225``
-    za 25. 12. 2023.
+    Če oblika datumov (pri ``DTSTART;VALUE=DATE``) ni ``%Y%m%d``
+    (npr. ``20231225`` za 25. 12. 2023), jo je treba podati.
 
     :param vrstice: surove vrstice, kot jih preberemo v ics datoteki. Opisujejo
         koledar ali dogodek, v njih nista prisotna začena in končna vrstica
         (``[BEGIN oz. END]:VEVENT``). Nujno morata biti v njih prisotna ključa
         ``SUMARY`` in ``DTSTART;VALUE=DATE``.
     :param obdobja: seznam izpitnih obdobij
+    :param oblika_summary: regularni izraz, ki mu zadošča vrednost polja ``SUMMARY``.
+        Vsebovati mora iste poimenovane, kot jih (prednastavljena)
+        .. code-block::python
+
+            r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \\
+            r"(?P<letnik>[^ ]+) letnik\\, " \\
+            r"?(?P<izvajalci>([^\\]+\\, ?)+)" \\
+            r"(?P<rok>\d+\.) rok ?$"
+
+    :param oblika_datum: pythonov format za datum, npr. ``%Y%m%d``
 
     :return: IzpitniRok, ki ga opisujejo vrstice
 
@@ -109,14 +120,18 @@ def sprocesiraj_dogodek(vrstice: List[str], obdobja: List[Obdobje]) -> IzpitniRo
                 map(lambda kos: kos.strip(), niz.split("\\,"))
             )
         )
+    if oblika_summary is None:
+        pricakovana_oblika = OBLIKA_SUMMARY
+    else:
+        pricakovana_oblika = oblika_summary
+    if oblika_datum is None:
+        oblika_datum = "%Y%m%d"
+
     zacetek = "DTSTART;VALUE=DATE"
     povzetek = "SUMMARY"
     vrednosti, ics_raw = preberi_vrednosti(vrstice, [zacetek, povzetek])
-    datum = datetime.strptime(vrednosti[zacetek], "%Y%m%d")
-    pricakovana_oblika = r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \
-                         r"(?P<letnik>[^ ]+) letnik\\, " \
-                         r"?(?P<izvajalci>([^\\]+\\, ?)+)" \
-                         r"(?P<rok>\d+\.) rok ?$"
+    datum = datetime.strptime(vrednosti[zacetek], oblika_datum)
+
     izpit = re.match(pricakovana_oblika, vrednosti[povzetek])
     if izpit is None:
         raise ValueError(f"'{vrednosti[povzetek]}' ni izraz oblike {pricakovana_oblika}")
@@ -155,7 +170,12 @@ def naredi_koledar(meta_vrstice_koledarja: List[str], izpitni_roki: List[Izpitni
     return Koledar(smer, izpitni_roki, ics_vrstice)
 
 
-def nalozi_ics(pot: str, obdobja: List[Obdobje]) -> Koledar:
+def nalozi_ics(
+        pot: str,
+        obdobja: List[Obdobje],
+        oblika_summary: Optional[str],
+        oblika_datum: Optional[str]
+) -> Koledar:
     """
     Naloži ics datoteko v Koledar. Pričakovana oblika vsebine datoteke je
 
@@ -195,6 +215,8 @@ def nalozi_ics(pot: str, obdobja: List[Obdobje]) -> Koledar:
     :param pot: pot do ics datoteke
     :param obdobja: seznam izpitnih obdobij. Izpitni roki, ki so izven vseh,
         bodo v posebni kategoriji.
+    :param oblika_summary: regularni izraz, ki naj mu zadošča polje ``SUMMARY`` v datoteki
+    :param oblika_datum: pythonov format za datum (npr. ``%Y%m%D``).
 
     :return: Koledar, ki vsebuje vse dogodke v ics datoteki.
     """
@@ -211,7 +233,9 @@ def nalozi_ics(pot: str, obdobja: List[Obdobje]) -> Koledar:
                 v_dogodku = True
                 n_rokov += 1
             elif vrsta.startswith("END:VEVENT"):
-                izpiti.append(sprocesiraj_dogodek(vrstice_dogodka, obdobja))
+                izpiti.append(
+                    sprocesiraj_dogodek(vrstice_dogodka, obdobja, oblika_summary, oblika_datum)
+                )
                 vrstice_dogodka = []
                 v_dogodku = False
             elif vrsta.startswith("BEGIN:VCALENDAR"):

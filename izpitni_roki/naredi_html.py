@@ -8,7 +8,7 @@ from izpitni_roki.osnovno import (
     Obdobje
 )
 from izpitni_roki.nalozi_ics import nalozi_ics
-from typing import List, Callable, Dict, Tuple
+from typing import List, Callable, Dict, Tuple, Optional
 from datetime import datetime
 
 
@@ -51,7 +51,7 @@ def najdi_vse_letnike(koledarji: List[Koledar]) -> List[IDTerIme]:
     """
     Najdemo vse letnike, ki se pojavijo v izpiznih rokih v koledarju.
 
-    :param letniki: seznam koledarjev
+    :param koledarji: seznam koledarjev
 
     :return: (urejeni) letniki (brez ponovitev)
     """
@@ -221,7 +221,9 @@ def naredi_html(
         poti_do_koledarjev: List[str],
         naslov: str = "Naslov strani",
         opis_strani: str = "Opis strani",
-        obdobja: Dict[str, Tuple[datetime, datetime]] = None
+        obdobja: Dict[str, Tuple[datetime, datetime]] = None,
+        oblika_summary: Optional[str] = None,
+        oblika_datum: Optional[str] = None
 ):
     """
     Naredi celotno spletno stran.
@@ -246,8 +248,11 @@ def naredi_html(
         ``{"zimsko izpitno obdobje": (datetime(2022, 1, 15), datetime(2022, 2, 15), ...}``.
         Izpiti, ki ne bodo padli v nobeno od naštetih obdobij, bodo imeli kategorijo
         ``izven izpitnega obdobja``.
+    :param oblika_summary: regularni izraz, ki mu zadošča polje ``SUMMARY`` v ics datoteki.
+    :param oblika_datum: format datuma (npr. ``%Y%m%D``), ki mu zadošča polje
+        ``DTSTART;VALUE=DATE``.
 
-    :return: Ne vrne ničesar, se pa str(predloga za stran) pojavi v izhodni mapi.
+    :return: Ne vrne ničesar, se pa str(predloga za stran) pojavi v izhodni mapi ``out``.
     """
     if obdobja is None:
         ZAPISNIKAR.warning("Izpitna obdobja niso nastavljena, vsi izpiti bodo torej izven njih.")
@@ -256,7 +261,9 @@ def naredi_html(
     for ime_obdobja, (zacetek, konec) in obdobja.items():
         seznam_obdobij.append(Obdobje(ime_obdobja, zacetek, konec))
 
-    koledarji = [nalozi_ics(pot, seznam_obdobij) for pot in poti_do_koledarjev]
+    koledarji = [
+        nalozi_ics(pot, seznam_obdobij, oblika_summary, oblika_datum) for pot in poti_do_koledarjev
+    ]
     vsi_programi = najdi_vse_programe(koledarji)
     vsi_letniki = najdi_vse_letnike(koledarji)
     vsi_roki = najdi_vse_roke(koledarji)
