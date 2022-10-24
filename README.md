@@ -4,4 +4,4 @@ Koda, ki zgenerira spletno stran z izpitnimi roki. Morda nekoč tudi koda, ki bo
 
 # Dokumentacija
 
-je dostopna na naslovu 
+je dostopna [tukaj](https://ul-fmf.github.io/izpitni-roki/).
