@@ -15,11 +15,6 @@ jobs:
     - name: Sphinx build
       run: |
         sphinx-build docs _build
-        echo "root files"
-        ls
-        cd _build
-        echo "build files:"
-        ls
     - uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: _build
