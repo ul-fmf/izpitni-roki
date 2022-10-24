@@ -12,7 +12,7 @@ za kar se opravičujemo.
 Uporaba
 =======
 
-Uporaba kode,ki se skriva na repozitoriju, je prikazana spodaj::
+Uporaba kode, ki se skriva na repozitoriju, je prikazana spodaj::
 
    from izpitni_roki.naredi_html import naredi_html
    from datetime import datetime
