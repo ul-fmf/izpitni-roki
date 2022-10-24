@@ -1,4 +1,4 @@
-name: CreatePages
+name: CreatePagesAndDeploy
 on: 
 - push
 - pull_request
