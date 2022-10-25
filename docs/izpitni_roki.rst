@@ -30,9 +30,21 @@ vsebino shranijo v objekt tipa :meth:`izpitni_roki.osnovno.Koledar`.
 izpitni\_roki.naredi\_html
 --------------------------
 
-V tej datoteki so funkcije, ki ustvarijo html stran.
+V tej datoteki so funkcije, ki ustvarijo html stran oz. njene kose (npr. en spustni meni ali pa eno tabelo).
 
 .. automodule:: izpitni_roki.naredi_html
    :members:
    :undoc-members:
+   :show-inheritance:
+
+izpitni\_roki.glasbene\_zelje
+-----------------------------
+
+V tej datoteki so razne funkcije, ki niso neposredno uporabljene za gradnjo spletnih strani
+in služijo zelo ozkemu namenu, npr. obveščanju tajništva FRI, kdaj se piše Topologijo,
+zato so namensko opisane le izbrane funkcije.
+
+
+.. automodule:: izpitni_roki.glasbene_zelje
+   :members:
    :show-inheritance:

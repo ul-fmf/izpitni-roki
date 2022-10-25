@@ -344,8 +344,18 @@ class IzpitniRok:
         return IzpitniRok._prikazi_neprazen_seznam(self.izvajalci)
 
     def prilagodi_ics_opis(self) -> str:
+        """
+        Spremeni surove ics vrstice v eno samo samo, tako da znake za novo vrsto nadomesti
+        z ``@@@@`` in odstrani morebitno pojavitev ``ni smeri``.
+
+        :return: niz, ki ga dobimo po zgornjem postopku iz ``self.ics_vrstice``
+
+        """
         ena_vrsta = self.ics_vrstice.replace("\n", "@@@@")
         return re.sub("(\\\\, ?)?ni smeri", "", ena_vrsta)
+
+    def osnovni_opis(self) -> str:
+        return f"{self.prikazi_datum()}, {self.predmet}"
 
 
 @dataclass

@@ -1,7 +1,9 @@
 from izpitni_roki.naredi_html import naredi_html
 from datetime import datetime
+from izpitni_roki.glasbene_zelje import prikazi_isrm_roke
 
 
+# Ustvari spletno stran iz testnih podatkov
 naredi_html(
     ["data/test1.ics", "data/test2.ics"],
     naslov="Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2022/23",
@@ -17,3 +19,7 @@ naredi_html(
     oblika_summary=None,
     oblika_datum=None
 )
+
+
+# Glasbene želje
+prikazi_isrm_roke(["data/1FiMa2122.ics", "data/1Mate2PeMa2122.ics", "data/1PrMa2122.ics"])
