@@ -33,3 +33,11 @@
 .dropdown-menu > li:hover > .dropdown-submenu {
     display: block;
 }
+
+.vrstica-gumbov {
+    margin-top: -5px;
+}
+
+.gumb-v-vrsti {
+    margin-top: 5px;
+}
