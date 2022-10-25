@@ -277,7 +277,6 @@ def naredi_html(
     meniji = "\n\n".join(
         [
             meni_programi, meni_letniki, meni_obdobja, meni_predmeti, meni_izvajalci, meni_roki,
-
             str(HtmlPredloga("prenos"))
          ]
     )

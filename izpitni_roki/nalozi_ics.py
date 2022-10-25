@@ -277,17 +277,20 @@ def nalozi_ics(
     izpiti: List[IzpitniRok] = []
     koledar: Optional[Koledar] = None
     n_rokov = 0
+    n_ignoriranih = 0
     with open(pot, encoding="utf-8") as f:
         for vrsta in f:
             if vrsta.startswith("BEGIN:VEVENT"):
                 v_dogodku = True
                 n_rokov += 1
             elif vrsta.startswith("END:VEVENT"):
-                izpiti.append(
-                    sprocesiraj_dogodek(
-                        vrstice_dogodka, seznam_obdobij, oblika_summary, oblika_datum
-                    )
+                izpit = sprocesiraj_dogodek(
+                    vrstice_dogodka, seznam_obdobij, oblika_summary, oblika_datum
                 )
+                if not izpit.ignoriraj():
+                    izpiti.append(izpit)
+                else:
+                    n_ignoriranih += 1
                 vrstice_dogodka = []
                 v_dogodku = False
             elif vrsta.startswith("BEGIN:VCALENDAR"):
@@ -301,7 +304,7 @@ def nalozi_ics(
                 vrstice_koledarja.append(vrsta.replace("\n", ""))
     if koledar is None:
         raise ValueError(f"Koledar ni bil ustvarjen pri branu iz {pot}")
-    elif len(koledar.izpitni_roki) != n_rokov:
+    elif len(koledar.izpitni_roki) + n_ignoriranih != n_rokov:
         raise ValueError(
             f"Število prebranih rokov ({len(koledar.izpitni_roki)}) se "
             f"ne ujema s številom rokov v datoteki ({n_rokov})."

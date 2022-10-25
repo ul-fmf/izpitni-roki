@@ -355,7 +355,21 @@ class IzpitniRok:
         return re.sub("(\\\\, ?)?ni smeri", "", ena_vrsta)
 
     def osnovni_opis(self) -> str:
+        """
+        Vrne poenostavljen prikaz izpitnega roka (datum in predmet).
+
+        :return: Za izpitni rok Topologije, ki se zgodi 25. 10. 2022, bomo dobili
+            ``"25. oktober 2022 (torek), Topologija"``
+        """
         return f"{self.prikazi_datum()}, {self.predmet}"
+
+    def ignoriraj(self) -> bool:
+        """
+        Pove, ali je treba rok ignorirati.
+
+        :return: ime predmeta se začne z zvezdico
+        """
+        return self.predmet.ime.startswith("*")
 
 
 @dataclass
