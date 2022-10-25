@@ -25,13 +25,13 @@ IZBIRNI_PREDMETI_TUDI_ZA_ISRM = [
 
 def ustrezni_izpitni_roki(
         koledarji: List[Koledar],
-        filter: Callable[[IzpitniRok], bool]
+        pogoj: Callable[[IzpitniRok], bool]
 ) -> List[IzpitniRok]:
     """
     Vrne roke v koledarjih, ki ustrezajo filtrirnemu pogoju.
 
     :param koledarji: seznam koledarjev
-    :param filter: funkcija, ki oceni primernost roka
+    :param pogoj: funkcija, ki oceni primernost roka
 
     :return: urejen seznam ustreznih rokov
     """
@@ -39,7 +39,7 @@ def ustrezni_izpitni_roki(
     ustrezni_roki = []
     for koledar in koledarji:
         for izpitni_rok in koledar.izpitni_roki:
-            if filter(izpitni_rok):
+            if pogoj(izpitni_rok):
                 ustrezni_roki.append(izpitni_rok)
     ustrezni_roki.sort()
     return ustrezni_roki
@@ -55,7 +55,7 @@ def _filter_za_isrm(rok: IzpitniRok):
 def prikazi_isrm_roke(poti_do_ics: List[str]):
     """
     Prikaže roke za predmete, ki jih ponujamo IŠRM. Izda opozorilo, če za kakšnega od predmetov
-    ni bil najden noben rok
+    ni bil najden noben rok.
 
     :param poti_do_ics: poti do ics datotek
     :return: ne vrne ničesar, samo izpiše ustrezne vrstice
@@ -77,5 +77,3 @@ def prikazi_isrm_roke(poti_do_ics: List[str]):
     izgubljeni = list(filter(lambda p: not najdeni[p], najdeni))
     for par in izgubljeni:
         ZAPISNIKAR.warning(f"Za {par} nismo našli nobenega izpitnega roka.")
-
-

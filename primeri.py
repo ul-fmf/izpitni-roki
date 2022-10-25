@@ -6,11 +6,11 @@ from izpitni_roki.glasbene_zelje import prikazi_isrm_roke
 # Ustvari spletno stran iz testnih podatkov
 naredi_html(
     ["data/test1.ics", "data/test2.ics"],
-    naslov="Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2022/23",
+    naslov="Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2021/22",
     opis_strani="Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa),"
     " Matematika (1Mate) in Praktična matematika (1PrMa) in "
     "prvih treh letnikih programa Pedagoška matematika (2PeMa) "
-    "na Oddelku za matematiko FMF v študijskem letu 2022/23, ki zadoščajo izbranim kriterijem.",
+    "na Oddelku za matematiko FMF v študijskem letu 2021/22, ki zadoščajo izbranim kriterijem.",
     obdobja={
         "zimsko": (datetime(2022, 1, 15), datetime(2022, 2, 15)),
         "letno": (datetime(2022, 6, 15), datetime(2022, 7, 15)),
@@ -22,4 +22,4 @@ naredi_html(
 
 
 # Glasbene želje
-prikazi_isrm_roke(["data/1FiMa2122.ics", "data/1Mate2PeMa2122.ics", "data/1PrMa2122.ics"])
+prikazi_isrm_roke(["data/1FiMa2223.ics", "data/1Mate2PeMa2223.ics", "data/1PrMa2223.ics"])
