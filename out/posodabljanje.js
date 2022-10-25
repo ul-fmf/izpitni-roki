@@ -1,5 +1,7 @@
 const ODSTRANI_VSE = "Odstrani vse";
+const ODSTRANI_VSA = "Odstrani vsa";
 const IZBERI_VSE = "Izberi vse";
+const IZBERI_VSA = "Izberi vsa";
 
 $(document).on('click', '.allow-focus', function (e) {
   e.stopPropagation();
@@ -39,12 +41,22 @@ $(".opcija").on("click", function() {
 $(".group-choice").on("click", function() {
     const razred = $(this).attr("data-group");
     const pikaRazred = "." + razred;
-    if ($(this).text() === ODSTRANI_VSE){
+    const trenutniNapis = $(this).text();
+    if (trenutniNapis === ODSTRANI_VSE || trenutniNapis === ODSTRANI_VSA){
         $(pikaRazred).removeClass("active");
-        $(this).text(IZBERI_VSE);
+        if (trenutniNapis === ODSTRANI_VSE){
+            $(this).text(IZBERI_VSE);
+        } else {
+            $(this).text(IZBERI_VSA);
+        }
+
     } else {
         $(pikaRazred).addClass("active");
-        $(this).text(ODSTRANI_VSE);
+        if (trenutniNapis === IZBERI_VSE){
+            $(this).text(ODSTRANI_VSE);
+        } else {
+            $(this).text(ODSTRANI_VSA);
+        }
     }
     posodobiGrupnoIzbiro(razred);
     posodobiTabeloIzbranih();
@@ -87,8 +99,16 @@ function posodobiGrupnoIzbiro(razred) {
     const nAktivni = vsi.filter(".active").length;
     const gumbID = "#gumb_" + razred;
     const grupaID = "#grupa_" + razred;
+    const srednjiSpol = $(grupaID).text().endsWith("a");
     if (nAktivni > 0){
-        $(grupaID).text(ODSTRANI_VSE);
+        if (srednjiSpol){
+            // Odstrani/dodaj vsa
+            $(grupaID).text(ODSTRANI_VSA);
+        } else {
+            // ... vse
+            $(grupaID).text(ODSTRANI_VSE);
+        }
+
         $(gumbID).removeClass("btn-secondary");
         if (nAktivni < nVsi){
             $(gumbID).removeClass("btn-success");
@@ -98,7 +118,11 @@ function posodobiGrupnoIzbiro(razred) {
             $(gumbID).addClass("btn-success");
         }
     } else{
-        $(grupaID).text(IZBERI_VSE);
+        if (srednjiSpol){
+            $(grupaID).text(IZBERI_VSA);
+        } else {
+            $(grupaID).text(IZBERI_VSE);
+        }
         $(gumbID).removeClass("btn-success");
         $(gumbID).removeClass("btn-warning");
         $(gumbID).addClass("btn-secondary");
