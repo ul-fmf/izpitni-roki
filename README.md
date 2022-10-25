@@ -12,8 +12,7 @@ Na osnovni strani projekta (`https://github.com/ul-fmf/izpitni-roki`) kliknite n
 npr. v ukazni vrstici:
 
 ```
-> git clone https://github.com/ul-fmf/izpitni-roki
+> git clone https://github.com/ul-fmf/izpitni-roki.git
 ```
 
-Če se ne da, si lahko kodo prenesete tudi kot `zip` arhiv, a v tem primeru velja enako opozorilo kot na strani z izpiti: morebitne kasnejše spremembe kode tukaj,
-se v vaši osebni kopiji ne bodo poznale, prav tako pa ne boste mogli tu objaviti svojih izboljšav ;)
+Če se ne da, si lahko kodo prenesete tudi kot `zip` arhiv, a v tem primeru velja enako opozorilo kot na strani z izpiti: morebitne kasnejše spremembe kode na tem repozitoriju se v vaši osebni kopiji ne bodo poznale, prav tako pa ne boste mogli tu objaviti svojih izboljšav ;)
