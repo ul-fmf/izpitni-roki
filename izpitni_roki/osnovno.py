@@ -80,9 +80,11 @@ class IDTerIme:
         """
         Uporabimo za urejanje po abecedi, ki vsebuje neangleške črke (č, ć, đ, š, ž).
 
-        :return: normalizirana oblika imena, npr. ``Šečđežeć`` se normalizira v ``sseccddezzeccc``
+        :return: normalizirana oblika imena, npr. ``Šečđežeć`` se normalizira v ``s{ec{d{ez{ec{{``,
+            saj je znak ``{`` tik za znakom ``z``.
+
         """
-        posebni = {"č": "cc", "ć": "ccc", "đ": "dd", "š": "ss", "ž": "zz"}
+        posebni = {"č": "c{", "ć": "c{{", "đ": "d{", "š": "s{", "ž": "z{"}
         return "".join(
             [crka if crka not in posebni else posebni[crka] for crka in self.ime.lower()]
         )
