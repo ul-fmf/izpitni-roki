@@ -137,7 +137,22 @@ class Predmet(IDTerIme):
 
 
 class Program(IDTerIme):
-    pass
+    LEPSE_OBLIKE = {
+        "1FiMa": "Finančna matematika",
+        "1PrMa": "Praktična matematika",
+        "2PeMa": "Pedagoška matematika",
+        "1Mate": "Matematika"
+    }
+
+    def __str__(self):
+        if self.ime in Program.LEPSE_OBLIKE:
+            return Program.LEPSE_OBLIKE[self.ime]
+        else:
+            ZAPISNIKAR.warning(
+                f"Program '{self.ime}' bo prikazan tako, kot piše tu. "
+                f"Lepše oblike poznam le za {sorted(Program.LEPSE_OBLIKE)}"
+            )
+            return self.ime
 
 
 class Letnik(IDTerIme):
