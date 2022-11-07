@@ -4,8 +4,7 @@ from izpitni_roki.osnovno import (
     IzpitniRok,
     Koledar,
     HtmlPredloga,
-    IDTerIme,
-    Obdobje
+    IDTerIme
 )
 from izpitni_roki.nalozi_ics import nalozi_ics
 from typing import List, Callable, Dict, Tuple, Optional
@@ -55,7 +54,7 @@ def najdi_vse_letnike(koledarji: List[Koledar]) -> List[IDTerIme]:
 
     :return: (urejeni) letniki (brez ponovitev)
     """
-    return najdi_vse(koledarji, lambda rok: [rok.letnik])
+    return najdi_vse(koledarji, lambda rok: rok.letniki)
 
 
 def najdi_vse_roke(koledarji: List[Koledar]) -> List[IDTerIme]:

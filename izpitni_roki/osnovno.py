@@ -177,6 +177,9 @@ class Letnik(IDTerIme):
         else:
             raise ValueError(f"IDTerIme ni primerljiv z {type(other).__name__}")
 
+    def __str__(self):
+        return f"{Letnik.DOVOLJENI_LETNIKI[self.ime]}."
+
 
 class Rok(IDTerIme):
     pass
@@ -251,31 +254,49 @@ class Obdobje(IDTerIme):
 OBDOBJE_IZVEN = Obdobje("izven izpitnih obdobij", datetime(3000, 1, 1), datetime(3000, 1, 1))
 
 
-@dataclass
 class IzpitniRok:
-    """Osnovne informacije o izpitnem roku"""
-    datum: datetime
+    """Osnovne informacije o izpitnem roku. Ta je opisan s predmetom, seznamom
+    programov, seznamom pripadajočih letnikov (oba sta enako dolga), rokom (prvi, drugi ...),
+    seznamom izvajalcev in izpitnim obdobjem.
+    """
+    def __init__(
+            self,
+            datum: datetime,
+            predmet: Predmet,
+            programi: List[Program],
+            letnik_i: Union[Letnik, List[Letnik]],
+            rok: Rok,
+            izvajalci: List[Izvajalec],
+            obdobje: Obdobje,
+            ics_vrstice: str
+    ):
+        self.datum: datetime = datum
 
-    predmet: Predmet
-    programi: List[Program]
-    letnik: Letnik
-    rok: Rok
-    izvajalci: List[Izvajalec]
-    obdobje: Obdobje
+        self.predmet: Predmet = predmet
+        self.programi: List[Program] = programi
+        if isinstance(letnik_i, Letnik):
+            self.letniki = [letnik_i for _ in self.programi]
+        else:
+            self.letniki = letnik_i
+        self.rok: Rok = rok
+        self.izvajalci: List[Izvajalec] = izvajalci
+        self.obdobje: Obdobje = obdobje
 
-    ics_vrstice: str
+        self.ics_vrstice: str = ics_vrstice
 
     def preveri(self):
         """
-        Preveri, ali so vsa polja neprazna.
+        Preveri, ali so vsa polja neprazna, in ali so programi in letniki enako dolgi
 
         :return:
 
-        :raises: ValueError, če je katero od polj prazno
+        :raises: ValueError, če je kateri od pogojev kršen
         """
         for kljuc, vrednost in self.__dict__.items():
             if not vrednost:
                 raise ValueError(f"Atribut {kljuc} je prazen v {self}")
+        if len(self.programi) != len(self.letniki):
+            raise ValueError(f"Seznama programov in letnikov za {self} nista enako dolga.")
 
     def _terica(self):
         return tuple(self.__dict__.values())
@@ -305,6 +326,10 @@ class IzpitniRok:
         oblikovan_datum = self.datum.strftime(f"{self.datum.day}. {mesec} {self.datum.year}")
         return f"{oblikovan_datum} ({dan})"
 
+    @staticmethod
+    def _id_seznama(seznam: List[IDTerIme]):
+        return "x".join(map(lambda s: s.id, seznam))
+
     def id(self) -> str:
         """
         Iz id-jev polj tega objekta ustvari id tega objekta. Vsebuje le knjižnici `jQuery` prijazne
@@ -315,12 +340,12 @@ class IzpitniRok:
             so id-ji elementov danega seznama, ločeni z ``x``.
         """
         id_predmet = self.predmet.id
-        id_programi = "x".join(map(lambda p: p.id, self.programi))
-        id_letnik = self.letnik.id
+        id_programi = IzpitniRok._id_seznama(self.programi)
+        id_letniki = IzpitniRok._id_seznama(self.letniki)
         id_rok = self.rok.id
-        id_izvajalci = "x".join(map(lambda i: i.id, self.izvajalci))
+        id_izvajalci = IzpitniRok._id_seznama(self.izvajalci)
         id_obdobje = self.obdobje.id
-        return "_".join([id_predmet, id_programi, id_letnik, id_rok, id_izvajalci, id_obdobje])
+        return "_".join([id_predmet, id_programi, id_letniki, id_rok, id_izvajalci, id_obdobje])
 
     @staticmethod
     def _prikazi_neprazen_seznam(seznam: List[IDTerIme]):
@@ -343,12 +368,21 @@ class IzpitniRok:
 
     def prikazi_smer_in_letnik(self):
         """
-        Prikaže smer(i) ter letnik v lepo berljivi obliki.
+        Prikaže smer(i) ter letnik(e) v lepo berljivi obliki.
 
-        :return: npr. ``"1FiMa, 2PeMa (3. letnik)"``
+        :return: npr.
+
+        .. code-block:: html
+
+            <b>Finančna matematika</b>, 3. letnik<br>
+            <b>Matematika</b>, 3. letnik<br>
+            <b>Pedagoška matematika</b>, 2. letnik
+
         """
-        prikaz_smeri = IzpitniRok._prikazi_neprazen_seznam(self.programi)
-        return f"{prikaz_smeri} ({self.letnik} letnik)"
+        vrstice = []
+        for program, letnik in zip(self.programi, self.letniki):
+            vrstice.append(f"<b>{program}</b>, {letnik} letnik")
+        return "<br>".join(vrstice)
 
     def prikazi_izvajalce(self):
         """
@@ -358,7 +392,7 @@ class IzpitniRok:
         :return: npr. ``"Ana, Beno in Cene"``
 
         """
-        return IzpitniRok._prikazi_neprazen_seznam(self.izvajalci)
+        return "<br>".join(map(str, self.izvajalci))
 
     def prilagodi_ics_opis(self) -> str:
         """
