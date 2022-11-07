@@ -1,0 +1,19 @@
+Elementarna geometrija,1Mate,2PeMa
+Programiranje 1,1FiMa,1Mate,2PeMa
+Podatkovne strukture in algoritmi 1,1FiMa,1Mate
+Teorija iger,1FiMa,1Mate
+Diskretna matematika 1,1FiMa,1Mate in 2PeMa
+Računalniški praktikum,1FiMa,1Mate in 2PeMa,1PrMa
+Splošna topologija,1FiMa,1Mate in 2PeMa
+Uvod v diferencialno geometrijo,1FiMa,1Mate in 2PeMa
+Diskretna matematika 2,1FiMa,1Mate
+Slučajni procesi 1,1FiMa,1Mate
+Algebra 3,1FiMa,1Mate in 2PeMa
+Algebraične krivulje,1FiMa,1Mate,2PeMa
+Teorija kodiranja in kriptografija,1FiMa,1Mate in 2PeMa
+Astronomija,2PeMa,2PeMa
+Podatkovne strukture in algoritmi 2,1FiMa,1Mate
+Algebra 2,1FiMa,1Mate in 2PeMa
+Finančna matematika 1,1FiMa,1Mate in 2PeMa
+Uvod v geometrijsko topologijo,1FiMa,1Mate,2PeMa
+Afina in projektivna geometrija,1FiMa,1Mate in 2PeMa

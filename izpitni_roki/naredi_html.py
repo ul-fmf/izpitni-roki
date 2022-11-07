@@ -1,4 +1,5 @@
 import os
+import re
 from izpitni_roki.osnovno import (
     naredi_zapisnikarja,
     IzpitniRok,
@@ -14,6 +15,29 @@ from datetime import datetime
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
 CRKE = "ABCČDEFGHIJKLMNOPRSŠTUVZŽ"
 IZDODNA_MAPA = "out"
+
+
+def nalozi_predmete_za_zduzevanje() -> Dict[str, List[str]]:
+    """
+    Naloži datoteko, ki opisuje, katere predmete je treba združiti. Izkaže se, da ni važno,
+    ali je predmet voden ločeno ali ne, mi samo združimo :)
+
+    :return: slovar, ki ima za ključe imena predmetov, in za vrednosti imena programov
+    """
+    predmet_smeri = {}
+    with open("zdruzi.txt", encoding="utf-8") as f:
+        for vrsta in f:
+            i = vrsta.find(",")
+            predmet = vrsta[:i].strip()
+            smeri = re.split(",| ?in ?", vrsta[i + 1:])
+            assert predmet not in predmet_smeri
+            predmet_smeri[predmet] = [smer.strip() for smer in smeri]
+    return predmet_smeri
+
+
+def zdruzi_roke(koledarji: List[Koledar]):
+    # TODO
+    pass
 
 
 def najdi_vse(
