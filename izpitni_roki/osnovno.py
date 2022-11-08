@@ -307,6 +307,39 @@ class IzpitniRok:
         else:
             raise ValueError(f"IzpitniRok ni primerljiv z {type(other).__name__}")
 
+    def __repr__(self):
+        return f"IzpitniRok(" \
+               f"{self.datum}, {self.predmet}, {self.programi}, " \
+               f"{self.letniki}, {self.rok}, {self.izvajalci}, " \
+               f"{self.obdobje}, {self.ics_vrstice}" \
+               f")"
+
+    def _ics_summary(self):
+        smeri_in_letniki = "\\, ".join(
+            map(
+                lambda par: f"{par[0].ime} - {par[1]} letnik",
+                zip(self.programi, self.letniki)
+            )
+        )
+        izvajalci = "\\, ".join(map(str, self.izvajalci))
+        return f"{self.predmet} ({smeri_in_letniki})\\, {izvajalci}\\, {self.rok} rok"
+
+    @property
+    def ics_vrstice(self):
+        def menjalec(m):
+            return "SUMMARY:" + self._ics_summary() + "@@@@" + m.group(1)
+
+        return re.sub("SUMMARY:.+?@@@@([^ ])", menjalec, self._ics_vrstice)
+
+    @ics_vrstice.setter
+    def ics_vrstice(self, vrednost: str):
+        """
+        Spremeni surove ics vrstice v eno samo samo, tako da znake za novo vrsto nadomesti
+        z ``@@@@`` in odstrani morebitno pojavitev ``ni smeri``.
+        """
+        ena_vrsta = vrednost.replace("\n", "@@@@")
+        self._ics_vrstice = re.sub("(\\\\, ?)?ni smeri", "", ena_vrsta)
+
     def prikazi_datum(self) -> str:
         """
         Polje datum pretvori v berljiv niz. Tako se npr. 3. 10. 2022 pretvori v niz
@@ -394,17 +427,6 @@ class IzpitniRok:
         """
         return "<br>".join(map(str, self.izvajalci))
 
-    def prilagodi_ics_opis(self) -> str:
-        """
-        Spremeni surove ics vrstice v eno samo samo, tako da znake za novo vrsto nadomesti
-        z ``@@@@`` in odstrani morebitno pojavitev ``ni smeri``.
-
-        :return: niz, ki ga dobimo po zgornjem postopku iz ``self.ics_vrstice``
-
-        """
-        ena_vrsta = self.ics_vrstice.replace("\n", "@@@@")
-        return re.sub("(\\\\, ?)?ni smeri", "", ena_vrsta)
-
     def osnovni_opis(self) -> str:
         """
         Vrne poenostavljen prikaz izpitnega roka (datum in predmet).
@@ -421,6 +443,47 @@ class IzpitniRok:
         :return: ime predmeta se začne z zvezdico
         """
         return self.predmet.ime.startswith("*")
+
+    @staticmethod
+    def zdruzi_roka(izpitni_rok1: 'IzpitniRok', izpitni_rok2: 'IzpitniRok') -> 'IzpitniRok':
+        """
+        Spoji izpitni rok za isti predmet na dveh smereh v enega samega. Pazi, da se datuma,
+        imeni predmeta, roka in obdobji ujemajo.
+        
+        :param izpitni_rok1: izpitni rok
+        :param izpitni_rok2: izpitni rok
+        :return: spoj obeh izpitnih rokov: programi, letniki, izvajalci in ics_vrstice
+            so 'unija' vhodnih rokov, ostala polja ostanejo nespremenjena.
+
+        :raises ValueError če se ne ujemajo stvari, ki bi se morale
+
+        """
+        nujne_enakosti = [
+            (izpitni_rok1.datum == izpitni_rok2.datum, "Datuma"),
+            (izpitni_rok1.predmet == izpitni_rok2.predmet, "Predmeta"),
+            (izpitni_rok1.rok == izpitni_rok2.rok, "Roka"),
+            (izpitni_rok1.obdobje == izpitni_rok2.obdobje, "Izpitni obdobji")
+        ]
+        for enakost, ime in nujne_enakosti:
+            if not enakost:
+                raise ValueError(
+                    f"{ime} se ne ujemata pri izpitnih rokih {izpitni_rok1} in {izpitni_rok2}"
+                )
+        skupni_programi = izpitni_rok1.programi + izpitni_rok2.programi
+        skupni_letniki = izpitni_rok1.letniki + izpitni_rok2.letniki
+        pari = sorted(set(zip(skupni_programi, skupni_letniki)))
+        skupni_programi, skupni_letniki = list(zip(*pari))
+
+        return IzpitniRok(
+            izpitni_rok1.datum,
+            izpitni_rok1.predmet,
+            list(skupni_programi),
+            list(skupni_letniki),
+            izpitni_rok1.rok,
+            sorted(set(izpitni_rok1.izvajalci + izpitni_rok2.izvajalci)),
+            izpitni_rok1.obdobje,
+            izpitni_rok1.ics_vrstice
+        )
 
 
 @dataclass
