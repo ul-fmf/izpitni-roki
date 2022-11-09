@@ -73,6 +73,9 @@ class IDTerIme:
         """
         return "vse"
 
+    def __repr__(self):
+        return f"{type(self).__name__}({self.ime})"
+
     def __str__(self):
         return self.ime
 
@@ -455,7 +458,7 @@ class IzpitniRok:
         :return: spoj obeh izpitnih rokov: programi, letniki, izvajalci in ics_vrstice
             so 'unija' vhodnih rokov, ostala polja ostanejo nespremenjena.
 
-        :raises ValueError če se ne ujemajo stvari, ki bi se morale
+        :raises: ValueError če se ne ujemajo stvari, ki bi se morale
 
         """
         nujne_enakosti = [
@@ -467,7 +470,7 @@ class IzpitniRok:
         for enakost, ime in nujne_enakosti:
             if not enakost:
                 raise ValueError(
-                    f"{ime} se ne ujemata pri izpitnih rokih {izpitni_rok1} in {izpitni_rok2}"
+                    f"{ime} se ne ujemata pri izpitnih rokih:\n{izpitni_rok1}\n{izpitni_rok2}"
                 )
         skupni_programi = izpitni_rok1.programi + izpitni_rok2.programi
         skupni_letniki = izpitni_rok1.letniki + izpitni_rok2.letniki
