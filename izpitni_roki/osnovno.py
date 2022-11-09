@@ -73,6 +73,9 @@ class IDTerIme:
         """
         return "vse"
 
+    def __repr__(self):
+        return f"{type(self).__name__}({self.ime})"
+
     def __str__(self):
         return self.ime
 
@@ -137,7 +140,22 @@ class Predmet(IDTerIme):
 
 
 class Program(IDTerIme):
-    pass
+    LEPSE_OBLIKE = {
+        "1FiMa": "Finančna matematika",
+        "1PrMa": "Praktična matematika",
+        "2PeMa": "Pedagoška matematika",
+        "1Mate": "Matematika"
+    }
+
+    def __str__(self):
+        if self.ime in Program.LEPSE_OBLIKE:
+            return Program.LEPSE_OBLIKE[self.ime]
+        else:
+            ZAPISNIKAR.warning(
+                f"Program '{self.ime}' bo prikazan tako, kot piše tu. "
+                f"Lepše oblike poznam le za {sorted(Program.LEPSE_OBLIKE)}"
+            )
+            return self.ime
 
 
 class Letnik(IDTerIme):
@@ -161,6 +179,9 @@ class Letnik(IDTerIme):
             return Letnik.DOVOLJENI_LETNIKI[self.ime] < Letnik.DOVOLJENI_LETNIKI[other.ime]
         else:
             raise ValueError(f"IDTerIme ni primerljiv z {type(other).__name__}")
+
+    def __str__(self):
+        return f"{Letnik.DOVOLJENI_LETNIKI[self.ime]}."
 
 
 class Rok(IDTerIme):
@@ -236,31 +257,49 @@ class Obdobje(IDTerIme):
 OBDOBJE_IZVEN = Obdobje("izven izpitnih obdobij", datetime(3000, 1, 1), datetime(3000, 1, 1))
 
 
-@dataclass
 class IzpitniRok:
-    """Osnovne informacije o izpitnem roku"""
-    datum: datetime
+    """Osnovne informacije o izpitnem roku. Ta je opisan s predmetom, seznamom
+    programov, seznamom pripadajočih letnikov (oba sta enako dolga), rokom (prvi, drugi ...),
+    seznamom izvajalcev in izpitnim obdobjem.
+    """
+    def __init__(
+            self,
+            datum: datetime,
+            predmet: Predmet,
+            programi: List[Program],
+            letnik_i: Union[Letnik, List[Letnik]],
+            rok: Rok,
+            izvajalci: List[Izvajalec],
+            obdobje: Obdobje,
+            ics_vrstice: str
+    ):
+        self.datum: datetime = datum
 
-    predmet: Predmet
-    programi: List[Program]
-    letnik: Letnik
-    rok: Rok
-    izvajalci: List[Izvajalec]
-    obdobje: Obdobje
+        self.predmet: Predmet = predmet
+        self.programi: List[Program] = programi
+        if isinstance(letnik_i, Letnik):
+            self.letniki = [letnik_i for _ in self.programi]
+        else:
+            self.letniki = letnik_i
+        self.rok: Rok = rok
+        self.izvajalci: List[Izvajalec] = izvajalci
+        self.obdobje: Obdobje = obdobje
 
-    ics_vrstice: str
+        self.ics_vrstice: str = ics_vrstice
 
     def preveri(self):
         """
-        Preveri, ali so vsa polja neprazna.
+        Preveri, ali so vsa polja neprazna, in ali so programi in letniki enako dolgi
 
         :return:
 
-        :raises: ValueError, če je katero od polj prazno
+        :raises: ValueError, če je kateri od pogojev kršen
         """
         for kljuc, vrednost in self.__dict__.items():
             if not vrednost:
                 raise ValueError(f"Atribut {kljuc} je prazen v {self}")
+        if len(self.programi) != len(self.letniki):
+            raise ValueError(f"Seznama programov in letnikov za {self} nista enako dolga.")
 
     def _terica(self):
         return tuple(self.__dict__.values())
@@ -270,6 +309,39 @@ class IzpitniRok:
             return self._terica() < other._terica()
         else:
             raise ValueError(f"IzpitniRok ni primerljiv z {type(other).__name__}")
+
+    def __repr__(self):
+        return f"IzpitniRok(" \
+               f"{self.datum}, {self.predmet}, {self.programi}, " \
+               f"{self.letniki}, {self.rok}, {self.izvajalci}, " \
+               f"{self.obdobje}, {self.ics_vrstice}" \
+               f")"
+
+    def _ics_summary(self):
+        smeri_in_letniki = "\\, ".join(
+            map(
+                lambda par: f"{par[0].ime} - {par[1]} letnik",
+                zip(self.programi, self.letniki)
+            )
+        )
+        izvajalci = "\\, ".join(map(str, self.izvajalci))
+        return f"{self.predmet} ({smeri_in_letniki})\\, {izvajalci}\\, {self.rok} rok"
+
+    @property
+    def ics_vrstice(self):
+        def menjalec(m):
+            return "SUMMARY:" + self._ics_summary() + "@@@@" + m.group(1)
+
+        return re.sub("SUMMARY:.+?@@@@([^ ])", menjalec, self._ics_vrstice)
+
+    @ics_vrstice.setter
+    def ics_vrstice(self, vrednost: str):
+        """
+        Spremeni surove ics vrstice v eno samo samo, tako da znake za novo vrsto nadomesti
+        z ``@@@@`` in odstrani morebitno pojavitev ``ni smeri``.
+        """
+        ena_vrsta = vrednost.replace("\n", "@@@@")
+        self._ics_vrstice = re.sub("(\\\\, ?)?ni smeri", "", ena_vrsta)
 
     def prikazi_datum(self) -> str:
         """
@@ -290,6 +362,10 @@ class IzpitniRok:
         oblikovan_datum = self.datum.strftime(f"{self.datum.day}. {mesec} {self.datum.year}")
         return f"{oblikovan_datum} ({dan})"
 
+    @staticmethod
+    def _id_seznama(seznam: List[IDTerIme]):
+        return "x".join(map(lambda s: s.id, seznam))
+
     def id(self) -> str:
         """
         Iz id-jev polj tega objekta ustvari id tega objekta. Vsebuje le knjižnici `jQuery` prijazne
@@ -300,12 +376,12 @@ class IzpitniRok:
             so id-ji elementov danega seznama, ločeni z ``x``.
         """
         id_predmet = self.predmet.id
-        id_programi = "x".join(map(lambda p: p.id, self.programi))
-        id_letnik = self.letnik.id
+        id_programi = IzpitniRok._id_seznama(self.programi)
+        id_letniki = IzpitniRok._id_seznama(self.letniki)
         id_rok = self.rok.id
-        id_izvajalci = "x".join(map(lambda i: i.id, self.izvajalci))
+        id_izvajalci = IzpitniRok._id_seznama(self.izvajalci)
         id_obdobje = self.obdobje.id
-        return "_".join([id_predmet, id_programi, id_letnik, id_rok, id_izvajalci, id_obdobje])
+        return "_".join([id_predmet, id_programi, id_letniki, id_rok, id_izvajalci, id_obdobje])
 
     @staticmethod
     def _prikazi_neprazen_seznam(seznam: List[IDTerIme]):
@@ -328,12 +404,21 @@ class IzpitniRok:
 
     def prikazi_smer_in_letnik(self):
         """
-        Prikaže smer(i) ter letnik v lepo berljivi obliki.
+        Prikaže smer(i) ter letnik(e) v lepo berljivi obliki.
 
-        :return: npr. ``"1FiMa, 2PeMa (3. letnik)"``
+        :return: npr.
+
+        .. code-block:: html
+
+            <b>Finančna matematika</b>, 3. letnik<br>
+            <b>Matematika</b>, 3. letnik<br>
+            <b>Pedagoška matematika</b>, 2. letnik
+
         """
-        prikaz_smeri = IzpitniRok._prikazi_neprazen_seznam(self.programi)
-        return f"{prikaz_smeri} ({self.letnik} letnik)"
+        vrstice = []
+        for program, letnik in zip(self.programi, self.letniki):
+            vrstice.append(f"<b>{program}</b>, {letnik} letnik")
+        return "<br>".join(vrstice)
 
     def prikazi_izvajalce(self):
         """
@@ -343,18 +428,7 @@ class IzpitniRok:
         :return: npr. ``"Ana, Beno in Cene"``
 
         """
-        return IzpitniRok._prikazi_neprazen_seznam(self.izvajalci)
-
-    def prilagodi_ics_opis(self) -> str:
-        """
-        Spremeni surove ics vrstice v eno samo samo, tako da znake za novo vrsto nadomesti
-        z ``@@@@`` in odstrani morebitno pojavitev ``ni smeri``.
-
-        :return: niz, ki ga dobimo po zgornjem postopku iz ``self.ics_vrstice``
-
-        """
-        ena_vrsta = self.ics_vrstice.replace("\n", "@@@@")
-        return re.sub("(\\\\, ?)?ni smeri", "", ena_vrsta)
+        return "<br>".join(map(str, self.izvajalci))
 
     def osnovni_opis(self) -> str:
         """
@@ -372,6 +446,47 @@ class IzpitniRok:
         :return: ime predmeta se začne z zvezdico
         """
         return self.predmet.ime.startswith("*")
+
+    @staticmethod
+    def zdruzi_roka(izpitni_rok1: 'IzpitniRok', izpitni_rok2: 'IzpitniRok') -> 'IzpitniRok':
+        """
+        Spoji izpitni rok za isti predmet na dveh smereh v enega samega. Pazi, da se datuma,
+        imeni predmeta, roka in obdobji ujemajo.
+        
+        :param izpitni_rok1: izpitni rok
+        :param izpitni_rok2: izpitni rok
+        :return: spoj obeh izpitnih rokov: programi, letniki, izvajalci in ics_vrstice
+            so 'unija' vhodnih rokov, ostala polja ostanejo nespremenjena.
+
+        :raises: ValueError če se ne ujemajo stvari, ki bi se morale
+
+        """
+        nujne_enakosti = [
+            (izpitni_rok1.datum == izpitni_rok2.datum, "Datuma"),
+            (izpitni_rok1.predmet == izpitni_rok2.predmet, "Predmeta"),
+            (izpitni_rok1.rok == izpitni_rok2.rok, "Roka"),
+            (izpitni_rok1.obdobje == izpitni_rok2.obdobje, "Izpitni obdobji")
+        ]
+        for enakost, ime in nujne_enakosti:
+            if not enakost:
+                raise ValueError(
+                    f"{ime} se ne ujemata pri izpitnih rokih:\n{izpitni_rok1}\n{izpitni_rok2}"
+                )
+        skupni_programi = izpitni_rok1.programi + izpitni_rok2.programi
+        skupni_letniki = izpitni_rok1.letniki + izpitni_rok2.letniki
+        pari = sorted(set(zip(skupni_programi, skupni_letniki)))
+        skupni_programi, skupni_letniki = list(zip(*pari))
+
+        return IzpitniRok(
+            izpitni_rok1.datum,
+            izpitni_rok1.predmet,
+            list(skupni_programi),
+            list(skupni_letniki),
+            izpitni_rok1.rok,
+            sorted(set(izpitni_rok1.izvajalci + izpitni_rok2.izvajalci)),
+            izpitni_rok1.obdobje,
+            izpitni_rok1.ics_vrstice
+        )
 
 
 @dataclass

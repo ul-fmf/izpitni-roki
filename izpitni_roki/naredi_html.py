@@ -1,11 +1,11 @@
 import os
+import re
 from izpitni_roki.osnovno import (
     naredi_zapisnikarja,
     IzpitniRok,
     Koledar,
     HtmlPredloga,
-    IDTerIme,
-    Obdobje
+    IDTerIme
 )
 from izpitni_roki.nalozi_ics import nalozi_ics
 from typing import List, Callable, Dict, Tuple, Optional
@@ -15,6 +15,69 @@ from datetime import datetime
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
 CRKE = "ABCČDEFGHIJKLMNOPRSŠTUVZŽ"
 IZDODNA_MAPA = "out"
+
+
+def nalozi_predmete_za_zduzevanje() -> Dict[str, List[str]]:
+    """
+    Naloži datoteko, ki opisuje, katere predmete je treba združiti. Izkaže se, da ni važno,
+    ali je predmet voden ločeno ali ne, mi samo združimo :)
+
+    :return: slovar, ki ima za ključe imena predmetov, in za vrednosti imena programov
+    """
+    predmet_smeri = {}
+    datoteka = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "zdruzi.txt"
+    )
+    with open(datoteka, encoding="utf-8") as f:
+        for vrsta in f:
+            i = vrsta.find(",")
+            predmet = vrsta[:i].strip()
+            smeri = re.split(",| ?in ?", vrsta[i + 1:])
+            assert predmet not in predmet_smeri
+            predmet_smeri[predmet] = [smer.strip() for smer in smeri]
+    return predmet_smeri
+
+
+def zdruzi_roke(izpitni_roki: List[IzpitniRok]) -> List[IzpitniRok]:
+    """
+    Združi izpitne roke pri predmetih, ki se pojavijo v več programih.
+
+    :param izpitni_roki: seznam ločenih rokov
+
+    :return: seznam združenih rokov
+
+    """
+    def je_za_zdruzitev(izpit: IzpitniRok):
+        ime_predmeta = izpit.predmet.ime
+        if ime_predmeta not in predmeti_zdruzevanja:
+            return False
+        for program in izpit.programi:
+            if program.ime not in predmeti_zdruzevanja[ime_predmeta]:
+                return False
+        return True
+
+    predmeti_zdruzevanja = nalozi_predmete_za_zduzevanje()
+    koncni_roki = []
+    zdruzevani_predmeti: Dict[str, Dict[str, List[IzpitniRok]]] = {
+        predmet: {} for predmet in predmeti_zdruzevanja
+    }
+    for izpitni_rok in izpitni_roki:
+        if je_za_zdruzitev(izpitni_rok):
+            ime = izpitni_rok.predmet.ime
+            rok = izpitni_rok.rok.ime
+            if rok not in zdruzevani_predmeti[ime]:
+                zdruzevani_predmeti[ime][rok] = []
+            zdruzevani_predmeti[ime][rok].append(izpitni_rok)
+        else:
+            koncni_roki.append(izpitni_rok)
+    for rok_skupina in zdruzevani_predmeti.values():
+        for skupina in rok_skupina.values():
+            izpitni_rok = skupina[0]
+            for se_en_rok in skupina[1:]:
+                izpitni_rok = IzpitniRok.zdruzi_roka(izpitni_rok, se_en_rok)
+            koncni_roki.append(izpitni_rok)
+    return koncni_roki
 
 
 def najdi_vse(
@@ -55,7 +118,7 @@ def najdi_vse_letnike(koledarji: List[Koledar]) -> List[IDTerIme]:
 
     :return: (urejeni) letniki (brez ponovitev)
     """
-    return najdi_vse(koledarji, lambda rok: [rok.letnik])
+    return najdi_vse(koledarji, lambda rok: rok.letniki)
 
 
 def najdi_vse_roke(koledarji: List[Koledar]) -> List[IDTerIme]:
@@ -193,6 +256,7 @@ def naredi_tabelo(koledarji: List[Koledar]) -> str:
     :return: str(html predloga za tabelo)
     """
     izpitni_roki = [rok for koledar in koledarji for rok in koledar.izpitni_roki]
+    izpitni_roki = zdruzi_roke(izpitni_roki)
     izpitni_roki.sort()
     vrstice = []
     for izpitni_rok in izpitni_roki:
@@ -205,7 +269,7 @@ def naredi_tabelo(koledarji: List[Koledar]) -> str:
                 letnik=izpitni_rok.prikazi_smer_in_letnik(),
                 rok=str(izpitni_rok.rok),
                 izvajalci=izpitni_rok.prikazi_izvajalce(),
-                ics_raw=izpitni_rok.prilagodi_ics_opis()
+                ics_raw=izpitni_rok.ics_vrstice
             ))
         )
     # ics opis skupnega koledarja bomo naredili iz enega od ics opisov
