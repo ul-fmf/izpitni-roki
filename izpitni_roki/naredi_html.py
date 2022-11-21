@@ -287,7 +287,7 @@ def naredi_html(
         poti_do_koledarjev: List[str],
         naslov: str = "Naslov strani",
         opis_strani: str = "Opis strani",
-        obdobja: Dict[str, Tuple[datetime, datetime]] = None,
+        obdobja: Optional[Dict[str, Tuple[datetime, datetime]]] = None,
         oblika_summary: Optional[str] = None,
         oblika_datum: Optional[str] = None
 ):

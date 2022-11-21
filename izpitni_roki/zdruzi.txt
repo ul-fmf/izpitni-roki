@@ -17,5 +17,5 @@ Algebra 2,1FiMa,1Mate in 2PeMa
 Finančna matematika 1,1FiMa,1Mate in 2PeMa
 Uvod v geometrijsko topologijo,1FiMa,1Mate,2PeMa
 Afina in projektivna geometrija,1FiMa,1Mate in 2PeMa
-Uvod v programiranje,1FiMa, 1Mate in 2PeMa
-Matematično modeliranje,1FiMa, 1Mate in 2PeMa
+Uvod v programiranje,1FiMa,1Mate in 2PeMa
+Matematično modeliranje,1FiMa,1Mate in 2PeMa

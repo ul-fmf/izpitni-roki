@@ -55,7 +55,7 @@ def naredi_izpitna_obdobja(leto: int) -> Dict[str, Tuple[datetime, datetime]]:
     zadnji_februar = datetime(leto, 2, 28 + int(je_prestopno))
     return {
         "zimsko": (datetime(leto, 1, 1), zadnji_februar),
-        "spomladansko": (datetime(leto, 6, 1), datetime(2022, 7, 31)),
+        "spomladansko": (datetime(leto, 6, 1), datetime(leto, 7, 31)),
         "jesensko": (datetime(leto, 8, 1), datetime(leto, 9, 30))
     }
 
