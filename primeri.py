@@ -1,5 +1,4 @@
 from izpitni_roki.naredi_html import naredi_html
-from datetime import datetime
 from izpitni_roki.glasbene_zelje import prikazi_isrm_roke
 
 
@@ -11,11 +10,7 @@ naredi_html(
     " Matematika (1Mate) in Praktična matematika (1PrMa) in "
     "prvih treh letnikih programa Pedagoška matematika (2PeMa) "
     "na Oddelku za matematiko FMF v študijskem letu 2021/22, ki zadoščajo izbranim kriterijem.",
-    obdobja={
-        "zimsko": (datetime(2022, 1, 15), datetime(2022, 2, 15)),
-        "letno": (datetime(2022, 6, 15), datetime(2022, 7, 15)),
-        "jesensko": (datetime(2022, 8, 15), datetime(2022, 9, 6))
-    },
+    obdobja=None,
     oblika_summary=None,
     oblika_datum=None
 )
