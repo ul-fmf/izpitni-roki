@@ -64,12 +64,30 @@ $(".group-choice").on("click", function() {
 
 
 function najPrikazem(seznamSkupinID) {
+    // Skupin je šest [id_predmet, id_programi, id_letniki, id_rok, id_izvajalci, id_obdobje]
+    // npr. [38, 6x122x123, 7x45x7, 20, 39x40x24, 2]
+    // Pri preverjanju je treba programe in letnike preverjati hkrati, saj je
+    // npr. Programiranje 1 v 3. letniku Pedagoške matematike in 2. letniku Matematike.
+    let razbiteSkupine = [];
     for (let i = 0; i < seznamSkupinID.length; i++){
+        razbiteSkupine.push(seznamSkupinID[i].split("x"));
+    }
+    for (let i = 0; i < seznamSkupinID.length; i++){
+        if (i == 2){
+            // letnike preverjamo s programi
+            continue;
+        }
         let vsajEn = false;
-        let skupina = seznamSkupinID[i].split("x");
+        let skupina = razbiteSkupine[i];
         for (let j = 0; j < skupina.length; j++){
             let kandidat = skupina[j];
-            if(contains(getClasses($("#" + kandidat)), "active")){
+            let kandidatOK = contains(getClasses($("#" + kandidat)), "active");
+            let dopolniloOK = true;
+            if (i == 1){
+                // preveri tudi letnik
+                dopolniloOK = contains(getClasses($("#" + razbiteSkupine[2][j])), "active");
+            }
+            if(kandidatOK && dopolniloOK){
                 vsajEn = true;
                 break;
             }

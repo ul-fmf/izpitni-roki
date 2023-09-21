@@ -231,7 +231,7 @@ class Obdobje(IDTerIme):
         if isinstance(other, Obdobje):
             return self.zacetek < other.zacetek
         else:
-            raise ValueError(f"Obdobje je primerljivo le z Obdobje")
+            raise ValueError("Obdobje je primerljivo le z Obdobje")
 
     @staticmethod
     def vse_vsa() -> str:
@@ -285,7 +285,7 @@ class IzpitniRok:
         self.izvajalci: List[Izvajalec] = izvajalci
         self.obdobje: Obdobje = obdobje
 
-        self.ics_vrstice: str = ics_vrstice
+        self._ics_vrstice: str = ics_vrstice
 
     def preveri(self):
         """
