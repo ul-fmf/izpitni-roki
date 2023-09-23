@@ -65,7 +65,7 @@ ZAPISNIKAR = naredi_zapisnikarja(__file__)
 
 def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict[str, str], str]:
     """
-    Vrstice, ki opisujejo dogodek (izpitni rok) ali pa koledar predela tako, da odstrani
+    Vrstice, ki opisujejo dogodek (izpitni rok) ali pa koledar, predela tako, da odstrani
         morebitne prelome vrstic in jih združi v slovar {kljuc: vrednost, ...}, kjer so ključi
         ključne besede iz .ics formata, npr. ``DTSTART;VALUE=DATE`` ali ``X-WR-TIMEZONE``.
 
