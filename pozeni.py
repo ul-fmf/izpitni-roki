@@ -56,8 +56,8 @@ def glavna(
     opis_strani: str,
     obdobja: tuple[tuple[str, str]],
     prazniki: list[str],
-    oblika_ics_summary: str | None=None,
-    oblika_ics_datum: str | None=None,
+    oblika_ics_summary: str | None = None,
+    oblika_ics_datum: str | None = None,
 ):
     # pretvori obdobja
     imena_obdobij = ["zimsko", "spomladansko", "jesensko"]
@@ -67,7 +67,12 @@ def glavna(
     ics_datoteke = preveri_ics_datoteke(ics_datoteke)
     # preveri skladnost
     vsi_koledarji = [
-        nalozi_ics(dato, slo_obdobja, oblika_ics_summary, oblika_ics_datum)
+        nalozi_ics(
+            dato,
+            obdobja=slo_obdobja,
+            oblika_summary=oblika_ics_summary,
+            oblika_datum=oblika_ics_datum,
+        )
         for dato in ics_datoteke
     ]
     preveri_vse(vsi_koledarji, obdobja, prazniki)
@@ -90,14 +95,16 @@ def glavna(
 if __name__ == "__main__":
     korenska_mapa = os.path.dirname(os.path.abspath(__file__))
     ics_test = os.path.join(korenska_mapa, "data", "test1.ics")
-    koledar = nalozi_ics(ics_test)
+    # koledar = nalozi_ics(ics_test)
 
     # Podamo
 
     # ics datoteke:
     # - lahko kot seznam datotek, npr. ["data/test1.ics", "data/test2.ics"]
     # - lahko kot ime mape, npr. "data"
-    vhodne_datoteke = ["data/test1.ics", "data/test2.ics"]
+    vhodne_datoteke = [
+        "data/izbrani_izpiti.ics"
+    ]  # ["data/test1.ics", "data/test2.ics"]
     # naslov strani
     naslov_strani = (
         "Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2021/22"

@@ -161,7 +161,7 @@ def preveri_predmet_letnik(
             ):
                 d_str = datum_v_niz(d)
                 imena = ", ".join(df[df["Datum"] == d]["Ime"].unique().tolist())
-                vrstice.append(f"{d_str}: {imena}")
+                vrstice.append(f"  - {d_str}: {imena}")
         opozorila.append("\n".join(vrstice))
     if opozorila:
         zdruzene_napake = "\n".join(opozorila)
@@ -182,6 +182,6 @@ def preveri_vse(
     """
     for koledar in koledarji:
         razbito = razbij_po_program_letnikih(koledar.izpitni_roki)
-        for (program, letnik), roki in razbito.items():
+        for (program, letnik), roki in sorted(razbito.items()):
             preveri_predmet_letnik(program, letnik, roki, obdobja, prazniki)
             print()
