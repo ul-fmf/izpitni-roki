@@ -1,0 +1,135 @@
+{
+    "1FiMa": [
+        [
+            "ALGEBRA 1",
+            "ANALIZA 1",
+            "ANALIZA 2",
+            "DISKRETNE STRUKTURE",
+            "MIKROEKONOMIJA",
+            "OPTIMIZACIJSKE METODE",
+            "PROSEMINAR",
+            "RAČUNALNIŠKI PRAKTIKUM",
+            "UVOD V PROGRAMIRANJE"
+        ],
+        [
+            "ANALIZA 3",
+            "ANALIZA PODATKOV S PROGRAMOM R",
+            "DENAR IN FINANCE",
+            "FINANČNA MATEMATIKA 1",
+            "MAKROEKONOMIJA",
+            "NUMERIČNE METODE 1",
+            "NUMERIČNE METODE 2",
+            "OPERACIJSKE RAZISKAVE",
+            "SEMINAR",
+            "VERJETNOST 1",
+            "VERJETNOST IN STATISTIKA"
+        ],
+        [
+            "DIPLOMSKI SEMINAR",
+            "FINANČNI PRAKTIKUM",
+            "FINANČNI TRGI IN INŠTITUCIJE",
+            "SLUČAJNI PROCESI 1",
+            "STATISTIKA 1",
+            "TEORIJA IGER",
+            "VERJETNOST Z MERO"
+        ]
+    ],
+    "1Mate": [
+        [
+            "ALGEBRA 1",
+            "ANALIZA 1",
+            "FIZIKA 1",
+            "LOGIKA IN MNOŽICE",
+            "RAČUNALNIŠKI PRAKTIKUM",
+            "UVOD V PROGRAMIRANJE"
+        ],
+        [
+            "ALGEBRA 2",
+            "ANALIZA 2A",
+            "ANALIZA 2B",
+            "DISKRETNA MATEMATIKA 1",
+            "FIZIKA 2",
+            "PROGRAMIRANJE 1",
+            "SEMINAR",
+            "SPLOŠNA TOPOLOGIJA"
+        ],
+        [
+            "ANALIZA 3",
+            "ANALIZA 4",
+            "DIPLOMSKI SEMINAR",
+            "MEHANIKA 1",
+            "STATISTIKA",
+            "UVOD V NUMERIČNE METODE",
+            "VERJETNOST"
+        ]
+    ],
+    "2PeMa": [
+        [
+            "ALGEBRA 1",
+            "ANALIZA 1",
+            "FIZIKA 1",
+            "LOGIKA IN MNOŽICE",
+            "RAČUNALNIŠKI PRAKTIKUM",
+            "UVOD V PROGRAMIRANJE"
+        ],
+        [
+            "AFINA IN PROJEKTIVNA GEOMETRIJA ",
+            "ALGEBRA 2",
+            "ANALIZA 2A",
+            "ANALIZA 2B",
+            "ASTRONOMIJA",
+            "DISKRETNA MATEMATIKA 1",
+            "ELEMENTARNA GEOMETRIJA",
+            "FIZIKA 2",
+            "PROGRAMSKA OPREMA PRI POUKU",
+            "SPLOŠNA TOPOLOGIJA"
+        ],
+        [
+            "ANALIZA 3",
+            "ASTRONOMIJA",
+            "DIDAKTIKA 1",
+            "DIDAKTIKA MATEMATIKE 1",
+            "DIDAKTIKA MATEMATIKE 2",
+            "ELEMENTARNA TEORIJA ŠTEVIL",
+            "PEDAGOGIKA Z ANDRAGOGIKO",
+            "PEDAGOŠKA PRAKSA 1",
+            "PROGRAMSKA OPREMA PRI POUKU",
+            "PSIHOLOGIJA UČENJA IN POUKA",
+            "SEMINAR 1",
+            "STATISTIKA",
+            "UVOD V NUMERIČNE METODE",
+            "VERJETNOST"
+        ]
+    ],
+    "1PrMa": [
+        [
+            "LINEARNA ALGEBRA",
+            "MATEMATIKA 1",
+            "MATEMATIKA V PRAKSI",
+            "PROGRAMIRANJE 1",
+            "RAČUNALNIŠKA ORODJA V MATEMATIKI",
+            "RAČUNALNIŠKI PRAKTIKUM",
+            "UVOD V FIZIKO"
+        ],
+        [
+            "ALGEBRA IN DISKRETNA MATEMATIKA",
+            "DIFERENCIALNE ENAČBE",
+            "FIZIKALNI PRAKTIKUM",
+            "KOMUNICIRANJE V MATEMATIKI",
+            "MATEMATIČNA ORODJA V FIZIKI",
+            "MATEMATIKA 2",
+            "NUMERIČNE METODE 1",
+            "PROGRAMIRANJE 2",
+            "STATISTIKA",
+            "VERJETNOST"
+        ],
+        [
+            "MEHANIKA",
+            "OPTIMIZACIJA",
+            "PARCIALNE DIFERENCIALNE ENAČBE",
+            "PODATKOVNE BAZE 1",
+            "PRAKTIČNO USPOSABLJANJE",
+            "RAČUNALNIŠTVO 1"
+        ]
+    ]
+}
