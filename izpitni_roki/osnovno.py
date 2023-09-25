@@ -16,7 +16,7 @@ def naredi_zapisnikarja(name):
     ch = logging.StreamHandler()
     formatter = logging.Formatter(
         "%(asctime)s %(levelname)s [%(filename)s:%(funcName)s:%(lineno)d]:  %(message)s",
-        "%Y-%m-%d %H:%M:%S"
+        "%Y-%m-%d %H:%M:%S",
     )
     ch.setFormatter(formatter)
     logger = logging.getLogger(name)
@@ -52,6 +52,7 @@ class IDTerIme:
     Implementira tudi leksikografsko urejenost nizov, ki upošteva slovensko abecedo,
     razširjeno s črkama `ć` in `đ` (a b c č ć d đ e f ...).
     """
+
     PRIPADNIKI = {}  # vsi elementi tega razreda, vsebuje pare ime: objekt
 
     def __init__(self, ime: str):
@@ -89,7 +90,10 @@ class IDTerIme:
         """
         posebni = {"č": "c{", "ć": "c{{", "đ": "d{", "š": "s{", "ž": "z{"}
         return "".join(
-            [crka if crka not in posebni else posebni[crka] for crka in self.ime.lower()]
+            [
+                crka if crka not in posebni else posebni[crka]
+                for crka in self.ime.lower()
+            ]
         )
 
     def __lt__(self, other):
@@ -115,9 +119,11 @@ class IDTerIme:
 
     @staticmethod
     def naredi_objekt(
-            podrazred: Type[Union['Predmet', 'Program', 'Letnik', 'Rok', 'Izvajalec', 'Obdobje']],
-            ime: str,
-            *args
+        podrazred: Type[
+            Union["Predmet", "Program", "Letnik", "Rok", "Izvajalec", "Obdobje"]
+        ],
+        ime: str,
+        *args,
     ):
         """
         Naredi objekt danega podrazreda razreda IDTerIme
@@ -144,7 +150,7 @@ class Program(IDTerIme):
         "1FiMa": "Finančna matematika",
         "1PrMa": "Praktična matematika",
         "2PeMa": "Pedagoška matematika",
-        "1Mate": "Matematika"
+        "1Mate": "Matematika",
     }
 
     def __str__(self):
@@ -159,13 +165,7 @@ class Program(IDTerIme):
 
 
 class Letnik(IDTerIme):
-    DOVOLJENI_LETNIKI = {
-        "prvi": 1,
-        "drugi": 2,
-        "tretji": 3,
-        "četrti": 4,
-        "peti": 5
-    }
+    DOVOLJENI_LETNIKI = {"prvi": 1, "drugi": 2, "tretji": 3, "četrti": 4, "peti": 5}
 
     def __init__(self, ime):
         super().__init__(ime)
@@ -176,7 +176,9 @@ class Letnik(IDTerIme):
 
     def __lt__(self, other):
         if isinstance(other, IDTerIme):
-            return Letnik.DOVOLJENI_LETNIKI[self.ime] < Letnik.DOVOLJENI_LETNIKI[other.ime]
+            return (
+                Letnik.DOVOLJENI_LETNIKI[self.ime] < Letnik.DOVOLJENI_LETNIKI[other.ime]
+            )
         else:
             raise ValueError(f"IDTerIme ni primerljiv z {type(other).__name__}")
 
@@ -190,7 +192,9 @@ class Rok(IDTerIme):
 
 def nalozi_problematicna_imena():
     slovarcek = {}
-    problematicna_imena = os.path.join(os.path.dirname(__file__), "problematicna_imena.txt")
+    problematicna_imena = os.path.join(
+        os.path.dirname(__file__), "problematicna_imena.txt"
+    )
     with open(problematicna_imena, encoding="utf-8") as f:
         f.readline()
         for vrsta in f:
@@ -238,7 +242,7 @@ class Obdobje(IDTerIme):
         return "vsa"
 
     @staticmethod
-    def doloci_obdobje(datum: datetime, obdobja: List['Obdobje']) -> 'Obdobje':
+    def doloci_obdobje(datum: datetime, obdobja: List["Obdobje"]) -> "Obdobje":
         """
         Najde obdobje, v katero spada dani datum.
 
@@ -254,7 +258,9 @@ class Obdobje(IDTerIme):
 
 # Obdobje, ki ga uporabimo za roke izven uradnih izpitnih obdobij. Mora biti v prihodnosti,
 # zato bo treba čez slabih 1000 let kodo popraviti.
-OBDOBJE_IZVEN = Obdobje("izven izpitnih obdobij", datetime(3000, 1, 1), datetime(3000, 1, 1))
+OBDOBJE_IZVEN = Obdobje(
+    "izven izpitnih obdobij", datetime(3000, 1, 1), datetime(3000, 1, 1)
+)
 
 
 class IzpitniRok:
@@ -262,16 +268,17 @@ class IzpitniRok:
     programov, seznamom pripadajočih letnikov (oba sta enako dolga), rokom (prvi, drugi ...),
     seznamom izvajalcev in izpitnim obdobjem.
     """
+
     def __init__(
-            self,
-            datum: datetime,
-            predmet: Predmet,
-            programi: List[Program],
-            letnik_i: Union[Letnik, List[Letnik]],
-            rok: Rok,
-            izvajalci: List[Izvajalec],
-            obdobje: Obdobje,
-            ics_vrstice: str
+        self,
+        datum: datetime,
+        predmet: Predmet,
+        programi: List[Program],
+        letnik_i: Union[Letnik, List[Letnik]],
+        rok: Rok,
+        izvajalci: List[Izvajalec],
+        obdobje: Obdobje,
+        ics_vrstice: str,
     ):
         self.datum: datetime = datum
 
@@ -299,7 +306,9 @@ class IzpitniRok:
             if not vrednost:
                 raise ValueError(f"Atribut {kljuc} je prazen v {self}")
         if len(self.programi) != len(self.letniki):
-            raise ValueError(f"Seznama programov in letnikov za {self} nista enako dolga.")
+            raise ValueError(
+                f"Seznama programov in letnikov za {self} nista enako dolga."
+            )
 
     def _terica(self):
         return tuple(self.__dict__.values())
@@ -311,17 +320,19 @@ class IzpitniRok:
             raise ValueError(f"IzpitniRok ni primerljiv z {type(other).__name__}")
 
     def __repr__(self):
-        return f"IzpitniRok(" \
-               f"{self.datum}, {self.predmet}, {self.programi}, " \
-               f"{self.letniki}, {self.rok}, {self.izvajalci}, " \
-               f"{self.obdobje}, {self.ics_vrstice}" \
-               f")"
+        return (
+            f"IzpitniRok("
+            f"{self.datum}, {self.predmet}, {self.programi}, "
+            f"{self.letniki}, {self.rok}, {self.izvajalci}, "
+            f"{self.obdobje}, {self.ics_vrstice}"
+            f")"
+        )
 
     def _ics_summary(self):
         smeri_in_letniki = "\\, ".join(
             map(
                 lambda par: f"{par[0].ime} - {par[1]} letnik",
-                zip(self.programi, self.letniki)
+                zip(self.programi, self.letniki),
             )
         )
         izvajalci = "\\, ".join(map(str, self.izvajalci))
@@ -350,16 +361,34 @@ class IzpitniRok:
 
         :return: berljiva predstavitev datuma
         """
-        dnevi = ["ponedeljek", "torek", "sreda", "četrtek", "petek", "sobota", "nedelja"]
+        dnevi = [
+            "ponedeljek",
+            "torek",
+            "sreda",
+            "četrtek",
+            "petek",
+            "sobota",
+            "nedelja",
+        ]
         meseci = [
-            "januar", "februar", "marec", "april",
-            "maj", "junij", "julij", "avgust",
-            "september", "oktober", "november", "december"
-
+            "januar",
+            "februar",
+            "marec",
+            "april",
+            "maj",
+            "junij",
+            "julij",
+            "avgust",
+            "september",
+            "oktober",
+            "november",
+            "december",
         ]
         dan = dnevi[self.datum.weekday()]
         mesec = meseci[self.datum.month - 1]
-        oblikovan_datum = self.datum.strftime(f"{self.datum.day}. {mesec} {self.datum.year}")
+        oblikovan_datum = self.datum.strftime(
+            f"{self.datum.day}. {mesec} {self.datum.year}"
+        )
         return f"{oblikovan_datum} ({dan})"
 
     @staticmethod
@@ -381,7 +410,9 @@ class IzpitniRok:
         id_rok = self.rok.id
         id_izvajalci = IzpitniRok._id_seznama(self.izvajalci)
         id_obdobje = self.obdobje.id
-        return "_".join([id_predmet, id_programi, id_letniki, id_rok, id_izvajalci, id_obdobje])
+        return "_".join(
+            [id_predmet, id_programi, id_letniki, id_rok, id_izvajalci, id_obdobje]
+        )
 
     @staticmethod
     def _prikazi_neprazen_seznam(seznam: List[IDTerIme]):
@@ -448,11 +479,13 @@ class IzpitniRok:
         return self.predmet.ime.startswith("*")
 
     @staticmethod
-    def zdruzi_roka(izpitni_rok1: 'IzpitniRok', izpitni_rok2: 'IzpitniRok') -> 'IzpitniRok':
+    def zdruzi_roka(
+        izpitni_rok1: "IzpitniRok", izpitni_rok2: "IzpitniRok"
+    ) -> "IzpitniRok":
         """
         Spoji izpitni rok za isti predmet na dveh smereh v enega samega. Pazi, da se datuma,
         imeni predmeta, roka in obdobji ujemajo.
-        
+
         :param izpitni_rok1: izpitni rok
         :param izpitni_rok2: izpitni rok
         :return: spoj obeh izpitnih rokov: programi, letniki, izvajalci in ics_vrstice
@@ -465,7 +498,7 @@ class IzpitniRok:
             (izpitni_rok1.datum == izpitni_rok2.datum, "Datuma"),
             (izpitni_rok1.predmet == izpitni_rok2.predmet, "Predmeta"),
             (izpitni_rok1.rok == izpitni_rok2.rok, "Roka"),
-            (izpitni_rok1.obdobje == izpitni_rok2.obdobje, "Izpitni obdobji")
+            (izpitni_rok1.obdobje == izpitni_rok2.obdobje, "Izpitni obdobji"),
         ]
         for enakost, ime in nujne_enakosti:
             if not enakost:
@@ -485,13 +518,14 @@ class IzpitniRok:
             izpitni_rok1.rok,
             sorted(set(izpitni_rok1.izvajalci + izpitni_rok2.izvajalci)),
             izpitni_rok1.obdobje,
-            izpitni_rok1.ics_vrstice
+            izpitni_rok1.ics_vrstice,
         )
 
 
 @dataclass
 class Koledar:
     """Osnovne informacije o koledarju"""
+
     smer: str
     izpitni_roki: List[IzpitniRok]
 
@@ -499,9 +533,9 @@ class Koledar:
 
     def prilagodi_ics_opis(self, nadomestno_ime: str) -> str:
         vrstice_drugo_ime = re.sub(
-            "X-WR-CALNAME:.+(\\n)?( .+(\\n)?)*",   # poskrbimo za prelome vrstic
+            "X-WR-CALNAME:.+(\\n)?( .+(\\n)?)*",  # poskrbimo za prelome vrstic
             f"X-WR-CALNAME:{nadomestno_ime}\n",
-            self.ics_vrstice
+            self.ics_vrstice,
         )
         return vrstice_drugo_ime.replace("\n", "@@@@")
 
@@ -524,6 +558,7 @@ class HtmlPredloga:
         <div class="raz"> <p>Hojla, bralec!</p> </div>
 
     """
+
     def __init__(self, ime_predloge, **kwargs):
         """
         Konstruktor za ta razred.
@@ -583,3 +618,14 @@ class HtmlPredloga:
                 vrednost = parameter
             niz = niz.replace(parameter, vrednost)
         return niz
+
+
+# Pomožne funkcije za datume
+
+
+def niz_v_datum(niz):
+    return datetime.strptime(niz, "%d. %m. %Y")
+
+
+def datum_v_niz(d):
+    return d.strftime("%d. %m. %Y")
