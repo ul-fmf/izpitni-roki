@@ -27,6 +27,7 @@ vsebino shranijo v objekt tipa :meth:`izpitni_roki.osnovno.Koledar`.
    :undoc-members:
    :show-inheritance:
 
+
 izpitni\_roki.preverjanje
 -------------------------
 
