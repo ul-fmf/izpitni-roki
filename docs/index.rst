@@ -18,7 +18,7 @@ Dobrodošli! Uporaba kode, ki se skriva na repozitoriju, je prikazana v datoteki
 
 Načeloma je ta funkcija edina, ki bi jo moral uporabnik kadarkoli uporabiti, saj 
 
-- preveri, ali so razpisani roki v skladu s pravili in
+- preveri, ali so razpisani roki v skladu s pravili, in
 - zgenerira končni html.
 
 V primeru, da vaši opisi rokov v `.ics` datoteki ne sledijo regularnemu izrazu, ki ga
