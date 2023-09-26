@@ -6,42 +6,28 @@
 Dokumentacija za projekt Izpitni roki
 =====================================
 
-Dobrodošli! Uporaba kode, ki se skriva na repozitoriju, je prikazana spodaj::
+Dobrodošli! Uporaba kode, ki se skriva na repozitoriju, je prikazana v datoteki `pozeni.py` in spodaj::
 
-   from izpitni_roki.naredi_html import naredi_html
-   from datetime import datetime
+   glavna(
+        vhodne_datoteke,
+        naslov_strani,
+        opis_strani,
+        (zimsko, spomladansko, jesensko),
+        prazniki,
+    )
 
+Načeloma je ta funkcija edina, ki bi jo moral uporabnik kadarkoli uporabiti, saj 
 
-   naredi_html(
-       ["data/test1.ics", "data/test2.ics"],
-       naslov="Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2022/23",
-       opis_strani="Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa),"
-       " Matematika (1Mate) in Praktična matematika (1PrMa) in "
-       "prvih treh letnikih programa Pedagoška matematika (2PeMa) "
-       "na Oddelku za matematiko FMF v študijskem letu 2022/23, ki zadoščajo izbranim kriterijem.",
-   )
+- preveri, ali so razpisani roki v skladu s pravili in
+- zgenerira končni html.
 
-Načeloma je funkcija ``naredi_html`` edina, ki bi jo moral uporabnik
-kadarkoli uporabiti.
+V primeru, da vaši opisi rokov v `.ics` datoteki ne sledijo regularnemu izrazu, ki ga
+uporablja Oddelek za matematiko Univerze v Ljubljani, boste morali podati še neobvezna argumenta
 
-V primeru, da vaši opisi rokov ne sledijo regularnemu izrazu, ki ga
-uporablja Oddelek za matematiko Univerze v Ljubljani, boste morali popraviti
-tudi to. Enako velja za format datumov, ki je v vašem ics.
-V tem primeru je treba funkciji ``naredi_html`` podati še ustrezna formata,
-ki sta natančneje opisana v dokumentaciji.
+- ``oblika_ics_summary`` in/ali
+- ``oblika_ics_datum``,
 
-Če želite prednastavljene meje izpitnih obdobij prilagoditi, lahko gornji funkciji
-podate še argument ``obdobja``, npr.::
-
-   naredi_html(
-      ...,
-      obdobja={
-        "zimsko": (datetime(2022, 1, 15), datetime(2022, 2, 15)),
-        "spomladansko": (datetime(2022, 6, 15), datetime(2022, 7, 15)),
-        "jesensko": (datetime(2022, 8, 15), datetime(2022, 9, 6))
-      }
-   )
-
+ki sta natančneje opisana v dokumentaciji za :meth:`pozeni.glavna` oz. :meth:`izpitni_roki.naredi_html.naredi_html`.
 
 Tu in tam se bo znašla v tem dokumentu kakšna angleška beseda,
 za kar se opravičujemo.
