@@ -27,6 +27,17 @@ vsebino shranijo v objekt tipa :meth:`izpitni_roki.osnovno.Koledar`.
    :undoc-members:
    :show-inheritance:
 
+izpitni\_roki.preverjanje
+-------------------------
+
+V tej datoteki so funkcije, s katerimi preverimo usterznost izpitnih rokov.
+
+.. automodule:: izpitni_roki.preverjanje
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 izpitni\_roki.naredi\_html
 --------------------------
 

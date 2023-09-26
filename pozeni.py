@@ -59,6 +59,24 @@ def glavna(
     oblika_ics_summary: str | None = None,
     oblika_ics_datum: str | None = None,
 ):
+    """
+    Preveri ustreznost razpisanih rokov in zgenerira html.
+
+    :param ics_datoteke: če je to niz, pričakujemo, da je to ime mape, v kateri
+                         se nahajajo ics datoteke, npr. ``data``. Če je to seznam
+                         nizov, je to seznam ics datotek, npr.
+                         ``["data/test1.ics", "data/test2.ics"]``
+    :param naslov_strani: Naslov spletne strani, npr. 
+                          ``"Izpitni roki na OM FMF v študijskem letu 2021/22"``
+    :param opis_strani: Opis strani v zgornjem pravokotniku, npr. 
+            ``"Spodaj so prikazani izpitni roki na programih ... ki zadoščajo izbranim kriterijem."``
+    :param obdobja: trojica parov datumov, ki opisujejo zimsko, spomladansko in jesensko obdobje,
+                    npr. ``(("24. 1. 2024", "16. 2. 2024"), (...), (...))``
+    :param prazniki: seznam datumov, na katere naj ne bo izpitov, npr.
+                     ``["11. 6. 2024", "25. 6. 2024", "15. 8. 2024"]``
+    :param oblika_ics_summary: glej :func:`izpitni_roki.naredi_html`
+    :param oblika_ics_datum: glej :func:`izpitni_roki.naredi_html`
+    """
     # pretvori obdobja
     imena_obdobij = ["zimsko", "spomladansko", "jesensko"]
     obdobja_datumi = tuple((niz_v_datum(d0), niz_v_datum(d1)) for d0, d1 in obdobja)
@@ -93,10 +111,6 @@ def glavna(
 
 
 if __name__ == "__main__":
-    korenska_mapa = os.path.dirname(os.path.abspath(__file__))
-    ics_test = os.path.join(korenska_mapa, "data", "test1.ics")
-    # koledar = nalozi_ics(ics_test)
-
     # Podamo
 
     # ics datoteke:
