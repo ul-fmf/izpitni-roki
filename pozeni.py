@@ -150,6 +150,4 @@ if __name__ == "__main__":
     )
 
     # Glasbene želje
-    prikazi_isrm_roke(
-        ["data/1FiMa2223.ics", "data/1Mate2PeMa2223.ics", "data/1PrMa2223.ics"]
-    )
+    prikazi_isrm_roke(vhodne_datoteke)
