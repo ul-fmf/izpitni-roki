@@ -14,7 +14,7 @@ from datetime import datetime
 
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
 CRKE = "ABCČDEFGHIJKLMNOPRSŠTUVZŽ"
-IZDODNA_MAPA = "out"
+IZHODNA_MAPA = "out"
 
 
 def nalozi_predmete_za_zduzevanje() -> Dict[str, List[str]]:
@@ -320,10 +320,11 @@ def naredi_html(
 
     :return: Ne vrne ničesar, se pa str(predloga za stran) pojavi v izhodni mapi ``out``.
     """
-
+    # nalozi
     koledarji = [
         nalozi_ics(pot, obdobja, oblika_summary, oblika_datum) for pot in poti_do_koledarjev
     ]
+    # ustvari
     vsi_programi = najdi_vse_programe(koledarji)
     vsi_letniki = najdi_vse_letnike(koledarji)
     vsi_roki = najdi_vse_roke(koledarji)
@@ -353,6 +354,6 @@ def naredi_html(
         spustni_meniji=meniji,
         izpiti=izpiti
     )
-    os.makedirs(IZDODNA_MAPA, exist_ok=True)
-    with open(os.path.join(IZDODNA_MAPA, "izpitni_roki.html"), "w", encoding="utf-8") as f:
+    os.makedirs(IZHODNA_MAPA, exist_ok=True)
+    with open(os.path.join(IZHODNA_MAPA, "izpitni_roki.html"), "w", encoding="utf-8") as f:
         print(html_stran, file=f)

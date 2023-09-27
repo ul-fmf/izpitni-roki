@@ -2,6 +2,7 @@ from typing import List, Optional, Dict, Tuple
 from datetime import datetime
 from collections import Counter
 import re
+import os
 from izpitni_roki.osnovno import (
     naredi_zapisnikarja,
     IzpitniRok,
@@ -12,13 +13,15 @@ from izpitni_roki.osnovno import (
     Rok,
     Obdobje,
     Izvajalec,
-    IDTerIme
+    IDTerIme,
 )
 
-OBLIKA_SUMMARY = r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \
-                 r"(?P<letnik>[^ ]+) letnik\\, " \
-                 r"?(?P<izvajalci>([^\\]+\\, ?)+)" \
-                 r"(?P<rok>\d+\.) rok ?$"
+OBLIKA_SUMMARY = (
+    r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?"
+    r"(?P<letnik>[^ ]+) letnik\\, "
+    r"?(?P<izvajalci>([^\\]+\\, ?)+)"
+    r"(?P<rok>\d+\.) rok ?$"
+)
 OBLIKA_DATUM = "%Y%m%d"
 
 
@@ -29,7 +32,7 @@ def doloci_leto(pot: str, oblika_datuma: Optional[str] = None) -> int:
     with open(pot, encoding="utf-8") as f:
         for vrsta in f:
             if vrsta.startswith(kljuc):
-                datum = datetime.strptime(vrsta[len(kljuc):-1], oblika_datuma)
+                datum = datetime.strptime(vrsta[len(kljuc) : -1], oblika_datuma)
                 leta.append(datum.year)
     return Counter(leta).most_common(1)[0][0]
 
@@ -56,16 +59,18 @@ def naredi_izpitna_obdobja(leto: int) -> Dict[str, Tuple[datetime, datetime]]:
     return {
         "zimsko": (datetime(leto, 1, 1), zadnji_februar),
         "spomladansko": (datetime(leto, 6, 1), datetime(leto, 7, 31)),
-        "jesensko": (datetime(leto, 8, 1), datetime(leto, 9, 30))
+        "jesensko": (datetime(leto, 8, 1), datetime(leto, 9, 30)),
     }
 
 
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
 
 
-def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict[str, str], str]:
+def preberi_vrednosti(
+    vrstice: List[str], nujni_kljuci: List[str]
+) -> Tuple[Dict[str, str], str]:
     """
-    Vrstice, ki opisujejo dogodek (izpitni rok) ali pa koledar predela tako, da odstrani
+    Vrstice, ki opisujejo dogodek (izpitni rok) ali pa koledar, predela tako, da odstrani
         morebitne prelome vrstic in jih združi v slovar {kljuc: vrednost, ...}, kjer so ključi
         ključne besede iz .ics formata, npr. ``DTSTART;VALUE=DATE`` ali ``X-WR-TIMEZONE``.
 
@@ -82,19 +87,32 @@ def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict
     """
     kljucne_besede = [
         # dogodek
-        "DTSTART;VALUE=DATE", "DTEND;VALUE=DATE", "DTSTAMP",
-        "UID", "CREATED", "DESCRIPTION", "LAST-MODIFIED", "LOCATION",
-        "SEQUENCE", "STATUS", "SUMMARY", "TRANSP",
+        "DTSTART;VALUE=DATE",
+        "DTEND;VALUE=DATE",
+        "DTSTAMP",
+        "UID",
+        "CREATED",
+        "DESCRIPTION",
+        "LAST-MODIFIED",
+        "LOCATION",
+        "SEQUENCE",
+        "STATUS",
+        "SUMMARY",
+        "TRANSP",
         # koledar
-        "PRODID", "VERSION", "CALSCALE", "METHOD", "X-WR-CALNAME",
-        "X-WR-TIMEZONE"
+        "PRODID",
+        "VERSION",
+        "CALSCALE",
+        "METHOD",
+        "X-WR-CALNAME",
+        "X-WR-TIMEZONE",
     ]
     pari = {}
     zadnja = ""
     for vrsta in vrstice:
         if any(vrsta.startswith((zacetek := kljucna)) for kljucna in kljucne_besede):
             zadnja = zacetek
-            pari[zadnja] = vrsta[len(zacetek) + 1:]
+            pari[zadnja] = vrsta[len(zacetek) + 1 :]
         elif re.match("^[A-Z]+:.+$", vrsta) is not None:
             ZAPISNIKAR.warning(f"Neznana ključna beseda v vrstici {vrsta}, ignoriram")
             zadnja = ""
@@ -109,10 +127,10 @@ def preberi_vrednosti(vrstice: List[str], nujni_kljuci: List[str]) -> Tuple[Dict
 
 
 def sprocesiraj_dogodek(
-        vrstice: List[str],
-        obdobja: List[Obdobje],
-        oblika_summary: Optional[str],
-        oblika_datum: Optional[str]
+    vrstice: List[str],
+    obdobja: List[Obdobje],
+    oblika_summary: Optional[str],
+    oblika_datum: Optional[str],
 ) -> IzpitniRok:
     """
     Iz vrstic dogodka ustvari izpitni rok.
@@ -152,15 +170,17 @@ def sprocesiraj_dogodek(
     :raises: ValueError če ``SUMMARY`` dogodka ni predpisane oblike.
 
     """
+
     def razbij_na_dele(niz: str, prepovedano=None):
         if prepovedano is None:
             prepovedano = []
         return list(
             filter(
                 lambda delcek: delcek not in prepovedano and delcek,
-                map(lambda kos: kos.strip(), niz.split("\\,"))
+                map(lambda kos: kos.strip(), niz.split("\\,")),
             )
         )
+
     if oblika_summary is None:
         pricakovana_oblika = OBLIKA_SUMMARY
     else:
@@ -175,7 +195,9 @@ def sprocesiraj_dogodek(
 
     izpit = re.match(pricakovana_oblika, vrednosti[povzetek])
     if izpit is None:
-        raise ValueError(f"'{vrednosti[povzetek]}' ni izraz oblike {pricakovana_oblika}")
+        raise ValueError(
+            f"'{vrednosti[povzetek]}' ni izraz oblike {pricakovana_oblika}"
+        )
     predmet = izpit.group("predmet").strip()
     smeri = razbij_na_dele(izpit.group("smeri"), prepovedano=["ni smeri"])
     letnik = izpit.group("letnik")
@@ -190,13 +212,15 @@ def sprocesiraj_dogodek(
         IDTerIme.naredi_objekt(Rok, rok),
         [IDTerIme.naredi_objekt(Izvajalec, izvajalec) for izvajalec in izvajalci],
         Obdobje.doloci_obdobje(datum, obdobja),
-        "BEGIN:VEVENT\n" + ics_raw + "\nEND:VEVENT"
+        "BEGIN:VEVENT\n" + ics_raw + "\nEND:VEVENT",
     )
     izpitni_rok.preveri()
     return izpitni_rok
 
 
-def naredi_koledar(meta_vrstice_koledarja: List[str], izpitni_roki: List[IzpitniRok]) -> Koledar:
+def naredi_koledar(
+    meta_vrstice_koledarja: List[str], izpitni_roki: List[IzpitniRok]
+) -> Koledar:
     """
     Iz meta-opisa koledarja prebere smer, doda še izpitne roke in ustvari nov objekt Koledar
 
@@ -212,10 +236,10 @@ def naredi_koledar(meta_vrstice_koledarja: List[str], izpitni_roki: List[Izpitni
 
 
 def nalozi_ics(
-        pot: str,
-        obdobja: Optional[Dict[str, Tuple[datetime, datetime]]] = None,
-        oblika_summary: Optional[str] = None,
-        oblika_datum: Optional[str] = None
+    pot: str,
+    obdobja: Optional[Dict[str, Tuple[datetime, datetime]]] = None,
+    oblika_summary: Optional[str] = None,
+    oblika_datum: Optional[str] = None,
 ) -> Koledar:
     """
     Naloži ics datoteko v Koledar. Pričakovana oblika vsebine datoteke je
@@ -269,7 +293,9 @@ def nalozi_ics(
         obdobja = naredi_izpitna_obdobja(leto)
     seznam_obdobij = []
     for ime_obdobja, (zacetek, konec) in obdobja.items():
-        seznam_obdobij.append(IDTerIme.naredi_objekt(Obdobje, ime_obdobja, zacetek, konec))
+        seznam_obdobij.append(
+            IDTerIme.naredi_objekt(Obdobje, ime_obdobja, zacetek, konec)
+        )
     v_koledarju = False
     v_dogodku = False
     vrstice_koledarja = []
@@ -310,3 +336,4 @@ def nalozi_ics(
             f"ne ujema s številom rokov v datoteki ({n_rokov})."
         )
     return koledar
+

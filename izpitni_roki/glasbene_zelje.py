@@ -3,10 +3,6 @@ from izpitni_roki.nalozi_ics import nalozi_ics
 from typing import List, Callable
 
 
-class A:
-    pass
-
-
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
 
 
