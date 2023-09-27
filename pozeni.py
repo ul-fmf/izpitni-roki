@@ -7,7 +7,7 @@
 import os
 
 from izpitni_roki.nalozi_ics import nalozi_ics
-from izpitni_roki.naredi_html import naredi_html
+from izpitni_roki.naredi_html import naredi_html, IZHODNA_MAPA
 from izpitni_roki.glasbene_zelje import prikazi_isrm_roke
 from izpitni_roki.preverjanje import preveri_vse
 from izpitni_roki.osnovno import niz_v_datum, naredi_zapisnikarja
@@ -66,9 +66,9 @@ def glavna(
                          se nahajajo ics datoteke, npr. ``data``. Če je to seznam
                          nizov, je to seznam ics datotek, npr.
                          ``["data/test1.ics", "data/test2.ics"]``
-    :param naslov_strani: Naslov spletne strani, npr. 
+    :param naslov_strani: Naslov spletne strani, npr.
                           ``"Izpitni roki na OM FMF v študijskem letu 2021/22"``
-    :param opis_strani: Opis strani v zgornjem pravokotniku, npr. 
+    :param opis_strani: Opis strani v zgornjem pravokotniku, npr.
             ``"Spodaj so prikazani izpitni roki na programih ... ki zadoščajo izbranim kriterijem."``
     :param obdobja: trojica parov datumov, ki opisujejo zimsko, spomladansko in jesensko obdobje,
                     npr. ``(("24. 1. 2024", "16. 2. 2024"), (...), (...))``
@@ -113,24 +113,32 @@ def glavna(
 if __name__ == "__main__":
     # Podamo
     leto_zacetka = 2023
-    leto = f"{leto_zacetka}/{(leto_zacetka + 1) % 100:02}"
+    leto_konca = leto_zacetka + 1
+    leto = f"{leto_zacetka}/{leto_konca % 100:02}"
     # ics datoteke:
     # - lahko kot seznam datotek, npr. ["data/test1.ics", "data/test2.ics"]
-    # - lahko kot ime mape, npr. "data"
-    vhodne_datoteke = "letosnji_data"
+    # - lahko kot ime mape, npr. "test_data"
+    vhodne_datoteke = "test_data" #"letosnji_data"
     # naslov strani
-    naslov_strani =  f"Izpitni roki na Oddelku za matematiko FMF v študijskem letu {leto}"
+    naslov_strani = (
+        f"Izpitni roki na Oddelku za matematiko FMF v študijskem letu {leto}"
+    )
     # opis strani: ker je dolg, ga zaradi berljivosti (v .py) prelomimo s pošenico
     opis_strani = f"Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa), \
         Matematika (1Mate) in Praktična matematika (1PrMa) in \
         prvih treh letnikih programa Pedagoška matematika (2PeMa) \
         na Oddelku za matematiko FMF v študijskem letu {leto}, ki zadoščajo izbranim kriterijem."
     # uradna izpitna obdobja
-    zimsko = ("24. 1. 2024", "16. 2. 2024")
-    spomladansko = ("5. 6. 2024", "5. 7. 2024")
-    jesensko = ("19. 8. 2024", "13. 9. 2024")
-    # praznike in izlete
-    prazniki = ["11. 6. 2024", "8. 2. 2024", "25. 6. 2024", "15. 8. 2024"]
+    zimsko = (f"24. 1. {leto_konca}", f"16. 2. {leto_konca}")
+    spomladansko = (f"5. 6. {leto_konca}", f"5. 7. {leto_konca}")
+    jesensko = (f"19. 8. {leto_konca}", f"13. 9. {leto_konca}")
+    # praznike in izlete:
+    # - seznam prepovedanih dni v letošnjem letu (trenutno prazen),
+    # - seznam prepovedanih dni v naslednjem letu (25. junij ipd.)
+    prazniki = [f"{datum} {leto_zacetka}" for datum in []]
+    prazniki += [
+        f"{datum} {leto_konca}" for datum in ["11. 6.", "8. 2.", "25. 6.", "15. 8."]
+    ]
 
     glavna(
         vhodne_datoteke,
