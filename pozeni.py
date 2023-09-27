@@ -118,7 +118,7 @@ if __name__ == "__main__":
     # ics datoteke:
     # - lahko kot seznam datotek, npr. ["data/test1.ics", "data/test2.ics"]
     # - lahko kot ime mape, npr. "test_data"
-    vhodne_datoteke = "test_data"  # "letosnji_data"
+    vhodne_datoteke = "letosnji_data"
     # naslov strani
     naslov_strani = (
         f"Izpitni roki na Oddelku za matematiko FMF v študijskem letu {leto}"
