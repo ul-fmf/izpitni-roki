@@ -1,6 +1,6 @@
 # Izpitni roki
 
-Koda, ki zgenerira spletno stran z izpitnimi roki. Morda nekoč tudi koda, ki bo preverila skladnost rokov s pravili.
+Koda, ki zgenerira spletno stran z izpitnimi roki. Zdaj tudi koda, ki preveri skladnost rokov s pravili.
 
 # Dokumentacija
 
