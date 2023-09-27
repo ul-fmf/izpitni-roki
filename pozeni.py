@@ -112,22 +112,19 @@ def glavna(
 
 if __name__ == "__main__":
     # Podamo
-
+    leto_zacetka = 2023
+    leto = f"{leto_zacetka}/{(leto_zacetka + 1) % 100:02}"
     # ics datoteke:
     # - lahko kot seznam datotek, npr. ["data/test1.ics", "data/test2.ics"]
     # - lahko kot ime mape, npr. "data"
-    vhodne_datoteke = [
-        "data/izbrani_izpiti.ics"
-    ]  # ["data/test1.ics", "data/test2.ics"]
+    vhodne_datoteke = "letosnji_data"
     # naslov strani
-    naslov_strani = (
-        "Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2021/22"
-    )
+    naslov_strani =  f"Izpitni roki na Oddelku za matematiko FMF v študijskem letu {leto}"
     # opis strani: ker je dolg, ga zaradi berljivosti (v .py) prelomimo s pošenico
-    opis_strani = "Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa), \
+    opis_strani = f"Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa), \
         Matematika (1Mate) in Praktična matematika (1PrMa) in \
         prvih treh letnikih programa Pedagoška matematika (2PeMa) \
-        na Oddelku za matematiko FMF v študijskem letu 2021/22, ki zadoščajo izbranim kriterijem."
+        na Oddelku za matematiko FMF v študijskem letu {leto}, ki zadoščajo izbranim kriterijem."
     # uradna izpitna obdobja
     zimsko = ("24. 1. 2024", "16. 2. 2024")
     spomladansko = ("5. 6. 2024", "5. 7. 2024")
