@@ -16,7 +16,7 @@ from izpitni_roki.osnovno import niz_v_datum, naredi_zapisnikarja
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
 
 
-def poskrbi_za_izhodno_mapo():
+def poskrbi_za_izhodno_mapo(): 
     if not os.path.exists(IZHODNA_MAPA):
         return
     html_datoteke = []
