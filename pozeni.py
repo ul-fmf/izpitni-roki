@@ -114,6 +114,7 @@ if __name__ == "__main__":
     # Podamo
     leto_zacetka = 2023
     leto = f"{leto_zacetka}/{(leto_zacetka + 1) % 100:02}"
+    leto_kratko = f"{(leto_zacetka) % 100:02}{(leto_zacetka + 1) % 100:02}"
     # ics datoteke:
     # - lahko kot seznam datotek, npr. ["data/test1.ics", "data/test2.ics"]
     # - lahko kot ime mape, npr. "data"
@@ -141,6 +142,6 @@ if __name__ == "__main__":
     )
 
     # Glasbene želje
-    # prikazi_isrm_roke(
-    #     ["data/1FiMa2223.ics", "data/1Mate2PeMa2223.ics", "data/1PrMa2223.ics"]
-    # )
+    prikazi_isrm_roke(
+         ["letosnji_data/1FiMa" + leto_kratko + ".ics", "letosnji_data/1Mate2PeMa" + leto_kratko + ".ics", "letosnji_data/1PrMa" + leto_kratko + ".ics"]
+     )
