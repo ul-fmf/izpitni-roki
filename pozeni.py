@@ -16,6 +16,32 @@ from izpitni_roki.osnovno import niz_v_datum, naredi_zapisnikarja
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
 
 
+def poskrbi_za_izhodno_mapo():
+    if not os.path.exists(IZHODNA_MAPA):
+        return
+    html_datoteke = []
+    for dato in os.listdir(IZHODNA_MAPA):
+        if dato.endswith("html"):
+            html_datoteke.append(os.path.join(IZHODNA_MAPA, dato))
+    if not html_datoteke:
+        return
+    odgovor = (
+        input(
+            f"V izhodni mapi ({IZHODNA_MAPA}) sem našel vsaj eno html datoteko.\n"
+            f"Če nadaljujete, jo bom izbrisal. Želite nadaljevati? (j/n) "
+        )
+        .strip()
+        .lower()
+    )
+    if odgovor == "j":
+        for dato in html_datoteke:
+            ZAPISNIKAR.info(f"Odstranjujem {dato}")
+            os.remove(dato)
+    else:
+        ZAPISNIKAR.info("Niste dali soglasja za nadaljevanje. Prekinjamo izvedbo.")
+        exit(0)
+
+
 def najdi_vse_ics(mapa: str) -> list[str]:
     """
     Najdi vse ics datoteke v dani mapi.
@@ -111,6 +137,7 @@ def glavna(
 
 
 if __name__ == "__main__":
+    poskrbi_za_izhodno_mapo()
     # Podamo
     leto_zacetka = 2023
     leto_konca = leto_zacetka + 1
@@ -118,7 +145,7 @@ if __name__ == "__main__":
     # ics datoteke:
     # - lahko kot seznam datotek, npr. ["data/test1.ics", "data/test2.ics"]
     # - lahko kot ime mape, npr. "test_data"
-    vhodne_datoteke = "test_data" #"letosnji_data"
+    vhodne_datoteke = "test_data"  # "letosnji_data"
     # naslov strani
     naslov_strani = (
         f"Izpitni roki na Oddelku za matematiko FMF v študijskem letu {leto}"
