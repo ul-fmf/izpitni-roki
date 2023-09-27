@@ -1,6 +1,7 @@
 letosnji_data
+data
 .idea
-out/izpitni_roki.html
+out/*.html
 **/_build
 **/_static
 **/_templates

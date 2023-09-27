@@ -1,4 +1,4 @@
-from izpitni_roki.osnovno import Koledar, IzpitniRok, naredi_zapisnikarja
+from izpitni_roki.osnovno import Koledar, IzpitniRok, naredi_zapisnikarja, preveri_ics_datoteke
 from izpitni_roki.nalozi_ics import nalozi_ics
 from typing import List, Callable
 
@@ -48,14 +48,17 @@ def _filter_za_isrm(rok: IzpitniRok):
     return False
 
 
-def prikazi_isrm_roke(poti_do_ics: List[str]):
+def prikazi_isrm_roke(poti_do_ics: str | list[str]):
     """
     Prikaže roke za predmete, ki jih ponujamo IŠRM. Izda opozorilo, če za kakšnega od predmetov
     ni bil najden noben rok.
 
-    :param poti_do_ics: poti do ics datotek
+    :param poti_do_ics: poti do ics datotek kot a) niz, ki predstavlja ime mape, npr. ``letosnji_data``
+                        (najdemo vse ics datoteke v dani mapi), ali b) seznam ics datotek, npr.
+                        ``["letosnji_data/test1.ics", "letosnji_data/test2.ics"]``
     :return: ne vrne ničesar, samo izpiše ustrezne vrstice
     """
+    poti_do_ics = preveri_ics_datoteke(poti_do_ics)
     koledarji = [nalozi_ics(pot) for pot in poti_do_ics]
     ustrezni_roki = ustrezni_izpitni_roki(koledarji, _filter_za_isrm)
     print("Roki za predmete, ki jih ponudimo IŠRM:")

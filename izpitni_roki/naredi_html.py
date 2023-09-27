@@ -287,6 +287,7 @@ def naredi_html(
         poti_do_koledarjev: List[str],
         naslov: str = "Naslov strani",
         opis_strani: str = "Opis strani",
+        ime_izhodne: str = "izpitni_roki",
         obdobja: Optional[Dict[str, Tuple[datetime, datetime]]] = None,
         oblika_summary: Optional[str] = None,
         oblika_datum: Optional[str] = None
@@ -295,6 +296,7 @@ def naredi_html(
     Naredi celotno spletno stran.
 
     :param poti_do_koledarjev: seznam poti do .ics datotek, ki vsebujejo izpitne roke
+    :param ime_izhodne: ime izhodne datoteke, npr. ``izpitni_roki`` (in ne ``izpitni_roki.html``)
     :param naslov: naslov spletne strani, npr.
 
         .. code-block:: text
@@ -355,5 +357,5 @@ def naredi_html(
         izpiti=izpiti
     )
     os.makedirs(IZHODNA_MAPA, exist_ok=True)
-    with open(os.path.join(IZHODNA_MAPA, "izpitni_roki.html"), "w", encoding="utf-8") as f:
+    with open(os.path.join(IZHODNA_MAPA, f"{ime_izhodne}.html"), "w", encoding="utf-8") as f:
         print(html_stran, file=f)
