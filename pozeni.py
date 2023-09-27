@@ -10,13 +10,13 @@ from izpitni_roki.nalozi_ics import nalozi_ics
 from izpitni_roki.naredi_html import naredi_html, IZHODNA_MAPA
 from izpitni_roki.glasbene_zelje import prikazi_isrm_roke
 from izpitni_roki.preverjanje import preveri_vse
-from izpitni_roki.osnovno import niz_v_datum, naredi_zapisnikarja
+from izpitni_roki.osnovno import niz_v_datum, naredi_zapisnikarja, preveri_ics_datoteke
 
 
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
 
 
-def poskrbi_za_izhodno_mapo(): 
+def poskrbi_za_izhodno_mapo():
     if not os.path.exists(IZHODNA_MAPA):
         return
     html_datoteke = []
@@ -42,44 +42,14 @@ def poskrbi_za_izhodno_mapo():
         exit(0)
 
 
-def najdi_vse_ics(mapa: str) -> list[str]:
-    """
-    Najdi vse ics datoteke v dani mapi.
 
-    :param mapa: pot do mape
-    :return: seznam vseh ics datotek v mapi
-    """
-    vse = []
-    for dato in os.listdir(mapa):
-        pot = os.path.join(mapa, dato)
-        if os.path.isfile(pot) and pot.endswith(".ics"):
-            vse.append(pot)
-    return vse
-
-
-def preveri_ics_datoteke(ics_datoteke: str | list[str]) -> list[str]:
-    if isinstance(ics_datoteke, str):
-        # pričakujemo, da je mapa
-        if os.path.isdir(ics_datoteke):
-            ics_datoteke = najdi_vse_ics(ics_datoteke)
-        else:
-            ZAPISNIKAR.error(
-                "Če je argument ics_datoteke niz, potem mora biti to mapa, "
-                f"a mapa {ics_datoteke} ne obstaja."
-            )
-            exit(1)
-    else:
-        for datoteka in ics_datoteke:
-            if not os.path.exists(datoteka):
-                ZAPISNIKAR.error(f"Iskana ics datoteka {datoteka} ne obstaja.")
-                exit(2)
-    return ics_datoteke
 
 
 def glavna(
     ics_datoteke: str | list[str],
     naslov_strani: str,
     opis_strani: str,
+    ime_html: str,
     obdobja: tuple[tuple[str, str]],
     prazniki: list[str],
     oblika_ics_summary: str | None = None,
@@ -96,6 +66,7 @@ def glavna(
                           ``"Izpitni roki na OM FMF v študijskem letu 2021/22"``
     :param opis_strani: Opis strani v zgornjem pravokotniku, npr.
             ``"Spodaj so prikazani izpitni roki na programih ... ki zadoščajo izbranim kriterijem."``
+    :param ime_html: ime končne html datoteke (brez končnice html, npr. ``roki_2324``)
     :param obdobja: trojica parov datumov, ki opisujejo zimsko, spomladansko in jesensko obdobje,
                     npr. ``(("24. 1. 2024", "16. 2. 2024"), (...), (...))``
     :param prazniki: seznam datumov, na katere naj ne bo izpitov, npr.
@@ -129,6 +100,7 @@ def glavna(
         ics_datoteke,
         naslov=naslov_strani,
         opis_strani=opis_strani,
+        ime_izhodne=ime_html,
         obdobja=slo_obdobja,
         oblika_summary=None,
         oblika_datum=None,
@@ -142,6 +114,7 @@ if __name__ == "__main__":
     leto_zacetka = 2023
     leto_konca = leto_zacetka + 1
     leto = f"{leto_zacetka}/{leto_konca % 100:02}"
+    ime_koncne_datoteke = f"izpiti{leto_zacetka % 100:02}{leto_konca % 100:02}"
     # ics datoteke:
     # - lahko kot seznam datotek, npr. ["data/test1.ics", "data/test2.ics"]
     # - lahko kot ime mape, npr. "test_data"
@@ -171,11 +144,12 @@ if __name__ == "__main__":
         vhodne_datoteke,
         naslov_strani,
         opis_strani,
+        ime_koncne_datoteke,
         (zimsko, spomladansko, jesensko),
         prazniki,
     )
 
     # Glasbene želje
-    # prikazi_isrm_roke(
-    #     ["data/1FiMa2223.ics", "data/1Mate2PeMa2223.ics", "data/1PrMa2223.ics"]
-    # )
+    prikazi_isrm_roke(
+        ["data/1FiMa2223.ics", "data/1Mate2PeMa2223.ics", "data/1PrMa2223.ics"]
+    )

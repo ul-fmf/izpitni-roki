@@ -502,7 +502,7 @@ class IzpitniRok:
         ]
         for enakost, ime in nujne_enakosti:
             if not enakost:
-                raise ValueError(
+                ZAPISNIKAR.error(
                     f"{ime} se ne ujemata pri izpitnih rokih:\n{izpitni_rok1}\n{izpitni_rok2}"
                 )
         skupni_programi = izpitni_rok1.programi + izpitni_rok2.programi
@@ -620,7 +620,7 @@ class HtmlPredloga:
         return niz
 
 
-# Pomožne funkcije za datume
+# Pomožne funkcije
 
 
 def niz_v_datum(niz):
@@ -629,3 +629,37 @@ def niz_v_datum(niz):
 
 def datum_v_niz(d):
     return d.strftime("%d. %m. %Y")
+
+
+def najdi_vse_ics(mapa: str) -> list[str]:
+    """
+    Najdi vse ics datoteke v dani mapi.
+
+    :param mapa: pot do mape
+    :return: seznam vseh ics datotek v mapi
+    """
+    vse = []
+    for dato in os.listdir(mapa):
+        pot = os.path.join(mapa, dato)
+        if os.path.isfile(pot) and pot.endswith(".ics"):
+            vse.append(pot)
+    return vse
+
+
+def preveri_ics_datoteke(ics_datoteke: str | list[str]) -> list[str]:
+    if isinstance(ics_datoteke, str):
+        # pričakujemo, da je mapa
+        if os.path.isdir(ics_datoteke):
+            ics_datoteke = najdi_vse_ics(ics_datoteke)
+        else:
+            ZAPISNIKAR.error(
+                "Če je argument ics_datoteke niz, potem mora biti to mapa, "
+                f"a mapa {ics_datoteke} ne obstaja."
+            )
+            exit(1)
+    else:
+        for datoteka in ics_datoteke:
+            if not os.path.exists(datoteka):
+                ZAPISNIKAR.error(f"Iskana ics datoteka {datoteka} ne obstaja.")
+                exit(2)
+    return ics_datoteke
