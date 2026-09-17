@@ -148,7 +148,7 @@ class Predmet(IDTerIme):
 class Program(IDTerIme):
     LEPSE_OBLIKE = {
         "1FiMa": "Finančna matematika",
-        "1PrMa": "Praktična matematika",
+        "1ApMa": "Aplikativna matematika",
         "2PeMa": "Pedagoška matematika",
         "1Mate": "Matematika",
         "magistrski študij": "Magistrski študij",

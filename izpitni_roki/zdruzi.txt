@@ -3,7 +3,7 @@ Programiranje 1,1FiMa,1Mate,2PeMa
 Podatkovne strukture in algoritmi 1,1FiMa,1Mate
 Teorija iger,1FiMa,1Mate
 Diskretna matematika 1,1FiMa,1Mate in 2PeMa
-Računalniški praktikum,1FiMa,1Mate in 2PeMa,1PrMa
+Računalniški praktikum,1FiMa,1Mate in 2PeMa,1ApMa
 Splošna topologija,1FiMa,1Mate in 2PeMa
 Uvod v diferencialno geometrijo,1FiMa,1Mate in 2PeMa
 Diskretna matematika 2,1FiMa,1Mate

@@ -125,7 +125,7 @@ if __name__ == "__main__":
     )
     # opis strani: ker je dolg, ga zaradi berljivosti (v .py) prelomimo s pošenico
     opis_strani = f"Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa), \
-        Matematika (1Mate) in Praktična matematika (1PrMa) in \
+        Matematika (1Mate) in Aplikativna matematika (1ApMa) in \
         prvih treh letnikih programa Pedagoška matematika (2PeMa) \
         na Oddelku za matematiko FMF v študijskem letu {leto}, ki zadoščajo izbranim kriterijem."
     # uradna izpitna obdobja

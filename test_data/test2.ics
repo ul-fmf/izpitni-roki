@@ -3,7 +3,7 @@ PRODID:-//Google Inc//Google Calendar 70.9054//EN
 VERSION:2.0
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALNAME:Praktična matematika 2021/22
+X-WR-CALNAME:Aplikativna matematika 2021/22
 X-WR-TIMEZONE:Europe/Belgrade
 BEGIN:VEVENT
 DTSTART;VALUE=DATE:20220826
@@ -16,7 +16,7 @@ LAST-MODIFIED:20210913T122710Z
 LOCATION:
 SEQUENCE:0
 STATUS:CONFIRMED
-SUMMARY:Računalništvo 2 (1PrMa\, ni smeri)\, tretji letnik\, Mokar Mitja\
+SUMMARY:Računalništvo 2 (1ApMa\, ni smeri)\, tretji letnik\, Mokar Mitja\
  , Rolih Boštjan\, 3. rok
 TRANSP:TRANSPARENT
 END:VEVENT

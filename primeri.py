@@ -12,9 +12,9 @@ print(leto0)
 
 # Ustvari spletno stran iz testnih podatkov
 naredi_html(
-    ["data/1FiMa" + leto0 + ".ics", "data/1Mate2PeMa" + leto0 + ".ics", "data/1PrMa" + leto0 + ".ics"],
+    ["data/1FiMa" + leto0 + ".ics", "data/1Mate2PeMa" + leto0 + ".ics", "data/1ApMa" + leto0 + ".ics"],
     naslov="Izpitni roki na Oddelku za matematiko FMF v študijskem letu " + leto1,
-    opis_strani="""Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa), Matematika (1Mate) in Praktična matematika (1PrMa) in prvih treh letnikih programa Pedagoška matematika (2PeMa) na Oddelku za matematiko FMF v študijskem letu """ + leto1 + """, ki zadoščajo izbranim kriterijem.""",
+    opis_strani="""Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa), Matematika (1Mate) in Aplikativna matematika (1ApMa) in prvih treh letnikih programa Pedagoška matematika (2PeMa) na Oddelku za matematiko FMF v študijskem letu """ + leto1 + """, ki zadoščajo izbranim kriterijem.""",
 
 #Izbrane izpitne roke lahko prenesete kot .ics datoteko in jih nato dodate v svoj osebni koledar, vendar pozor: morebitne kasnejše spremembe izpitnih rokov se v vašem osebnem koledarju ne bodo poznale.""",
     obdobja={
@@ -28,4 +28,4 @@ naredi_html(
 
 
 # Glasbene želje
-prikazi_isrm_roke(["data/1FiMa" + leto0 + ".ics", "data/1Mate2PeMa" + leto0 + ".ics", "data/1PrMa" + leto0 + ".ics"])
+prikazi_isrm_roke(["data/1FiMa" + leto0 + ".ics", "data/1Mate2PeMa" + leto0 + ".ics", "data/1ApMa" + leto0 + ".ics"])

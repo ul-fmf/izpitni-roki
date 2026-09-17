@@ -342,7 +342,7 @@ def naredi_html(
         .. code-block:: text
 
             "Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa),
-            Matematika (1Mate) in Praktična matematika (1PrMa) in prvih treh letnikih programa
+            Matematika (1Mate) in Aplikativna matematika (1ApMa) in prvih treh letnikih programa
             Pedagoška matematika (2PeMa) na Oddelku za matematiko FMF v študijskem letu 2022/23,
             ki zadoščajo izbranim kriterijem."
 
