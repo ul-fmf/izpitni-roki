@@ -2,9 +2,9 @@
 
 Koda, ki zgenerira spletno stran z izpitnimi roki. Zdaj tudi koda, ki preveri skladnost rokov s pravili.
 
-# Dokumentacija
+# Dokumentacija in primer
 
-je dostopna [tukaj](https://ul-fmf.github.io/izpitni-roki/).
+sta dostopna [tukaj](https://ul-fmf.github.io/izpitni-roki/).
 
 # Prenos kode k sebi
 

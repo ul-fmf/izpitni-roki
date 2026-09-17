@@ -25,6 +25,14 @@ jobs:
     - name: Sphinx build
       run: |
         sphinx-build docs _build
+    # Poleg dokumentacije objavimo se testno stran (iz podatkov v test_data),
+    # da je razvidno, kako je videti in deluje koncni izdelek. Pravih rokov
+    # ne objavljamo: vhodnih .ics datotek v repozitoriju ni.
+    - name: Build demo page
+      run: |
+        python naredi_testno_stran.py
+        cp -r out _build/testna-stran
+        cp out/testna_stran.html _build/testna-stran/index.html
     - name: Artifact upload
       uses: actions/upload-pages-artifact@v4
       with:

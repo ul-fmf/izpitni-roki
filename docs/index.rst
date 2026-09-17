@@ -6,6 +6,9 @@
 Dokumentacija za projekt Izpitni roki
 =====================================
 
+Kako je videti stran, ki jo koda zgenerira, si lahko ogledate na
+`testni strani <testna-stran/>`_. Pozor: ta ne vsebuje pravih izpitnih rokov.
+
 Dobrodošli! Uporaba kode, ki se skriva na repozitoriju, je prikazana v datoteki `pozeni.py` in spodaj::
 
    glavna(
