@@ -317,7 +317,13 @@ class IzpitniRok:
         self.izvajalci: List[Izvajalec] = izvajalci
         self.obdobje: Obdobje = obdobje
 
-        self._ics_vrstice: str = ics_vrstice
+        self._ics_vrstice: str = ""
+        # Nastavimo prek lastnosti, ki prelome vrstic nadomesti z @@@@. Tako je
+        # vrednost enovrstična, kar je nujno: HtmlPredloga zamakne vsako naslednjo
+        # vrstico vstavljene vsebine, v ics pa vrstica, ki se začne s presledkom,
+        # pomeni nadaljevanje prejšnje (RFC 5545), zaradi česar dogodkov ni mogoče
+        # uvoziti. Znake @@@@ nazaj v prelome vrstic pretvori out/posodabljanje.js.
+        self.ics_vrstice = ics_vrstice
 
     def preveri(self):
         """
@@ -366,10 +372,37 @@ class IzpitniRok:
         izvajalci = "\\, ".join(map(str, self.izvajalci))
         return f"{self.predmet} ({smeri_in_letniki})\\, {izvajalci}\\, {self.rok} rok"
 
+    @staticmethod
+    def _zvij_vrstico(vrsta: str, dolzina: int = 75) -> str:
+        """
+        Dolgo ics vrstico zvije (angl. fold) na največ ``dolzina`` bajtov, kot zahteva
+        RFC 5545. Nadaljevalne vrstice se začnejo s presledkom, ki se šteje v dolžino.
+        Ker so vrstice ločene z ``@@@@``, jih s tem ločimo tudi tu.
+
+        :param vrsta: ena ics vrstica, npr. ``"SUMMARY:Zelo dolgo ime predmeta ..."``
+        :param dolzina: največja dolžina vrstice v bajtih
+
+        :return: zvita vrstica, npr. ``"SUMMARY:Zelo dolgo ...@@@@ ostanek"``
+        """
+        kosi = []
+        trenutni = ""
+        poraba = 0  # bajti v trenutnem kosu
+        zamik = 0  # 1 pri nadaljevalnih vrsticah zaradi vodilnega presledka
+        for znak in vrsta:
+            n_bajtov = len(znak.encode("utf-8"))
+            if poraba + zamik + n_bajtov > dolzina:
+                kosi.append(trenutni)
+                trenutni, poraba, zamik = "", 0, 1
+            trenutni += znak
+            poraba += n_bajtov
+        kosi.append(trenutni)
+        return "@@@@ ".join(kosi)
+
     @property
     def ics_vrstice(self):
         def menjalec(m):
-            return "SUMMARY:" + self._ics_summary() + "@@@@" + m.group(1)
+            zvita = IzpitniRok._zvij_vrstico("SUMMARY:" + self._ics_summary())
+            return zvita + "@@@@" + m.group(1)
 
         return re.sub("SUMMARY:.+?@@@@([^ ])", menjalec, self._ics_vrstice)
 
