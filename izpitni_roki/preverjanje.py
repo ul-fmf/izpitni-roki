@@ -29,6 +29,30 @@ def nalozi_obvezne_predmete():
 
 OBVEZNI_PREDMETI = nalozi_obvezne_predmete()
 
+# Letnik, ki ga dobijo program-letniki programov brez letnikov (npr. magistrski študij)
+BREZ_LETNIKA = 0
+
+
+def obvezni_predmeti(program: str, letnik: int) -> list[str]:
+    """
+    Poišče obvezne predmete danega program-letnika.
+
+    :param program: npr. ``"1FiMa"``
+    :param letnik: 1, 2, 3, 4 ali 5, oz. ``BREZ_LETNIKA`` pri programih brez letnikov
+    :return: seznam obveznih predmetov; pri program-letnikih, za katere obveznih
+             predmetov ne poznamo (npr. magistrski študij), je ta prazen
+    """
+    if letnik == BREZ_LETNIKA:
+        return []
+    if program not in OBVEZNI_PREDMETI or letnik > len(OBVEZNI_PREDMETI[program]):
+        ZAPISNIKAR.warning(
+            f"Za {program} ({letnik}. letnik) ne poznam obveznih predmetov, zato "
+            f"preverjam, kot da jih ni. Če jih ima, jih dodajte v datoteko "
+            f"'izpitni_roki/obvezni_predmeti.json'."
+        )
+        return []
+    return OBVEZNI_PREDMETI[program][letnik - 1]
+
 
 def razbij_po_program_letnikih(
     izpitni_roki: list[IzpitniRok],
@@ -44,7 +68,11 @@ def razbij_po_program_letnikih(
     koledarji = {}
     for izpitni_rok in izpitni_roki:
         for program, letnik in zip(izpitni_rok.programi, izpitni_rok.letniki):
-            program_letnik = (program.ime, Letnik.DOVOLJENI_LETNIKI[letnik.ime])
+            if letnik.je_brez_letnika():
+                stevilka_letnika = BREZ_LETNIKA
+            else:
+                stevilka_letnika = Letnik.DOVOLJENI_LETNIKI[letnik.ime]
+            program_letnik = (program.ime, stevilka_letnika)
             if program_letnik not in koledarji:
                 koledarji[program_letnik] = []
             koledarji[program_letnik].append(izpitni_rok)
@@ -63,7 +91,7 @@ def preveri_predmet_letnik(
     skladni s pravili.
 
     :param program: npr. ``"1FiMa"``
-    :param letnik: 1, 2, 3, 4 ali 5
+    :param letnik: 1, 2, 3, 4 ali 5, oz. ``BREZ_LETNIKA`` pri programih brez letnikov
     :param izpitni_roki: razpisani roki danega program-letnika
     :param obdobja: trojica intervalov, ki podaja zimsko, spomladansko in jesensko
                     izpitno obdobje. Vsak interval je podan s paroma datumov, npr.
@@ -78,12 +106,16 @@ def preveri_predmet_letnik(
     spomladansko_zacetek, spomladansko_konec = map(niz_v_datum, spomladansko)
     jesensko_zacetek, jesensko_konec = map(niz_v_datum, jesensko)
 
-    ZAPISNIKAR.info(f"Preverjam {program} ({letnik}. letnik)")
+    if letnik == BREZ_LETNIKA:
+        ZAPISNIKAR.info(f"Preverjam {program}")
+    else:
+        ZAPISNIKAR.info(f"Preverjam {program} ({letnik}. letnik)")
+    obvezni = obvezni_predmeti(program, letnik)
     opozorila = []
     # Shrani podatke v pandas dataframe
     datumi_imena = [[rok.datum, rok.predmet.ime] for rok in izpitni_roki]
     for i, (_, ime_predmeta) in enumerate(datumi_imena):
-        if ime_predmeta.upper() in OBVEZNI_PREDMETI[program][letnik - 1]:
+        if ime_predmeta.upper() in obvezni:
             datumi_imena[i][1] = ime_predmeta.upper()
     df = pd.DataFrame(datumi_imena, columns=["Datum", "Ime"])
     df = df.sort_values(by=["Datum", "Ime"])
@@ -156,9 +188,7 @@ def preveri_predmet_letnik(
     if len(datumi_z_vec_izpiti) > 0:
         vrstice = ["Obstajajo potencialni slabi datumi z več izpiti na ta datum:"]
         for d in datumi_z_vec_izpiti:
-            if set(df[df["Datum"] == d]["Ime"].unique().tolist()) & set(
-                OBVEZNI_PREDMETI[program][letnik - 1]
-            ):
+            if set(df[df["Datum"] == d]["Ime"].unique().tolist()) & set(obvezni):
                 d_str = datum_v_niz(d)
                 imena = ", ".join(df[df["Datum"] == d]["Ime"].unique().tolist())
                 vrstice.append(f"  - {d_str}: {imena}")

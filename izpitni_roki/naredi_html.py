@@ -1,5 +1,6 @@
 import os
 import re
+import unicodedata
 from izpitni_roki.osnovno import (
     naredi_zapisnikarja,
     IzpitniRok,
@@ -113,12 +114,16 @@ def najdi_vse_programe(koledarji: List[Koledar]) -> List[IDTerIme]:
 def najdi_vse_letnike(koledarji: List[Koledar]) -> List[IDTerIme]:
     """
     Najdemo vse letnike, ki se pojavijo v izpiznih rokih v koledarju.
+    Nadomestni letnik programov, ki letnikov nimajo (npr. magistrski študij),
+    izpustimo, saj v spustni meni ne sodi: roki takih programov filtra po
+    letnikih ne upoštevajo.
 
     :param koledarji: seznam koledarjev
 
-    :return: (urejeni) letniki (brez ponovitev)
+    :return: (urejeni) letniki (brez ponovitev in brez Letnik.BREZ_LETNIKA)
     """
-    return najdi_vse(koledarji, lambda rok: rok.letniki)
+    letniki = najdi_vse(koledarji, lambda rok: rok.letniki)
+    return [letnik for letnik in letniki if not letnik.je_brez_letnika()]
 
 
 def najdi_vse_roke(koledarji: List[Koledar]) -> List[IDTerIme]:
@@ -165,6 +170,28 @@ def najdi_vsa_obdobja(koledarji: List[Koledar]) -> List[IDTerIme]:
     return najdi_vse(koledarji, lambda rok: [rok.obdobje])
 
 
+def doloci_skupinsko_crko(moznost: IDTerIme) -> str:
+    """
+    Pove, pod katero črko v dvonivojskem spustnem meniju sodi dana možnost.
+
+    :param moznost: možnost, npr. ``Izvajalec("Álvarez Román")``
+
+    :return: črka iz ``CRKE``. Tuje črke, ki jih ``CRKE`` ne pozna (npr. ``Á``),
+        uvrstimo k osnovni črki (``A``).
+    """
+    crka = moznost[0].upper()
+    if crka in CRKE:
+        return crka
+    osnovna_crka = unicodedata.normalize("NFD", crka)[0]
+    if osnovna_crka in CRKE:
+        return osnovna_crka
+    ZAPISNIKAR.warning(
+        f"Črke '{crka}' (na začetku '{moznost.ime}') ne poznam, "
+        f"zato možnost uvrščam pod '{CRKE[0]}'."
+    )
+    return CRKE[0]
+
+
 def naredi_spustni_meni_po_crkah(
         ime_menija: str,
         html_razred: str,
@@ -177,11 +204,14 @@ def naredi_spustni_meni_po_crkah(
     :param html_razred: razred, ki ga dodatmo v ``class`` atribut vseh možnosti
     :param moznosti: Urejen seznam moznosti.
 
-    :return: str(html predloga za dvonivojski spustni meni)
+    :return: str(html predloga za dvonivojski spustni meni), oz. prazen niz,
+        če ni nobene možnosti
     """
+    if not moznosti:
+        return ""
     skupine: List[List[IDTerIme]] = [[] for _ in CRKE]
     for moznost in moznosti:
-        ime_skupine = moznost[0].upper()
+        ime_skupine = doloci_skupinsko_crko(moznost)
         skupine[CRKE.index(ime_skupine)].append(moznost)
     elementi_nivo1 = []
     for crka, skupina in zip(CRKE, skupine):
@@ -225,8 +255,12 @@ def naredi_spustni_meni(ime_menija: str, html_razred: str, moznosti: List[IDTerI
     :param html_razred: razred, ki ga dodatmo v ``class`` atribut vseh možnosti
     :param moznosti: Urejen seznam moznosti.
 
-    :return: str(html predloga enonivojski spustni meni)
+    :return: str(html predloga enonivojski spustni meni), oz. prazen niz,
+        če ni nobene možnosti (npr. meni letnikov, kadar prikazujemo le
+        programe brez letnikov)
     """
+    if not moznosti:
+        return ""
     elementi_nivo2 = []
     for moznost in moznosti:
         element = HtmlPredloga(
@@ -341,10 +375,13 @@ def naredi_html(
     meni_izvajalci = naredi_spustni_meni_po_crkah("Izvajalci", "izvajalec", vsi_izvajalci)
     meni_roki = naredi_spustni_meni("Roki", "rok", vsi_roki)
 
+    # prazne menije (npr. letniki, kadar noben program letnikov nima) izpustimo
     meniji = "\n\n".join(
         [
-            meni_programi, meni_letniki, meni_obdobja, meni_predmeti, meni_izvajalci, meni_roki,
-            str(HtmlPredloga("prenos"))
+            meni for meni in [
+                meni_programi, meni_letniki, meni_obdobja, meni_predmeti,
+                meni_izvajalci, meni_roki, str(HtmlPredloga("prenos"))
+            ] if meni
          ]
     )
     izpiti = naredi_tabelo(koledarji)

@@ -16,10 +16,12 @@ from izpitni_roki.osnovno import (
     IDTerIme,
 )
 
+# Skupina letnik je neobvezna: programi, ki letnikov nimajo (npr. magistrski
+# študij), je v polju SUMMARY ne navedejo.
 OBLIKA_SUMMARY = (
     r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?"
-    r"(?P<letnik>[^ ]+) letnik\\, "
-    r"?(?P<izvajalci>([^\\]+\\, ?)+)"
+    r"((?P<letnik>[^ ]+) letnik\\, ?)?"
+    r"(?P<izvajalci>([^\\]+\\, ?)+)"
     r"(?P<rok>\d+\.) rok ?$"
 )
 OBLIKA_DATUM = "%Y%m%d"
@@ -159,8 +161,8 @@ def sprocesiraj_dogodek(
         .. code-block:: python
 
             r"^(?P<predmet>[^(]+)\((?P<smeri>[^)]+)\)\\, ?" \\
-            r"(?P<letnik>[^ ]+) letnik\\, " \\
-            r"?(?P<izvajalci>([^\\]+\\, ?)+)" \\
+            r"((?P<letnik>[^ ]+) letnik\\, ?)?" \\
+            r"(?P<izvajalci>([^\\]+\\, ?)+)" \\
             r"(?P<rok>\d+\.) rok ?$"
 
     :param oblika_datum: pythonov format za datum, npr. ``%Y%m%d``
@@ -200,7 +202,10 @@ def sprocesiraj_dogodek(
         )
     predmet = izpit.group("predmet").strip()
     smeri = razbij_na_dele(izpit.group("smeri"), prepovedano=["ni smeri"])
+    # programi brez letnikov (npr. magistrski študij) letnika ne navedejo
     letnik = izpit.group("letnik")
+    if letnik is None:
+        letnik = Letnik.BREZ_LETNIKA
     izvajalci = razbij_na_dele(izpit.group("izvajalci"))
     rok = izpit.group("rok")
 

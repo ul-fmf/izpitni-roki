@@ -111,7 +111,7 @@ def glavna(
 if __name__ == "__main__":
     poskrbi_za_izhodno_mapo()
     # Podamo
-    leto_zacetka = 2023
+    leto_zacetka = 2026
     leto_konca = leto_zacetka + 1
     leto = f"{leto_zacetka}/{leto_konca % 100:02}"
     ime_koncne_datoteke = f"izpiti{leto_zacetka % 100:02}{leto_konca % 100:02}"

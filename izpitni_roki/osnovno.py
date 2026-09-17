@@ -151,6 +151,7 @@ class Program(IDTerIme):
         "1PrMa": "Praktična matematika",
         "2PeMa": "Pedagoška matematika",
         "1Mate": "Matematika",
+        "magistrski študij": "Magistrski študij",
     }
 
     def __str__(self):
@@ -167,22 +168,46 @@ class Program(IDTerIme):
 class Letnik(IDTerIme):
     DOVOLJENI_LETNIKI = {"prvi": 1, "drugi": 2, "tretji": 3, "četrti": 4, "peti": 5}
 
+    # Nekateri programi (npr. magistrski študij) letnikov nimajo. Njihovi roki dobijo
+    # letnik BREZ_LETNIKA, ki se ne pojavi v spustnem meniju, filter po letnikih pa ga
+    # (glej ID_BREZ_LETNIKA v out/posodabljanje.js) ne izloči nikoli.
+    BREZ_LETNIKA = "brez letnika"
+    # Id mora biti prijazen jQueryju in ne sme vsebovati ločil, ki ju uporablja
+    # IzpitniRok.id (``_`` med polji in ``x`` med elementi seznamov).
+    ID_BREZ_LETNIKA = "brezletnika"
+
     def __init__(self, ime):
         super().__init__(ime)
-        if self.ime not in Letnik.DOVOLJENI_LETNIKI:
+        if ime == Letnik.BREZ_LETNIKA:
+            self.id = Letnik.ID_BREZ_LETNIKA
+        elif self.ime not in Letnik.DOVOLJENI_LETNIKI:
             raise ValueError(
                 f"Nepravilen letnik: '{self.ime}'. Dovoljeni: {list(Letnik.DOVOLJENI_LETNIKI)}"
             )
 
+    def je_brez_letnika(self) -> bool:
+        """
+        Pove, ali gre za 'letnik' programa, ki letnikov nima (npr. magistrski študij).
+
+        :return: ali je ime enako :attr:`Letnik.BREZ_LETNIKA`
+        """
+        return self.ime == Letnik.BREZ_LETNIKA
+
+    def _zaporedna_stevilka(self):
+        # programi brez letnikov se uredijo pred prvi letnik
+        return Letnik.DOVOLJENI_LETNIKI.get(self.ime, 0)
+
     def __lt__(self, other):
-        if isinstance(other, IDTerIme):
-            return (
-                Letnik.DOVOLJENI_LETNIKI[self.ime] < Letnik.DOVOLJENI_LETNIKI[other.ime]
-            )
+        if isinstance(other, Letnik):
+            return self._zaporedna_stevilka() < other._zaporedna_stevilka()
+        elif isinstance(other, IDTerIme):
+            return super().__lt__(other)
         else:
             raise ValueError(f"IDTerIme ni primerljiv z {type(other).__name__}")
 
     def __str__(self):
+        if self.je_brez_letnika():
+            return ""
         return f"{Letnik.DOVOLJENI_LETNIKI[self.ime]}."
 
 
@@ -329,11 +354,14 @@ class IzpitniRok:
         )
 
     def _ics_summary(self):
+        def opisi_par(par):
+            program, letnik = par
+            if letnik.je_brez_letnika():
+                return program.ime
+            return f"{program.ime} - {letnik} letnik"
+
         smeri_in_letniki = "\\, ".join(
-            map(
-                lambda par: f"{par[0].ime} - {par[1]} letnik",
-                zip(self.programi, self.letniki),
-            )
+            map(opisi_par, zip(self.programi, self.letniki))
         )
         izvajalci = "\\, ".join(map(str, self.izvajalci))
         return f"{self.predmet} ({smeri_in_letniki})\\, {izvajalci}\\, {self.rok} rok"
@@ -448,7 +476,10 @@ class IzpitniRok:
         """
         vrstice = []
         for program, letnik in zip(self.programi, self.letniki):
-            vrstice.append(f"<b>{program}</b>, {letnik} letnik")
+            if letnik.je_brez_letnika():
+                vrstice.append(f"<b>{program}</b>")
+            else:
+                vrstice.append(f"<b>{program}</b>, {letnik} letnik")
         return "<br>".join(vrstice)
 
     def prikazi_izvajalce(self):

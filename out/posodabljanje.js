@@ -1,3 +1,7 @@
+// Letnik rokov pri programih, ki letnikov nimajo (npr. magistrski študij).
+// Ujemati se mora z Letnik.ID_BREZ_LETNIKA v izpitni_roki/osnovno.py.
+const ID_BREZ_LETNIKA = "brezletnika";
+
 const ODSTRANI_VSE = "Odstrani vse";
 const ODSTRANI_VSA = "Odstrani vsa";
 const IZBERI_VSE = "Izberi vse";
@@ -84,8 +88,11 @@ function najPrikazem(seznamSkupinID) {
             let kandidatOK = contains(getClasses($("#" + kandidat)), "active");
             let dopolniloOK = true;
             if (i == 1){
-                // preveri tudi letnik
-                dopolniloOK = contains(getClasses($("#" + razbiteSkupine[2][j])), "active");
+                // preveri tudi letnik, razen pri programih brez letnikov
+                // (ti filtra po letnikih ne upoštevajo)
+                let idLetnika = razbiteSkupine[2][j];
+                dopolniloOK = idLetnika === ID_BREZ_LETNIKA
+                    || contains(getClasses($("#" + idLetnika)), "active");
             }
             if(kandidatOK && dopolniloOK){
                 vsajEn = true;
