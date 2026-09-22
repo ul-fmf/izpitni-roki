@@ -28,6 +28,14 @@ def vmesnik(**popravki):
             "meseci": [str(i) for i in range(1, 13)],
             "oblika_datuma": "{dan} {mesec} {leto} ({dan_v_tednu})",
         },
+        "de": {
+            "ime_jezika": "Deutsch",
+            "title": "",
+            "programi": {"1Mate": ""},
+            "dnevi": ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+            "meseci": [str(i) for i in range(1, 13)],
+            "oblika_datuma": "{dan}. {mesec} {leto} ({dan_v_tednu})",
+        },
     }
     d = copy.deepcopy(osnova)
     for jezik, sprememba in popravki.items():
@@ -53,10 +61,32 @@ class TestPreverjanjeVmesnika(unittest.TestCase):
             preveri_vmesnik(vmesnik(en={"programi": {"1Mate": "", "1XyZa": "Nekaj"}}))
         self.assertIn("1XyZa", str(e.exception))
 
-    def test_manjkajoc_kljuc_v_prevodu_ni_napaka(self):
+    def test_manjkajoc_kljuc_v_prevodu_je_napaka(self):
+        """Jeziki morajo imeti natanko iste ključe; vrednost sme biti prazna."""
         d = vmesnik()
         del d["en"]["title"]
-        preveri_vmesnik(d)
+        with self.assertRaises(NapakaVPrevodih) as e:
+            preveri_vmesnik(d)
+        self.assertIn("title", str(e.exception))
+
+    def test_manjkajoc_kljuc_v_ugnezdenem_slovarju_je_napaka(self):
+        d = vmesnik()
+        d["en"]["programi"] = {}
+        with self.assertRaises(NapakaVPrevodih) as e:
+            preveri_vmesnik(d)
+        self.assertIn("1Mate", str(e.exception))
+
+    def test_manjkajoc_jezik_je_napaka(self):
+        """Cel manjkajoc jezik bi tiho padel nazaj na slovenscino."""
+        d = vmesnik()
+        del d["de"]
+        with self.assertRaises(NapakaVPrevodih) as e:
+            preveri_vmesnik(d)
+        self.assertIn("de", str(e.exception))
+
+    def test_prazne_vrednosti_povsod_gredo_skozi(self):
+        """Neprevedeno, a strukturno popolno - tako je datoteka zdaj."""
+        preveri_vmesnik(vmesnik(en={"title": "", "programi": {"1Mate": ""}}))
 
     def test_napacno_stevilo_dni_ali_mesecev_je_napaka(self):
         with self.assertRaises(NapakaVPrevodih):

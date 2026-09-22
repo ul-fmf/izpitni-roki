@@ -9,11 +9,13 @@ Ključi so povsod **slovenski originali**, kot se pojavijo v ``.ics`` datotekah.
 Isti ključi gredo v atribut ``data-ime`` na strani, zato permalink (issue #7)
 deluje v vseh jezikih enako - povezava, narejena v angleščini, dela v slovenščini.
 
-Glede strogosti velja razlika:
+Glede strogosti velja razlika med vrednostjo in ključem:
 
-- **manjkajoč prevod** (prazna vrednost) ni napaka; pade nazaj na slovenščino,
-- **nepoznan ključ** je napaka, ki ustavi generiranje, saj bi sicer prevod tiho
-  izginil.
+- **prazna vrednost** ni napaka; pade nazaj na slovenščino, tako da je stran
+  uporabna že pred prevajanjem,
+- **ključi** pa morajo biti v vseh jezikih natanko isti, rekurzivno po vseh
+  nivojih. Odvečen ključ je tipkarska napaka, manjkajoč pa pomeni, da prevajalec
+  zanj sploh ne bo videl praznega mesta.
 
 To velja tudi za ključe, ki prihajajo iz ``.ics`` datotek - predmete, programe,
 letnike in obdobja. Nov predmet ali program, ki nima vnosa med prevodi, ustavi
@@ -43,21 +45,37 @@ class NapakaVPrevodih(Exception):
     """Prevodi niso v redu - generiranje strani prekinemo."""
 
 
-def _napake_kljucev(koda: str, slovar: dict, merodajni: dict) -> List[str]:
-    """Ključi, ki jih slovenščina ne pozna - torej tipkarske napake."""
-    napake = []
-    for kljuc, vrednost in slovar.items():
-        if kljuc not in merodajni:
+def _napake_kljucev(kje: str, imamo: dict, merodajni: dict) -> List[str]:
+    """
+    Rekurzivno primerja zgradbo dveh slovarjev: imeti morata natanko iste ključe
+    na vseh nivojih, vrednosti pa nas ne zanimajo (prazna je le manjkajoč prevod).
+
+    Odvečen ključ je tipkarska napaka, manjkajoč pa pomeni, da prevajalec zanj
+    sploh ne bo videl praznega mesta.
+
+    :param kje: pot do tega slovarja za sporočilo o napaki, npr. ``en.obdobja``
+    :param imamo: slovar, ki ga preverjamo
+    :param merodajni: slovenski slovar, s katerim primerjamo
+
+    :return: seznam opisov napak (prazen, če je zgradba enaka)
+    """
+    napake = [
+        f"{kje}: odvečen ključ {kljuc} (slovenščina ga ne pozna - tipkarska napaka?)"
+        for kljuc in sorted(set(imamo) - set(merodajni))
+    ]
+    napake += [
+        f"{kje}: manjka ključ {kljuc} (vrednost sme biti prazna, ključ pa mora biti)"
+        for kljuc in sorted(set(merodajni) - set(imamo))
+    ]
+    for kljuc in sorted(set(imamo) & set(merodajni)):
+        nasa, njihova = imamo[kljuc], merodajni[kljuc]
+        if isinstance(nasa, dict) and isinstance(njihova, dict):
+            napake += _napake_kljucev(f"{kje}.{kljuc}", nasa, njihova)
+        elif isinstance(nasa, dict) != isinstance(njihova, dict):
             napake.append(
-                f"{koda}: nepoznan ključ {kljuc} "
-                f"(slovenščina ga ne pozna - tipkarska napaka?)"
+                f"{kje}.{kljuc}: zgradba se ne ujema s slovensko "
+                f"({type(nasa).__name__} proti {type(njihova).__name__})"
             )
-        elif isinstance(merodajni[kljuc], dict) and isinstance(vrednost, dict):
-            napake += [
-                f"{koda}.{kljuc}: nepoznan ključ {podkljuc}"
-                for podkljuc in vrednost
-                if podkljuc not in merodajni[kljuc]
-            ]
     return napake
 
 
@@ -90,19 +108,28 @@ def _napake_oblike_datuma(koda: str, slovar: dict) -> List[str]:
 
 def preveri_vmesnik(vmesnik: Dict[str, dict]) -> None:
     """
-    Preveri prevode vmesnika. Slovenščina je merodajna: vsak ključ v drugem jeziku
-    mora obstajati tudi v njej.
+    Preveri prevode vmesnika. Slovenščina je merodajna: vsi jeziki morajo imeti
+    **natanko iste ključe** na vseh nivojih, vrednosti pa so lahko prazne.
 
     :param vmesnik: vsebina ``vmesnik.json``
 
-    :raises NapakaVPrevodih: če kak jezik vsebuje ključ, ki ga slovenščina ne pozna,
-        če je seznam dni ali mesecev napačne dolžine ali če oblika datuma uporablja
-        polje, ki ga ne poznamo
+    :raises NapakaVPrevodih: če kak jezik manjka ali je odveč, če se množici ključev
+        ne ujemata (na katerem koli nivoju), če je seznam dni ali mesecev napačne
+        dolžine ali če oblika datuma uporablja polje, ki ga ne poznamo
     """
     if PRIVZETI_JEZIK not in vmesnik:
         raise NapakaVPrevodih(f"V prevodih manjka privzeti jezik {PRIVZETI_JEZIK}.")
     merodajni = vmesnik[PRIVZETI_JEZIK]
-    napake = []
+    napake = [
+        f"manjka cel jezik {koda} (tiho bi padel nazaj na slovenščino)"
+        for koda in JEZIKI
+        if koda not in vmesnik
+    ]
+    napake += [
+        f"nepoznan jezik {koda}; poznam {JEZIKI}"
+        for koda in vmesnik
+        if koda not in JEZIKI
+    ]
     for koda, slovar in vmesnik.items():
         napake += _napake_kljucev(koda, slovar, merodajni)
         napake += _napake_seznamov(koda, slovar)
