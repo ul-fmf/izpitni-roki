@@ -8,8 +8,13 @@ permissions:
   contents: write
 
 jobs:
+  # Pred objavo pozenemo teste: ce padejo, strani ne objavimo.
+  testi:
+    uses: ./.github/workflows/testi.yml
+
   # Build job
   build:
+    needs: testi
     runs-on: ubuntu-latest
     steps:
     - name: Checkout

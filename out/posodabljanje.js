@@ -2,6 +2,9 @@
 // Ujemati se mora z Letnik.ID_BREZ_LETNIKA v izpitni_roki/osnovno.py.
 const ID_BREZ_LETNIKA = "brezletnika";
 
+// Vse skupine filtrov, po vrsti, kot nastopajo v id-ju izpitne vrstice.
+const SKUPINE = ["predmet", "program", "letnik", "rok", "izvajalec", "obdobje"];
+
 const ODSTRANI_VSE = "Odstrani vse";
 const ODSTRANI_VSA = "Odstrani vsa";
 const IZBERI_VSE = "Izberi vse";
@@ -15,6 +18,21 @@ function getClasses(node){
     return node.attr("class").split(/\s+/);
 }
 
+// V dvonivojskih menijih ima razred skupine (npr. .predmet) tudi <li> vsake
+// crke, ne le posamezne moznosti. Kadar nas zanimajo moznosti, moramo zato
+// dodati se .moznost, sicer jih presteje prevec.
+function moznosti(razred){
+    return $("li." + razred + ".moznost");
+}
+
+// <li> crke je aktiven natanko tedaj, ko je aktivna vsaj ena moznost v njem.
+function osveziSkupineCrk(razred){
+    $("li." + razred + ":not(.moznost)").each(function(){
+        const imaAktivne = $(this).find("li." + razred + ".moznost.active").length > 0;
+        $(this).toggleClass("active", imaAktivne);
+    });
+}
+
 function contains(list, element){
     for (let i = 0; i < list.length; i++) {
         if (list[i] === element) {
@@ -24,6 +42,13 @@ function contains(list, element){
     return false;
 }
 
+
+// Sidra v menijih imajo href="#!" le zaradi videza; podmeniji se odpirajo na
+// :hover. Brez preventDefault bi klik nastavil fragment na "#!" in povozil
+// permalink, ki smo ga pravkar zapisali (issue #7).
+$(".dropdown-menu a[href='#!']").on("click", function(e) {
+    e.preventDefault();
+});
 
 $(".opcija").on("click", function() {
     $(this).closest("li").toggleClass("active");
@@ -40,6 +65,7 @@ $(".opcija").on("click", function() {
     }
     posodobiGrupnoIzbiro($(this).attr("data-group"));
     posodobiTabeloIzbranih();
+    zapisiStanjeVUrl();
 });
 
 $(".group-choice").on("click", function() {
@@ -64,6 +90,7 @@ $(".group-choice").on("click", function() {
     }
     posodobiGrupnoIzbiro(razred);
     posodobiTabeloIzbranih();
+    zapisiStanjeVUrl();
 });
 
 
@@ -119,7 +146,7 @@ function posodobiTabeloIzbranih(){
 }
 
 function posodobiGrupnoIzbiro(razred) {
-    const vsi = $("." + razred);
+    const vsi = moznosti(razred);
     const nVsi = vsi.length;
     const nAktivni = vsi.filter(".active").length;
     const gumbID = "#gumb_" + razred;
@@ -173,3 +200,58 @@ $(".izvoz-koledarja").on("click", function() {
     document.body.removeChild(element);
 });
 
+
+// --- Permalinki (issue #7) ---------------------------------------------------
+
+// Trenutno izbiro zapisemo v fragment url-ja (za #). Fragment nikoli ne potuje do
+// streznika, zato deluje tudi na GitHub Pages in ne vpliva na predpomnjenje.
+
+function imeMoznosti(){
+    return $(this).attr("data-ime");
+}
+
+function zapisiStanjeVUrl(){
+    const skupine = SKUPINE.map(function(razred){
+        const vse = moznosti(razred);
+        return {
+            razred: razred,
+            izbrani: vse.filter(".active").map(imeMoznosti).get(),
+            neizbrani: vse.not(".active").map(imeMoznosti).get()
+        };
+    });
+    const zapis = Permalink.zakodiraj(skupine);
+    // Vedno gradimo iz same poti: tako morebitni query string iz vhodne
+    // povezave ne prezivi in ne prepise izbire ob ponovnem nalaganju.
+    const naslov = zapis ? location.pathname + "#" + zapis : location.pathname;
+    try {
+        history.replaceState(null, "", naslov);
+    } catch (e) {
+        // npr. file:// v nekaterih brskalnikih: permalink ne deluje, stran pa se vedno
+    }
+}
+
+// Preberemo fragment; ce ga ni, poskusimo se z query stringom, da delujejo tudi
+// povezave oblike ".../?program=1Mate".
+function stanjeIzUrl(){
+    const izFragmenta = location.hash.replace(/^#/, "");
+    return Permalink.odkodiraj(izFragmenta || location.search.replace(/^\?/, ""));
+}
+
+function uveljaviStanjeIzUrl(){
+    const stanje = stanjeIzUrl();
+    SKUPINE.forEach(function(razred){
+        const zapis = stanje[razred];
+        if (zapis !== undefined){
+            moznosti(razred).each(function(){
+                const jeNasteta = contains(zapis.imena, $(this).attr("data-ime"));
+                $(this).toggleClass("active", zapis.preskoci ? !jeNasteta : jeNasteta);
+            });
+            osveziSkupineCrk(razred);
+        }
+        posodobiGrupnoIzbiro(razred);
+    });
+    posodobiTabeloIzbranih();
+    zapisiStanjeVUrl();
+}
+
+$(uveljaviStanjeIzUrl);

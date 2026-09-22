@@ -1,5 +1,6 @@
 import os
 import re
+import hashlib
 import logging
 from typing import List, Type, Union
 from dataclasses import dataclass
@@ -28,22 +29,6 @@ def naredi_zapisnikarja(name):
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
 
 
-class IDGenerator:
-    """Razred, s katerim polepšamo kodo in se izognemo dolgim guidom."""
-
-    NASLEDNJI_ID = 0
-
-    @staticmethod
-    def generiraj_id() -> int:
-        """
-        Zgenerira naslednji id. Zaporedni klici vrnejo id-je 1, 2, 3 ...
-
-        :return: naslednji id
-        """
-        IDGenerator.NASLEDNJI_ID += 1
-        return IDGenerator.NASLEDNJI_ID
-
-
 class IDTerIme:
     """
     Nadrazred za razna polja v razredu :meth:`izpitni_roki.osnovno.IzpitniRok`,
@@ -54,16 +39,45 @@ class IDTerIme:
     """
 
     PRIPADNIKI = {}  # vsi elementi tega razreda, vsebuje pare ime: objekt
+    ZASEDENI_IDJI = {}  # pari id: ime, s katerimi lovimo (malo verjetna) trčenja
+
+    # Dolžina zgoščene vrednosti v šestnajstiških znakih. 10 znakov je 40 bitov,
+    # kar je pri nekaj tisoč imenih več kot dovolj, da do trčenja ne pride.
+    DOLZINA_IDJA = 10
+
+    @staticmethod
+    def naredi_id(ime: str) -> str:
+        """
+        Iz imena naredi id. Id je determinističen: isto ime vedno da isti id, tudi
+        v naslednji generaciji strani. Od tega so odvisni permalinki (issue #7).
+
+        Id se ne sme začeti s števko (sicer ni veljaven css selektor) in ne sme
+        vsebovati ločil, ki ju uporablja :meth:`IzpitniRok.id` (``_`` in ``x``),
+        zato mu spredaj dodamo ``i``, šestnajstiški zapis pa vsebuje le ``0-9a-f``.
+
+        :param ime: ime, npr. ``"1Mate"``
+        :return: id, npr. ``"i2d711642b7"``
+        """
+        zgoscena = hashlib.sha1(ime.encode("utf-8")).hexdigest()
+        return "i" + zgoscena[: IDTerIme.DOLZINA_IDJA]
 
     def __init__(self, ime: str):
         """
-        Konstruktor IDTerIme, ki mu podamo ime, :meth:`izpitni_roki.osnovno.IDGenerator`
+        Konstruktor IDTerIme, ki mu podamo ime, :meth:`izpitni_roki.osnovno.IDTerIme.naredi_id`
         pa poskrbi za njegov id.
 
         :param ime: ime
+
+        :raises: ValueError, če bi dve različni imeni dobili isti id
         """
         self.ime = ime
-        self.id = str(IDGenerator.generiraj_id())
+        self.id = IDTerIme.naredi_id(ime)
+        zasedeno = IDTerIme.ZASEDENI_IDJI.setdefault(self.id, ime)
+        if zasedeno != ime:
+            raise ValueError(
+                f"Imeni '{zasedeno}' in '{ime}' imata isti id ({self.id}). "
+                f"Povečajte IDTerIme.DOLZINA_IDJA."
+            )
 
     @staticmethod
     def vse_vsa() -> str:
@@ -179,7 +193,9 @@ class Letnik(IDTerIme):
     def __init__(self, ime):
         super().__init__(ime)
         if ime == Letnik.BREZ_LETNIKA:
+            del IDTerIme.ZASEDENI_IDJI[self.id]
             self.id = Letnik.ID_BREZ_LETNIKA
+            IDTerIme.ZASEDENI_IDJI[self.id] = ime
         elif self.ime not in Letnik.DOVOLJENI_LETNIKI:
             raise ValueError(
                 f"Nepravilen letnik: '{self.ime}'. Dovoljeni: {list(Letnik.DOVOLJENI_LETNIKI)}"

@@ -1,5 +1,6 @@
 import os
 import re
+import html
 import unicodedata
 from izpitni_roki.osnovno import (
     naredi_zapisnikarja,
@@ -223,7 +224,8 @@ def naredi_spustni_meni_po_crkah(
                 "spustni_spustni_nivo2",
                 razred=html_razred,
                 besedilo=str(moznost),
-                id=moznost.id
+                id=moznost.id,
+                ime=html.escape(moznost.ime, quote=True)
             )
             elementi_nivo2.append(str(element))
         elementi_nivo1.append(
@@ -267,7 +269,8 @@ def naredi_spustni_meni(ime_menija: str, html_razred: str, moznosti: List[IDTerI
             "spustni_spustni_nivo2",
             razred=html_razred,
             besedilo=moznost.ime,
-            id=moznost.id
+            id=moznost.id,
+            ime=html.escape(moznost.ime, quote=True)
         )
         elementi_nivo2.append(str(element))
     return str(

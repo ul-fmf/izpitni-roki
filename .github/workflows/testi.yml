@@ -1,0 +1,34 @@
+name: Testi
+
+on:
+  push:
+    # Na main teste pozene pages.yml, preden objavi stran, zato jih tu ne
+    # ponavljamo.
+    branches-ignore:
+      - main
+  pull_request:
+  # Da jih lahko pred objavo poklice pages.yml.
+  workflow_call:
+
+jobs:
+  testi:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      # Testi namenoma ne potrebujejo zunanjih knjiznic, zato tu ni koraka
+      # z namescanjem odvisnosti.
+      - name: Python testi
+        run: python -m unittest discover -s testi -t . -v
+
+      - name: JavaScript testi
+        run: node testi/test_permalink.js
