@@ -1,0 +1,15 @@
+<svg viewBox="0 0 24 12" xmlns="http://www.w3.org/2000/svg" class="zastava" role="img" aria-hidden="true" focusable="false">
+  <rect width="24" height="4" y="0" fill="#fff"/>
+  <rect width="24" height="4" y="4" fill="#0000c8"/>
+  <rect width="24" height="4" y="8" fill="#ed1c24"/>
+  <g transform="translate(3.2,1.2)">
+    <path d="M0 0h6v3.3a3 3 0 0 1-3 3.5 3 3 0 0 1-3-3.5z" fill="#0000c8" stroke="#ed1c24" stroke-width=".5"/>
+    <path d="M1 4.4 2.4 2l.75 1.25L3.75 2l1.4 2.4z" fill="#fff"/>
+    <path d="M.9 5.1h4.3M.9 5.9h4.3" stroke="#fff" stroke-width=".32"/>
+    <g fill="#ffdf00">
+      <circle cx="3" cy=".85" r=".42"/>
+      <circle cx="2.1" cy="1.85" r=".42"/>
+      <circle cx="3.9" cy="1.85" r=".42"/>
+    </g>
+  </g>
+</svg>

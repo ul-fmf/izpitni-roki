@@ -41,3 +41,22 @@
 .gumb-v-vrsti {
     margin-top: 5px;
 }
+
+/* Preklop jezika: zastave namesto napisov (issue #9) */
+.preklop-jezika {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.povezava-jezik {
+    padding: 0.15rem 0.3rem;
+    line-height: 1;
+}
+
+.povezava-jezik .zastava {
+    height: 1.1rem;
+    width: auto;
+    display: block;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+}

@@ -1,0 +1,10 @@
+<svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg" class="zastava" role="img" aria-hidden="true" focusable="false">
+  <clipPath id="zastava-gb-diagonale">
+    <path d="M30 15h30v15zv15H30zH0V0zV0h30z"/>
+  </clipPath>
+  <rect width="60" height="30" fill="#012169"/>
+  <path d="M0 0 60 30M60 0 0 30" stroke="#fff" stroke-width="6"/>
+  <path d="M0 0 60 30M60 0 0 30" clip-path="url(#zastava-gb-diagonale)" stroke="#c8102e" stroke-width="4"/>
+  <path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/>
+  <path d="M30 0v30M0 15h60" stroke="#c8102e" stroke-width="6"/>
+</svg>

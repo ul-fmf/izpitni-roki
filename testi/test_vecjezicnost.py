@@ -76,6 +76,20 @@ class TestVecjezicnost(unittest.TestCase):
                 with self.subTest(jezik=koda, pot=pot):
                     self.assertTrue(os.path.exists(os.path.join(mapa, pot)), pot)
 
+    def test_preklop_jezika_ima_zastave(self):
+        """Zastave so vrisane, ne slike z omrežja, ime jezika pa ostane dostopno."""
+        for koda in JEZIKI:
+            with self.subTest(jezik=koda):
+                blok = re.search(
+                    r'<div class="preklop-jezika">.*?</div>', self.strani[koda], re.S
+                ).group(0)
+                self.assertEqual(blok.count('class="zastava"'), len(JEZIKI))
+                self.assertEqual(blok.count("<svg "), len(JEZIKI))
+                self.assertNotIn("<img", blok)
+                for ime in ["Slovensko", "English", "Deutsch"]:
+                    self.assertIn(f'title="{ime}"', blok)
+                    self.assertIn(f'aria-label="{ime}"', blok)
+
     def test_datumi_so_po_jezikih_razlicni(self):
         datumi = {
             koda: re.findall(r'<td scope="row">([^<]+)</td>', h)[0]
