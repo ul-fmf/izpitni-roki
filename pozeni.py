@@ -137,22 +137,22 @@ if __name__ == "__main__":
     opis_strani = {
         "sl": (
             f"Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa), "
-            f"Matematika (1Mate) in Aplikativna matematika (1ApMa) in "
-            f"prvih treh letnikih programa Pedagoška matematika (2PeMa) "
+            f"Matematika (1Mate), Aplikativna matematika (1ApMa) in "
+            f"Pedagoška matematika (2PeMa) ter na magistrskem študiju "
             f"na Oddelku za matematiko FMF v študijskem letu {leto}, "
             f"ki zadoščajo izbranim kriterijem."
         ),
         "en": (
             f"Below are the exam dates for the programmes Financial Mathematics (1FiMa), "
-            f"Mathematics (1Mate) and Applied Mathematics (1ApMa), and for the first "
-            f"three years of the programme Mathematics Education (2PeMa) "
+            f"Mathematics (1Mate), Applied Mathematics (1ApMa) and "
+            f"Mathematics Education (2PeMa), and for the Master's programme "
             f"at the Department of Mathematics, FMF, in the academic year {leto}, "
             f"that match the selected criteria."
         ),
         "de": (
             f"Unten stehen die Prüfungstermine der Studiengänge Finanzmathematik (1FiMa), "
-            f"Mathematik (1Mate) und Angewandte Mathematik (1ApMa) sowie der ersten drei "
-            f"Jahrgänge des Studiengangs Mathematiklehramt (2PeMa) "
+            f"Mathematik (1Mate), Angewandte Mathematik (1ApMa) und "
+            f"Mathematiklehramt (2PeMa) sowie des Masterstudiums "
             f"am Fachbereich für Mathematik der FMF im Studienjahr {leto}, "
             f"die den ausgewählten Kriterien entsprechen."
         ),
