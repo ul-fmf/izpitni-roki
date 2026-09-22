@@ -106,6 +106,32 @@ class TestNepoznanPredmet(unittest.TestCase):
             sl.predmet("Tega predmeta tudi ni")
 
 
+class TestStrogiPodatkovniKljuci(unittest.TestCase):
+    """Programi, letniki in obdobja so enako obvezni kot predmeti."""
+
+    def test_nepoznan_program_letnik_obdobje_so_napake(self):
+        sl = modul_jezik.nalozi_jezik("sl")
+        for metoda, vrednost in [
+            (sl.program, "3XyZa"),
+            (sl.letnik, "sesti"),
+            (sl.obdobje, "pomladansko"),
+        ]:
+            with self.subTest(vrednost=vrednost):
+                with self.assertRaises(NapakaVPrevodih) as e:
+                    metoda(vrednost)
+                self.assertIn(vrednost, str(e.exception))
+
+    def test_poznani_gredo_skozi(self):
+        sl = modul_jezik.nalozi_jezik("sl")
+        self.assertEqual(sl.program("1Mate"), "Matematika")
+        self.assertEqual(sl.letnik("prvi"), "1. letnik")
+        self.assertEqual(sl.obdobje("zimsko"), "zimsko")
+
+    def test_prazen_prevod_pade_nazaj(self):
+        en = modul_jezik.nalozi_jezik("en")
+        self.assertEqual(en.program("1Mate"), "Matematika")
+
+
 class TestZapolnjenostPredloge(unittest.TestCase):
     def test_zapolnjena_predloga_gre_skozi(self):
         self.assertEqual(preveri_zapolnjeno("<p>Datum</p>", "test"), "<p>Datum</p>")

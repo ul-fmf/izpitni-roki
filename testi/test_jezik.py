@@ -3,7 +3,7 @@
 import unittest
 from datetime import datetime
 
-from izpitni_roki.jezik import JEZIKI, Jezik, nalozi_jezik
+from izpitni_roki.jezik import JEZIKI, Jezik, NapakaVPrevodih, nalozi_jezik
 
 
 class TestJezik(unittest.TestCase):
@@ -25,10 +25,11 @@ class TestJezik(unittest.TestCase):
         self.assertEqual(sl.program("1ApMa"), "Aplikativna matematika")
         self.assertEqual(sl.letnik("prvi"), "1. letnik")
 
-    def test_neznan_program_pade_nazaj_na_original(self):
-        """Nov program v .ics ne sme podreti generiranja."""
+    def test_neznan_program_je_napaka(self):
+        """Vsak program mora imeti vnos; tiho prikazana koda je napaka."""
         sl = nalozi_jezik("sl")
-        self.assertEqual(sl.program("3XyZa"), "3XyZa")
+        with self.assertRaises(NapakaVPrevodih):
+            sl.program("3XyZa")
 
     def test_predmet_brez_prevoda_ostane_v_slovenscini(self):
         en = nalozi_jezik("en")

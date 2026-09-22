@@ -15,12 +15,10 @@ Glede strogosti velja razlika:
 - **nepoznan ključ** je napaka, ki ustavi generiranje, saj bi sicer prevod tiho
   izginil.
 
-Ključi, ki prihajajo iz ``.ics`` datotek, so razdeljeni na dvoje:
-
-- **predmeti** so obvezni; nov predmet brez vrstice v ``predmeti.tsv`` ustavi
-  generiranje, saj so prav prevodi predmetov bistvo večjezične strani,
-- **programi, letniki in obdobja** pa dobijo le opozorilo in obdržijo izvirno
-  ime, ker jih je malo in se redko spreminjajo.
+To velja tudi za ključe, ki prihajajo iz ``.ics`` datotek - predmete, programe,
+letnike in obdobja. Nov predmet ali program, ki nima vnosa med prevodi, ustavi
+generiranje: surova koda (``1ApMa`` namesto ``Aplikativna matematika``) na strani
+ni sprejemljiv približek, temveč napaka, ki jo je treba opaziti.
 """
 
 import json
@@ -28,10 +26,6 @@ import os
 import re
 from datetime import datetime
 from typing import Dict, List
-
-from izpitni_roki.osnovno import naredi_zapisnikarja
-
-ZAPISNIKAR = naredi_zapisnikarja(__file__)
 
 JEZIKI = ["sl", "en", "de"]
 PRIVZETI_JEZIK = "sl"
@@ -217,24 +211,23 @@ class Jezik:
     def _iz_slovarja(self, skupina: str, kljuc: str) -> str:
         """Vrednost iz ugnezdenega slovarja (programi, letniki, obdobja ...).
 
-        Ključi tu prihajajo iz .ics datotek, zato nepoznanega **ne** štejemo za
-        napako - nov predmet ali program ne sme podreti generiranja. Namesto tega
-        izpišemo opozorilo in pustimo izvirno ime.
+        Ključ mora biti znan: tiho prikazana surova koda (``1ApMa`` namesto
+        ``Aplikativna matematika``) je napaka, ne pa sprejemljiv približek.
+        Prazen prevod pa je le manjkajoč prevod in pade nazaj na slovenščino.
+
+        :raises NapakaVPrevodih: če skupine ali ključa ne poznamo
         """
         merodajni = _JEZIKI_PREDPOMNILNIK[PRIVZETI_JEZIK]._vmesnik
         if skupina not in merodajni:
             raise NapakaVPrevodih(f"Nepoznana skupina prevodov {skupina}.")
-        prevod = (self._vmesnik.get(skupina) or {}).get(kljuc)
-        if prevod:
-            return prevod
         privzeti = merodajni[skupina] or {}
-        if kljuc not in privzeti and kljuc not in _IZDANA_OPOZORILA:
-            _IZDANA_OPOZORILA.add(kljuc)
-            ZAPISNIKAR.warning(
-                f"Za {kljuc} ({skupina}) ni vnosa v prevodi/vmesnik.json, "
-                f"zato ostane tak, kot je."
+        if kljuc not in privzeti:
+            raise NapakaVPrevodih(
+                f"Za {kljuc} ni vnosa med {skupina} v prevodi/vmesnik.json. "
+                f"Dodajte ga (prevod sme biti zaenkrat prazen). "
+                f"Poznam {sorted(privzeti)}."
             )
-        return privzeti.get(kljuc) or kljuc
+        return (self._vmesnik.get(skupina) or {}).get(kljuc) or privzeti[kljuc]
 
     def program(self, ime: str) -> str:
         return self._iz_slovarja("programi", ime)
@@ -284,7 +277,6 @@ class Jezik:
 
 
 _JEZIKI_PREDPOMNILNIK: Dict[str, Jezik] = {}
-_IZDANA_OPOZORILA = set()
 # Vsa slovenska imena predmetov iz predmeti.tsv, ne glede na to, ali so prevedena
 _ZNANI_PREDMETI: set = set()
 
