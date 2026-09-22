@@ -29,21 +29,6 @@ datotekah. Isti ključi gredo na strani v atribut `data-ime`, zato je povezava
 s filtri (permalink) v vseh jezikih enaka: povezava, narejena v angleščini,
 odpre isto izbiro na slovenski strani.
 
-## Kaj je napaka in kaj ne
-
-Da prevod ne more tiho izginiti, je generiranje strogo:
-
-* **prazna vrednost ni napaka.** Namesto nje se izpiše slovenska, tako da je
-  stran uporabna, še preden je vse prevedeno.
-* **nepoznan ali manjkajoč ključ je napaka**, ki ustavi generiranje. Vsi jeziki
-  morajo imeti v `vmesnik.json` natanko iste ključe, na vseh nivojih — tudi
-  znotraj `programi`, `letniki`, `obdobja` in `roki`.
-* **predmet, program, letnik ali obdobje brez vnosa je napaka.** Če se v koledarju
-  pojavi nov predmet, generiranje pade, dokler ga ne dodate v `predmeti.tsv`.
-  Prevod sme biti prazen, vrstica pa mora biti.
-* **nezapolnjen ključ predloge je napaka**, da se na strani ne pojavi `{{gumb_prenos}}`.
-
-Sporočila o napakah povedo, kateri ključ manjka in kje.
 
 ## Dodajanje novega jezika
 
@@ -65,8 +50,8 @@ Recimo, da dodajate italijanščino s kodo `it`.
    redom. Vsaka vrstica mora imeti enako število stolpcev, celice pa smejo ostati
    prazne.
 
-4. **`out/portreti/it.jpg`** — portret za gumb za preklop jezika. Imena portretov
-   morajo biti natanko jeziki iz prevodov, sicer test pade.
+4. **`out/portreti/it.jpg`** — portret na gumbu za preklop jezika. Imena portretov
+   morajo biti natanko jeziki iz prevodov, sicer test pade (končnico `.jpg` zanemarimo).
 
 5. **`testi/`** — nekaj testov si zapomni, da so jeziki trije; popravite jih, da
    bodo govorili o štirih (`test_poznamo_tri_jezike`, `test_vsak_portret_ima_znak`
@@ -86,6 +71,26 @@ python naredi_testno_stran.py
 Če gre oboje skozi, se je pojavila nova mapa `out/it` in gumb za nov jezik.
 V objavo na splet je ni treba dodajati posebej: `.github/workflows/pages.yml`
 prekopira vse jezikovne podmape, ki jih najde.
+
+## Kaj je napaka in kaj ne
+
+Da prevod ne more tiho izginiti, je generiranje strogo:
+
+* **prazna vrednost ni napaka.** Namesto nje se izpiše slovenska, tako da je
+  stran uporabna, še preden je vse prevedeno.
+* **nepoznan ali manjkajoč ključ je napaka**, ki ustavi generiranje. Vsi jeziki
+  morajo imeti v `vmesnik.json` natanko iste ključe, na vseh nivojih — tudi
+  znotraj `programi`, `letniki`, `obdobja` in `roki`.
+* **predmet, program, letnik ali obdobje brez vnosa je napaka.** Če se v koledarju
+  pojavi nov predmet, generiranje pade, dokler ga ne dodate v `predmeti.tsv`.
+  Prevod sme biti prazen, vrstica pa mora biti.
+* **ključ predloge, ki ga nihče ne napolni, je napaka.** Predloge v mapi
+  `predloge` imajo mesta oblike `{{gumb_prenos}}`, ki jih generator zamenja z
+  besedilom. Če kakšnega ne zamenja, mesto ostane zapisano dobesedno in
+  obiskovalec na gumbu prebere `{{gumb_prenos}}`; da se to ne zgodi, generator
+  gotovo stran pregleda in raje ustavi delo.
+
+Sporočila o napakah povedo, kateri ključ manjka in kje.
 
 # Prenos kode k sebi
 
