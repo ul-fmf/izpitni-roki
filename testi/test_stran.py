@@ -109,7 +109,7 @@ class TestZgenerirenaStran(unittest.TestCase):
         idji_drugic = {i: d for _, d, i in MOZNOST.findall(drugic_html)}
         self.assertEqual(idji_prvic, idji_drugic)
 
-    def test_stran_naloži_permalink_skripto(self):
+    def test_stran_nalozi_permalink_skripto(self):
         self.assertIn('<script src="permalink.js"></script>', self.html)
         self.assertLess(
             self.html.index('src="permalink.js"'),
