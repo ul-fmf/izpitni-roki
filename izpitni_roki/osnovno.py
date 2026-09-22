@@ -49,7 +49,7 @@ class IDTerIme:
     def naredi_id(ime: str) -> str:
         """
         Iz imena naredi id. Id je determinističen: isto ime vedno da isti id, tudi
-        v naslednji generaciji strani. Od tega so odvisni permalinki (issue #7).
+        v naslednji generaciji strani. Od tega so odvisni permalinki.
 
         Id se ne sme začeti s števko (sicer ni veljaven css selektor) in ne sme
         vsebovati ločil, ki ju uporablja :meth:`IzpitniRok.id` (``_`` in ``x``),

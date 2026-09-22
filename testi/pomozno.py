@@ -1,5 +1,3 @@
-"""Skupni pripomočki za teste."""
-
 import os
 from datetime import datetime
 
