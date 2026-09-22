@@ -15,9 +15,12 @@ Glede strogosti velja razlika:
 - **nepoznan ključ** je napaka, ki ustavi generiranje, saj bi sicer prevod tiho
   izginil.
 
-Izjema so ključi, ki prihajajo iz ``.ics`` datotek (predmeti, programi, letniki,
-obdobja). Nov predmet ne sme podreti generiranja, zato ga le zabeležimo z
-opozorilom in pustimo izvirno ime.
+Ključi, ki prihajajo iz ``.ics`` datotek, so razdeljeni na dvoje:
+
+- **predmeti** so obvezni; nov predmet brez vrstice v ``predmeti.tsv`` ustavi
+  generiranje, saj so prav prevodi predmetov bistvo večjezične strani,
+- **programi, letniki in obdobja** pa dobijo le opozorilo in obdržijo izvirno
+  ime, ker jih je malo in se redko spreminjajo.
 """
 
 import json
@@ -137,10 +140,14 @@ def _nalozi_vmesnik() -> Dict[str, dict]:
         return json.load(f)
 
 
-def _nalozi_predmete() -> Dict[str, Dict[str, str]]:
+def _nalozi_predmete():
     """
-    Prebere ``predmeti.tsv`` v slovar ``{jezik: {slovensko ime: prevod}}``.
-    Prazne celice preskočimo, da prevod pade nazaj na slovensko ime.
+    Prebere ``predmeti.tsv``.
+
+    :return: par ``({jezik: {slovensko ime: prevod}}, {vsa slovenska imena})``.
+        Prazne celice v prvem preskočimo, da prevod pade nazaj na slovensko ime;
+        druga množica pa vsebuje vsa imena, tudi neprevedena, in služi za
+        preverjanje, ali predmet sploh poznamo.
     """
     pot = os.path.join(MAPA_PREVODOV, "predmeti.tsv")
     po_jezikih: Dict[str, Dict[str, str]] = {j: {} for j in JEZIKI}
@@ -162,7 +169,7 @@ def _nalozi_predmete() -> Dict[str, Dict[str, str]]:
                 if prevod and jezik in po_jezikih:
                     po_jezikih[jezik][slovensko] = prevod
     preveri_predmete(glava, videna)
-    return po_jezikih
+    return po_jezikih, set(videna)
 
 
 class Jezik:
@@ -239,7 +246,21 @@ class Jezik:
         return self._iz_slovarja("obdobja", ime)
 
     def predmet(self, ime: str) -> str:
-        """Predmet brez prevoda pustimo v slovenščini - bolje kot prazna celica."""
+        """
+        Ime predmeta v tem jeziku.
+
+        Za razliko od programov in obdobij je tu vsak predmet obvezen: prevodi
+        imen predmetov so bistvo večjezične strani, zato nov predmet, ki v
+        ``predmeti.tsv`` še nima vrstice, ustavi generiranje. Prazna celica pa
+        je še vedno le manjkajoč prevod in pade nazaj na slovensko ime.
+
+        :raises NapakaVPrevodih: če predmeta ni med znanimi
+        """
+        if ime not in _ZNANI_PREDMETI:
+            raise NapakaVPrevodih(
+                f"Predmet {ime} nima vrstice v prevodi/predmeti.tsv. "
+                f"Dodajte jo (prevod sme biti zaenkrat prazen)."
+            )
         return self._predmeti.get(ime, ime)
 
     def gumb_skupine(self, razred: str, izbrano: bool) -> str:
@@ -264,6 +285,8 @@ class Jezik:
 
 _JEZIKI_PREDPOMNILNIK: Dict[str, Jezik] = {}
 _IZDANA_OPOZORILA = set()
+# Vsa slovenska imena predmetov iz predmeti.tsv, ne glede na to, ali so prevedena
+_ZNANI_PREDMETI: set = set()
 
 
 def nalozi_jezik(koda: str) -> Jezik:
@@ -280,7 +303,8 @@ def nalozi_jezik(koda: str) -> Jezik:
     if not _JEZIKI_PREDPOMNILNIK:
         vmesnik = _nalozi_vmesnik()
         preveri_vmesnik(vmesnik)
-        predmeti = _nalozi_predmete()
+        predmeti, znani = _nalozi_predmete()
+        _ZNANI_PREDMETI.update(znani)
         for j in JEZIKI:
             _JEZIKI_PREDPOMNILNIK[j] = Jezik(j, vmesnik.get(j, {}), predmeti[j])
     return _JEZIKI_PREDPOMNILNIK[koda]

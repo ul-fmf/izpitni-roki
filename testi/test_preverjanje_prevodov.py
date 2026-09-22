@@ -85,6 +85,27 @@ class TestStrogoIskanjeKljucev(unittest.TestCase):
         self.assertIsInstance(modul_jezik.nalozi_jezik("sl"), Jezik)
 
 
+class TestNepoznanPredmet(unittest.TestCase):
+    """Predmet brez vrstice v predmeti.tsv mora ustaviti generiranje: prevodi
+    predmetov so obvezni, zato nočemo, da se nov predmet tiho prikaže po slovensko."""
+
+    def test_predmet_iz_tsv_gre_skozi(self):
+        en = modul_jezik.nalozi_jezik("en")
+        self.assertEqual(en.predmet("Logika"), "Logika")
+
+    def test_nepoznan_predmet_je_napaka(self):
+        en = modul_jezik.nalozi_jezik("en")
+        with self.assertRaises(NapakaVPrevodih) as e:
+            en.predmet("Tega predmeta ni v tsv")
+        self.assertIn("Tega predmeta ni v tsv", str(e.exception))
+        self.assertIn("predmeti.tsv", str(e.exception))
+
+    def test_tudi_slovenscina_zahteva_vrstico(self):
+        sl = modul_jezik.nalozi_jezik("sl")
+        with self.assertRaises(NapakaVPrevodih):
+            sl.predmet("Tega predmeta tudi ni")
+
+
 class TestZapolnjenostPredloge(unittest.TestCase):
     def test_zapolnjena_predloga_gre_skozi(self):
         self.assertEqual(preveri_zapolnjeno("<p>Datum</p>", "test"), "<p>Datum</p>")
