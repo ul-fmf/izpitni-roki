@@ -48,7 +48,7 @@ class TestPreverjanjeVmesnika(unittest.TestCase):
         preveri_vmesnik(vmesnik())
 
     def test_prazen_prevod_ni_napaka(self):
-        """Manjkajoč prevod je v redu - pade nazaj na slovenščino."""
+        """Manjkajoč prevod je v redu - uporabi se slovenski."""
         preveri_vmesnik(vmesnik(en={"title": ""}))
 
     def test_nepoznan_kljuc_v_prevodu_je_napaka(self):
@@ -107,8 +107,8 @@ class TestStrogoIskanjeKljucev(unittest.TestCase):
         with self.assertRaises(NapakaVPrevodih):
             sl.niz("tega_kljuca_ni")
 
-    def test_poznan_kljuc_brez_prevoda_pade_nazaj(self):
-        """Prazen vmesnik: niz pade nazaj na slovenskega."""
+    def test_poznan_kljuc_brez_prevoda_je_slovenski(self):
+        """Prazen vmesnik: uporabi se slovenski niz."""
         modul_jezik.nalozi_jezik("sl")
         self.assertEqual(Jezik("en", {}, {}).niz("razdelek_o_strani"), "O strani")
 
@@ -158,8 +158,8 @@ class TestStrogiPodatkovniKljuci(unittest.TestCase):
         self.assertEqual(sl.letnik("prvi"), "1. letnik")
         self.assertEqual(sl.obdobje("zimsko"), "zimsko")
 
-    def test_prazen_prevod_pade_nazaj(self):
-        """Prazen slovar programov: vrednost pade nazaj na slovensko."""
+    def test_prazen_prevod_je_slovenski(self):
+        """Prazen slovar programov: uporabi se slovensko ime."""
         modul_jezik.nalozi_jezik("sl")
         self.assertEqual(Jezik("en", {"programi": {}}, {}).program("1Mate"), "Matematika")
 

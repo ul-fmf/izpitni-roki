@@ -11,8 +11,8 @@ deluje v vseh jezikih enako - povezava, narejena v angleščini, dela v slovenš
 
 Glede strogosti velja razlika med vrednostjo in ključem:
 
-- **prazna vrednost** ni napaka; pade nazaj na slovenščino, tako da je stran
-  uporabna že pred prevajanjem,
+- **prazna vrednost** ni napaka; namesto nje se uporabi slovenska, tako da je
+  stran uporabna že pred prevajanjem,
 - **ključi** pa morajo biti v vseh jezikih natanko isti, rekurzivno po vseh
   nivojih. Odvečen ključ je tipkarska napaka, manjkajoč pa pomeni, da prevajalec
   zanj sploh ne bo videl praznega mesta.
@@ -166,7 +166,7 @@ def _nalozi_predmete():
     Prebere ``predmeti.tsv``.
 
     :return: par ``({jezik: {slovensko ime: prevod}}, {vsa slovenska imena})``.
-        Prazne celice v prvem preskočimo, da prevod pade nazaj na slovensko ime;
+        Prazne celice v prvem preskočimo, da se namesto njih uporabi slovensko ime;
         druga množica pa vsebuje vsa imena, tudi neprevedena, in služi za
         preverjanje, ali predmet sploh poznamo.
     """
@@ -222,7 +222,7 @@ class Jezik:
 
     def niz(self, kljuc: str) -> str:
         """
-        Niz vmesnika. Če prevoda ni, pade nazaj na slovenskega.
+        Niz vmesnika. Če prevoda ni, uporabimo slovenskega.
 
         :raises NapakaVPrevodih: če ključa ne pozna niti slovenščina - to je
             tipkarska napaka v kodi ali predlogi in ne sme tiho vrniti praznega niza
@@ -240,7 +240,7 @@ class Jezik:
 
         Ključ mora biti znan: tiho prikazana surova koda (``1ApMa`` namesto
         ``Aplikativna matematika``) je napaka, ne pa sprejemljiv približek.
-        Prazen prevod pa je le manjkajoč prevod in pade nazaj na slovenščino.
+        Prazen prevod pa pomeni le, da prevoda še ni, in uporabimo slovenskega.
 
         :raises NapakaVPrevodih: če skupine ali ključa ne poznamo
         """
@@ -276,7 +276,7 @@ class Jezik:
         Za razliko od programov in obdobij je tu vsak predmet obvezen: prevodi
         imen predmetov so bistvo večjezične strani, zato nov predmet, ki v
         ``predmeti.tsv`` še nima vrstice, ustavi generiranje. Prazna celica pa
-        je še vedno le manjkajoč prevod in pade nazaj na slovensko ime.
+        pomeni le, da prevoda še ni, in uporabimo slovensko ime.
 
         :raises NapakaVPrevodih: če predmeta ni med znanimi
         """
