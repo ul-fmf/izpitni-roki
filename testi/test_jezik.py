@@ -1,5 +1,7 @@
 """Testi za nalaganje prevodov (issue #9)."""
 
+import json
+import os
 import unittest
 from datetime import datetime
 
@@ -61,6 +63,21 @@ class TestJezik(unittest.TestCase):
         self.assertEqual(nalozi_jezik("en").podmapa, "en")
         self.assertEqual(nalozi_jezik("sl").predpona_sredstev, "")
         self.assertEqual(nalozi_jezik("en").predpona_sredstev, "../")
+
+    def test_zastave_se_ujemajo_z_jeziki(self):
+        """Imena zastav (brez končnice) morajo biti natanko jeziki iz prevodov.
+
+        Manjkajoča zastava podre generiranje, odvečna pa tiho leži v repozitoriju,
+        zato preverimo obe smeri hkrati.
+        """
+        mapa = os.path.join("predloge", "zastave")
+        zastave = {
+            os.path.splitext(d)[0] for d in os.listdir(mapa) if d.endswith(".svg")
+        }
+        with open(os.path.join("prevodi", "vmesnik.json"), encoding="utf-8") as f:
+            v_prevodih = set(json.load(f))
+        self.assertEqual(zastave, v_prevodih)
+        self.assertEqual(zastave, set(JEZIKI))
 
     def test_je_objekt_tipa_jezik(self):
         self.assertIsInstance(nalozi_jezik("sl"), Jezik)

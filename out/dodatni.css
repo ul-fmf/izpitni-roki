@@ -54,9 +54,18 @@
     line-height: 1;
 }
 
+/* Zastave so 4:3 (glej predloge/zastave/README.md), zato sirino racunamo. */
 .povezava-jezik .zastava {
-    height: 1.1rem;
-    width: auto;
     display: block;
+    height: 1.1rem;
+    width: calc(1.1rem * 4 / 3);
+    overflow: hidden;
     border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 1px;
+}
+
+.povezava-jezik .zastava svg {
+    display: block;
+    height: 100%;
+    width: 100%;
 }
