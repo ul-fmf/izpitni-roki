@@ -6,6 +6,87 @@ Koda, ki zgenerira [spletno stran z izpitnimi roki](https://ul-fmf.github.io/izp
 
 je dostopna [tukaj](https://ul-fmf.github.io/izpitni-roki/).
 
+# Prevodi
+
+Stran se zgenerira v vseh jezikih hkrati. Slovenščina ostane na dosedanjem naslovu,
+drugi jeziki pa dobijo podmapo s svojo kodo:
+
+```
+out/testna_stran.html        slovensko
+out/en/testna_stran.html     angleško
+out/de/testna_stran.html     nemško
+```
+
+Prevodi so v mapi `prevodi`:
+
+| datoteka | kaj je notri |
+| --- | --- |
+| `vmesnik.json` | napisi na strani, imena programov, letnikov, obdobij in rokov, dnevi in meseci |
+| `predmeti.tsv` | imena predmetov, stolpec na jezik (ločilo je tabulator) |
+
+Ključi so povsod **slovenski izvirniki**, natanko taki, kot se pojavijo v `.ics`
+datotekah. Isti ključi gredo na strani v atribut `data-ime`, zato je povezava
+s filtri (permalink) v vseh jezikih enaka: povezava, narejena v angleščini,
+odpre isto izbiro na slovenski strani.
+
+## Kaj je napaka in kaj ne
+
+Da prevod ne more tiho izginiti, je generiranje strogo:
+
+* **prazna vrednost ni napaka.** Namesto nje se izpiše slovenska, tako da je
+  stran uporabna, še preden je vse prevedeno.
+* **nepoznan ali manjkajoč ključ je napaka**, ki ustavi generiranje. Vsi jeziki
+  morajo imeti v `vmesnik.json` natanko iste ključe, na vseh nivojih — tudi
+  znotraj `programi`, `letniki`, `obdobja` in `roki`.
+* **predmet, program, letnik ali obdobje brez vnosa je napaka.** Če se v koledarju
+  pojavi nov predmet, generiranje pade, dokler ga ne dodate v `predmeti.tsv`.
+  Prevod sme biti prazen, vrstica pa mora biti.
+* **nezapolnjen ključ predloge je napaka**, da se na strani ne pojavi `{{gumb_prenos}}`.
+
+Sporočila o napakah povedo, kateri ključ manjka in kje.
+
+## Dodajanje novega jezika
+
+Recimo, da dodajate italijanščino s kodo `it`.
+
+1. **`izpitni_roki/jezik.py`** — kodo dodajte v seznam `JEZIKI`.
+
+2. **`prevodi/vmesnik.json`** — dodajte blok `"it": { ... }` z **natanko istimi
+   ključi kot `"sl"`**. Vrednosti so lahko prazni nizi, razen:
+
+   * `dnevi` — sedem imen dni, od ponedeljka,
+   * `meseci` — dvanajst imen mesecev,
+   * `oblika_datuma` — npr. `{dan}. {mesec} {leto} ({dan_v_tednu})`; uporabite
+     lahko le polja `dan`, `mesec`, `leto` in `dan_v_tednu`,
+   * `znak_portreta` — znak, ki se pokaže ob postanku z miško na portretu.
+
+3. **`prevodi/predmeti.tsv`** — dodajte stolpec. Pozor: **v glavo mora priti koda
+   jezika** in glava mora biti natanko enaka seznamu `JEZIKI`, vključno z vrstnim
+   redom. Vsaka vrstica mora imeti enako število stolpcev, celice pa smejo ostati
+   prazne.
+
+4. **`out/portreti/it.jpg`** — portret za gumb za preklop jezika. Imena portretov
+   morajo biti natanko jeziki iz prevodov, sicer test pade.
+
+5. **`testi/`** — nekaj testov si zapomni, da so jeziki trije; popravite jih, da
+   bodo govorili o štirih (`test_poznamo_tri_jezike`, `test_vsak_portret_ima_znak`
+   in pomožni `vmesnik()` v `test_preverjanje_prevodov.py`).
+
+6. Neobvezno: **naslov in opis strani** sta lastna vsaki strani posebej, zato ju
+   v `vmesnik.json` ni. Podata se kot slovar po jezikih v `naredi_testno_stran.py`
+   in `pozeni.py`.
+
+Nato poženite
+
+```
+python -m unittest discover -s testi -t .
+python naredi_testno_stran.py
+```
+
+Če gre oboje skozi, se je pojavila nova mapa `out/it` in gumb za nov jezik.
+V objavo na splet je ni treba dodajati posebej: `.github/workflows/pages.yml`
+prekopira vse jezikovne podmape, ki jih najde.
+
 # Prenos kode k sebi
 
 Za elegantno pridobivanje posodobitev kode na lokalni računalnik ali objavljanje svojih posodobitev
