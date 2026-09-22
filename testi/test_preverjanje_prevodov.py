@@ -108,8 +108,9 @@ class TestStrogoIskanjeKljucev(unittest.TestCase):
             sl.niz("tega_kljuca_ni")
 
     def test_poznan_kljuc_brez_prevoda_pade_nazaj(self):
-        en = modul_jezik.nalozi_jezik("en")
-        self.assertEqual(en.niz("razdelek_o_strani"), "O strani")
+        """Prazen vmesnik: niz pade nazaj na slovenskega."""
+        modul_jezik.nalozi_jezik("sl")
+        self.assertEqual(Jezik("en", {}, {}).niz("razdelek_o_strani"), "O strani")
 
     def test_je_razred_jezik(self):
         self.assertIsInstance(modul_jezik.nalozi_jezik("sl"), Jezik)
@@ -121,7 +122,7 @@ class TestNepoznanPredmet(unittest.TestCase):
 
     def test_predmet_iz_tsv_gre_skozi(self):
         en = modul_jezik.nalozi_jezik("en")
-        self.assertEqual(en.predmet("Logika"), "Logika")
+        self.assertEqual(en.predmet("Logika"), "Logic")
 
     def test_nepoznan_predmet_je_napaka(self):
         en = modul_jezik.nalozi_jezik("en")
@@ -158,8 +159,9 @@ class TestStrogiPodatkovniKljuci(unittest.TestCase):
         self.assertEqual(sl.obdobje("zimsko"), "zimsko")
 
     def test_prazen_prevod_pade_nazaj(self):
-        en = modul_jezik.nalozi_jezik("en")
-        self.assertEqual(en.program("1Mate"), "Matematika")
+        """Prazen slovar programov: vrednost pade nazaj na slovensko."""
+        modul_jezik.nalozi_jezik("sl")
+        self.assertEqual(Jezik("en", {"programi": {}}, {}).program("1Mate"), "Matematika")
 
 
 class TestZapolnjenostPredloge(unittest.TestCase):

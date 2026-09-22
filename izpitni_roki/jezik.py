@@ -265,6 +265,10 @@ class Jezik:
     def obdobje(self, ime: str) -> str:
         return self._iz_slovarja("obdobja", ime)
 
+    def rok(self, ime: str) -> str:
+        """Oznaka roka, npr. ``1.`` v slovenščini in ``first`` v angleščini."""
+        return self._iz_slovarja("roki", ime)
+
     def predmet(self, ime: str) -> str:
         """
         Ime predmeta v tem jeziku.

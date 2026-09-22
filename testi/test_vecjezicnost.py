@@ -85,9 +85,18 @@ class TestVecjezicnost(unittest.TestCase):
         self.assertEqual(datumi["en"], "27 January 2022 (Thursday)")
         self.assertEqual(datumi["de"], "27. Januar 2022 (Donnerstag)")
 
-    def test_neprevedeni_nizi_padejo_nazaj_na_slovenscino(self):
-        """Dokler prevodov ni, mora stran vseeno biti uporabna."""
-        self.assertIn("O strani", self.strani["en"])
+    def test_strani_so_res_prevedene(self):
+        for koda, pricakovano in [
+            ("sl", "O strani"), ("en", "About this page"), ("de", "Über diese Seite"),
+        ]:
+            with self.subTest(jezik=koda):
+                self.assertIn(pricakovano, self.strani[koda])
+
+    def test_roki_so_besede_v_en_in_de(self):
+        """Issue #9: 'rok' je v anglescini 'sitting' z besedno obliko stevila."""
+        self.assertIn("<td>first</td>", self.strani["en"])
+        self.assertIn("<td>erster</td>", self.strani["de"])
+        self.assertIn("<td>1.</td>", self.strani["sl"])
 
     def test_meniji_kazejo_lepa_imena_ne_kod(self):
         moznosti = {

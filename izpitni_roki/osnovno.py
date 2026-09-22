@@ -376,20 +376,20 @@ class IzpitniRok:
         )
 
     def _ics_summary(self, jezik):
-        """Povzetek dogodka za izvoz .ics. Oznaka programa (npr. ``1Mate``) ostane
-        nespremenjena, ker je jezikovno nevtralna; prevedeta se le letnik in rok."""
+        """Povzetek dogodka za izvoz .ics, v celoti v danem jeziku."""
 
         def opisi_par(par):
             program, letnik = par
+            ime_programa = jezik.program(program.ime)
             if letnik.je_brez_letnika():
-                return program.ime
-            return f"{program.ime} - {jezik.letnik(letnik.ime)}"
+                return ime_programa
+            return f"{ime_programa} - {jezik.letnik(letnik.ime)}"
 
         smeri_in_letniki = "\\, ".join(
             map(opisi_par, zip(self.programi, self.letniki))
         )
         izvajalci = "\\, ".join(map(str, self.izvajalci))
-        rok = jezik.niz("oblika_roka").format(n=self.rok.ime.rstrip("."))
+        rok = jezik.niz("oblika_roka").format(rok=jezik.rok(self.rok.ime))
         return f"{jezik.predmet(self.predmet.ime)} ({smeri_in_letniki})\\, {izvajalci}\\, {rok}"
 
     @staticmethod

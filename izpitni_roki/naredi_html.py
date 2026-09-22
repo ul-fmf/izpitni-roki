@@ -199,8 +199,8 @@ def prevedi_moznost(jezik, html_razred: str, moznost: IDTerIme) -> str:
     """
     Besedilo, s katerim je možnost prikazana v spustnem meniju, v danem jeziku.
 
-    Imena izvajalcev se ne prevajajo (so imena, ne besedilo), roki so številke,
-    vse ostalo pa gre skozi slovar prevodov.
+    Imena izvajalcev se ne prevajajo (so imena, ne besedilo), vse ostalo pa gre
+    skozi slovar prevodov.
 
     :param jezik: objekt :class:`izpitni_roki.jezik.Jezik`
     :param html_razred: skupina filtra, npr. ``program``
@@ -213,6 +213,7 @@ def prevedi_moznost(jezik, html_razred: str, moznost: IDTerIme) -> str:
         "letnik": jezik.letnik,
         "obdobje": jezik.obdobje,
         "predmet": jezik.predmet,
+        "rok": jezik.rok,
     }
     if html_razred in prevajalci:
         return prevajalci[html_razred](moznost.ime)
@@ -334,7 +335,7 @@ def naredi_tabelo(koledarji: List[Koledar], jezik) -> str:
                 datum=izpitni_rok.prikazi_datum(jezik),
                 predmet=html.escape(jezik.predmet(izpitni_rok.predmet.ime)),
                 letnik=izpitni_rok.prikazi_smer_in_letnik(jezik),
-                rok=str(izpitni_rok.rok),
+                rok=jezik.rok(izpitni_rok.rok.ime),
                 izvajalci=izpitni_rok.prikazi_izvajalce(),
                 ics_raw=izpitni_rok.ics_vrstice(jezik)
             ))

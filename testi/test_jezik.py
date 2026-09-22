@@ -31,9 +31,16 @@ class TestJezik(unittest.TestCase):
         with self.assertRaises(NapakaVPrevodih):
             sl.program("3XyZa")
 
+    def test_predmet_je_preveden(self):
+        self.assertEqual(nalozi_jezik("en").predmet("Logika"), "Logic")
+        self.assertEqual(nalozi_jezik("de").predmet("Logika"), "Logik")
+
     def test_predmet_brez_prevoda_ostane_v_slovenscini(self):
-        en = nalozi_jezik("en")
-        self.assertEqual(en.predmet("Logika"), "Logika")
+        """Jezik s praznim slovarjem predmetov - fallback ne sme biti odvisen
+        od tega, koliko je v resnici ze prevedeno."""
+        nalozi_jezik("sl")  # napolni predpomnilnik
+        prazen = Jezik("en", {}, {})
+        self.assertEqual(prazen.predmet("Logika"), "Logika")
 
     def test_datum_sl(self):
         sl = nalozi_jezik("sl")
