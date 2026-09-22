@@ -121,7 +121,7 @@
 .povezava-jezik[hreflang="en"] .znak {
     /* 01 so stevke, in te tudi latex pise pokoncno */
     font-style: normal;
-    letter-spacing: 0.05em;
+    letter-spacing: -0.1em;
 }
 
 .povezava-jezik:hover .znak,
