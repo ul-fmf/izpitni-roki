@@ -688,6 +688,32 @@ class HtmlPredloga:
         return niz
 
 
+class NezapolnjenaPredloga(Exception):
+    """V zgenerirani strani je ostal ključ predloge, ki ga nihče ni napolnil."""
+
+
+def preveri_zapolnjeno(besedilo: str, kaj: str) -> str:
+    """
+    Preveri, da v zgenerirani vsebini ni ostalo nobenega ``{{kljuc}}``.
+
+    HtmlPredloga nenastavljene ključe pusti pri miru, kar je tiha napaka: na strani
+    se pojavi ``{{gumb_prenos}}`` namesto besedila. Raje prekinemo generiranje.
+
+    :param besedilo: zgenerirana vsebina
+    :param kaj: kaj generiramo (za sporočilo o napaki)
+
+    :return: nespremenjeno besedilo
+
+    :raises NezapolnjenaPredloga: če je kak ključ ostal nezapolnjen
+    """
+    ostanki = sorted(set(re.findall("{{[^{}]+}}", besedilo)))
+    if ostanki:
+        raise NezapolnjenaPredloga(
+            f"V {kaj} so ostali nezapolnjeni ključi predloge: {', '.join(ostanki)}"
+        )
+    return besedilo
+
+
 # Pomožne funkcije
 
 

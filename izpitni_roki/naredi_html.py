@@ -3,6 +3,7 @@ import re
 import html
 import unicodedata
 from izpitni_roki.osnovno import (
+    preveri_zapolnjeno,
     naredi_zapisnikarja,
     IzpitniRok,
     Koledar,
@@ -452,8 +453,9 @@ def naredi_stran_za_jezik(
     mapa = os.path.join(IZHODNA_MAPA, jezik.podmapa) if jezik.podmapa else IZHODNA_MAPA
     os.makedirs(mapa, exist_ok=True)
     pot = os.path.join(mapa, f"{ime_izhodne}.html")
+    besedilo = preveri_zapolnjeno(str(html_stran), f"strani {pot}")
     with open(pot, "w", encoding="utf-8") as f:
-        print(html_stran, file=f)
+        print(besedilo, file=f)
     return pot
 
 
