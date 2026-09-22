@@ -408,6 +408,7 @@ def naredi_preklop_jezika(trenutni, ime_izhodne: str) -> str:
                     koda=jezik.koda,
                     ime=html.escape(jezik.niz("ime_jezika") or jezik.koda, quote=True),
                     portret=pot_do_portreta(trenutni, jezik.koda),
+                    znak=html.escape(jezik.niz("znak_portreta")),
                 )
             )
         )

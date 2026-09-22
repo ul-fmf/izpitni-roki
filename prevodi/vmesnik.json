@@ -1,6 +1,7 @@
 {
   "sl": {
     "ime_jezika": "Slovensko",
+    "znak_portreta": "π",
     "title": "Izpitni roki",
     "razdelek_o_strani": "O strani",
     "razdelek_izbira": "Izbira izpitnih rokov",
@@ -93,6 +94,7 @@
   },
   "en": {
     "ime_jezika": "English",
+    "znak_portreta": "01",
     "title": "Exam dates",
     "razdelek_o_strani": "About this page",
     "razdelek_izbira": "Choosing exam dates",
@@ -185,6 +187,7 @@
   },
   "de": {
     "ime_jezika": "Deutsch",
+    "znak_portreta": "e",
     "title": "Prüfungstermine",
     "razdelek_o_strani": "Über diese Seite",
     "razdelek_izbira": "Auswahl der Prüfungstermine",

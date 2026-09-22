@@ -91,6 +91,24 @@ class TestVecjezicnost(unittest.TestCase):
                 for src in re.findall(r'<img class="portret" src="([^"]+)"', blok):
                     self.assertFalse(src.startswith("http"), src)
 
+    def test_vsak_portret_ima_znak(self):
+        """Ob postanku z miško se pokaže znak, po katerem je matematik znan."""
+        pricakovani = {"sl": "π", "en": "01", "de": "e"}
+        for koda in JEZIKI:
+            with self.subTest(jezik=koda):
+                blok = re.search(
+                    r'<div class="preklop-jezika">.*?</div>', self.strani[koda], re.S
+                ).group(0)
+                znaki = dict(
+                    re.findall(
+                        r'hreflang="(\w+)".*?<span class="znak" aria-hidden="true">'
+                        r"([^<]*)</span>",
+                        blok,
+                        re.S,
+                    )
+                )
+                self.assertEqual(znaki, pricakovani)
+
     def test_portreti_kazejo_na_obstojece_slike(self):
         for koda in JEZIKI:
             mapa = os.path.dirname(pot_strani(koda))
