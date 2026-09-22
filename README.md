@@ -74,23 +74,19 @@ prekopira vse jezikovne podmape, ki jih najde.
 
 ## Kaj je napaka in kaj ne
 
-Da prevod ne more tiho izginiti, je generiranje strogo:
+Da prevod ne more tiho izginiti, je generiranje strogo.
 
-* **prazna vrednost ni napaka.** Namesto nje se izpiše slovenska, tako da je
+* **Prazna vrednost ni napaka.** Namesto nje se izpiše slovenska, tako da je
   stran uporabna, še preden je vse prevedeno.
-* **nepoznan ali manjkajoč ključ je napaka**, ki ustavi generiranje. Vsi jeziki
+* **Nepoznan ali manjkajoč ključ je napaka**, ki ustavi generiranje. Vsi jeziki
   morajo imeti v `vmesnik.json` natanko iste ključe, na vseh nivojih — tudi
   znotraj `programi`, `letniki`, `obdobja` in `roki`.
 * **predmet, program, letnik ali obdobje brez vnosa je napaka.** Če se v koledarju
   pojavi nov predmet, generiranje pade, dokler ga ne dodate v `predmeti.tsv`.
   Prevod sme biti prazen, vrstica pa mora biti.
-* **ključ predloge, ki ga nihče ne napolni, je napaka.** Predloge v mapi
-  `predloge` imajo mesta oblike `{{gumb_prenos}}`, ki jih generator zamenja z
-  besedilom. Če kakšnega ne zamenja, mesto ostane zapisano dobesedno in
-  obiskovalec na gumbu prebere `{{gumb_prenos}}`; da se to ne zgodi, generator
-  gotovo stran pregleda in raje ustavi delo.
 
-Sporočila o napakah povedo, kateri ključ manjka in kje.
+
+Sporočila o napakah povedo, kaj je narobe.
 
 # Prenos kode k sebi
 
