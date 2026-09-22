@@ -76,19 +76,28 @@ class TestVecjezicnost(unittest.TestCase):
                 with self.subTest(jezik=koda, pot=pot):
                     self.assertTrue(os.path.exists(os.path.join(mapa, pot)), pot)
 
-    def test_preklop_jezika_ima_zastave(self):
-        """Zastave so vrisane, ne slike z omrežja, ime jezika pa ostane dostopno."""
+    def test_preklop_jezika_ima_portrete(self):
+        """Portreti so lokalne slike, ime jezika pa ostane dostopno."""
         for koda in JEZIKI:
             with self.subTest(jezik=koda):
                 blok = re.search(
                     r'<div class="preklop-jezika">.*?</div>', self.strani[koda], re.S
                 ).group(0)
-                self.assertEqual(blok.count('class="zastava"'), len(JEZIKI))
-                self.assertEqual(blok.count("<svg "), len(JEZIKI))
-                self.assertNotIn("<img", blok)
+                self.assertEqual(blok.count('class="portret"'), len(JEZIKI))
                 for ime in ["Slovensko", "English", "Deutsch"]:
                     self.assertIn(f'title="{ime}"', blok)
                     self.assertIn(f'aria-label="{ime}"', blok)
+                # slike so nase, ne z omrezja
+                for src in re.findall(r'<img class="portret" src="([^"]+)"', blok):
+                    self.assertFalse(src.startswith("http"), src)
+
+    def test_portreti_kazejo_na_obstojece_slike(self):
+        for koda in JEZIKI:
+            mapa = os.path.dirname(pot_strani(koda))
+            for src in re.findall(r'<img class="portret" src="([^"]+)"',
+                                  self.strani[koda]):
+                with self.subTest(jezik=koda, src=src):
+                    self.assertTrue(os.path.exists(os.path.join(mapa, src)), src)
 
     def test_datumi_so_po_jezikih_razlicni(self):
         datumi = {

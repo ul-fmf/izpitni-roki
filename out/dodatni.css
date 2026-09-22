@@ -76,18 +76,15 @@
     border-color: var(--barva-glave-temneje);
 }
 
-/* Zastave so 4:3 (glej predloge/zastave/README.md), zato sirino racunamo. */
-.povezava-jezik .zastava {
+/* Portret namesto zastave (glej out/portreti/README.md). Slike so razlicnih
+   razmerij, zato jih obrezemo v krog in poravnamo na zgornji del, kjer je obraz. */
+.povezava-jezik .portret {
     display: block;
-    height: 1.1rem;
-    width: calc(1.1rem * 4 / 3);
-    overflow: hidden;
+    height: 2rem;
+    width: 2rem;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.25);
-    border-radius: 1px;
-}
-
-.povezava-jezik .zastava svg {
-    display: block;
-    height: 100%;
-    width: 100%;
+    background-color: #fff;
 }

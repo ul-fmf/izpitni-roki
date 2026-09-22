@@ -357,18 +357,21 @@ def naredi_tabelo(koledarji: List[Koledar], jezik) -> str:
     )
 
 
-def nalozi_zastavo(koda: str) -> str:
-    """
-    Prebere vrisano zastavo za dani jezik iz ``predloge/zastave/<koda>.svg``.
+MAPA_PORTRETOV = "portreti"
 
-    Zastave so vrisane (inline svg) in ne slike z omrežja, da stran deluje tudi
-    brez povezave in da ni odvisna od zunanjega ponudnika ikon.
 
-    :param koda: ``sl``, ``en`` ali ``de``
-    :return: vsebina svg datoteke
+def pot_do_portreta(trenutni, koda: str) -> str:
     """
-    with open(os.path.join("predloge", "zastave", f"{koda}.svg"), encoding="utf-8") as f:
-        return f.read().strip()
+    Pot do portreta matematika, ki predstavlja dani jezik.
+
+    Slike so v ``out/portreti`` in se objavijo skupaj s stranjo, zato jih naslovimo
+    glede na to, v kateri mapi je stran, ki povezavo vsebuje.
+
+    :param trenutni: jezik strani, na kateri je povezava
+    :param koda: jezik, ki ga povezava ponuja
+    :return: npr. ``../portreti/sl.jpg``
+    """
+    return f"{trenutni.predpona_sredstev}{MAPA_PORTRETOV}/{koda}.jpg"
 
 
 def naredi_preklop_jezika(trenutni, ime_izhodne: str) -> str:
@@ -387,7 +390,7 @@ def naredi_preklop_jezika(trenutni, ime_izhodne: str) -> str:
     from izpitni_roki.jezik import vsi_jeziki
 
     povezave = []
-    # Zastava namesto napisa; ime jezika ostane v title in aria-label, da je
+    # Portret namesto napisa; ime jezika ostane v title in aria-label, da je
     # povezava razumljiva tudi bralniku zaslona in ob postanku z miško.
     for jezik in vsi_jeziki():
         if jezik.koda == trenutni.koda:
@@ -404,7 +407,7 @@ def naredi_preklop_jezika(trenutni, ime_izhodne: str) -> str:
                     pot=pot,
                     koda=jezik.koda,
                     ime=html.escape(jezik.niz("ime_jezika") or jezik.koda, quote=True),
-                    zastava=nalozi_zastavo(jezik.koda),
+                    portret=pot_do_portreta(trenutni, jezik.koda),
                 )
             )
         )
