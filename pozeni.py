@@ -47,8 +47,8 @@ def poskrbi_za_izhodno_mapo():
 
 def glavna(
     ics_datoteke: str | list[str],
-    naslov_strani: str,
-    opis_strani: str,
+    naslov_strani: str | dict[str, str],
+    opis_strani: str | dict[str, str],
     ime_html: str,
     obdobja: tuple[tuple[str, str]],
     prazniki: list[str],
@@ -62,10 +62,10 @@ def glavna(
                          se nahajajo ics datoteke, npr. ``data``. Če je to seznam
                          nizov, je to seznam ics datotek, npr.
                          ``["data/test1.ics", "data/test2.ics"]``
-    :param naslov_strani: Naslov spletne strani, npr.
-                          ``"Izpitni roki na OM FMF v študijskem letu 2021/22"``
-    :param opis_strani: Opis strani v zgornjem pravokotniku, npr.
-            ``"Spodaj so prikazani izpitni roki na programih ... ki zadoščajo izbranim kriterijem."``
+    :param naslov_strani: Naslov spletne strani; niz ali slovar po jezikih, npr.
+                          ``{"sl": "Izpitni roki na OM FMF v študijskem letu 2021/22", ...}``
+    :param opis_strani: Opis strani v zgornjem pravokotniku; niz ali slovar po jezikih, npr.
+            ``{"sl": "Spodaj so prikazani izpitni roki na programih ...", ...}``
     :param ime_html: ime končne html datoteke (brez končnice html, npr. ``roki_2324``)
     :param obdobja: trojica parov datumov, ki opisujejo zimsko, spomladansko in jesensko obdobje,
                     npr. ``(("24. 1. 2024", "16. 2. 2024"), (...), (...))``
@@ -119,15 +119,44 @@ if __name__ == "__main__":
     # - lahko kot seznam datotek, npr. ["data/test1.ics", "data/test2.ics"]
     # - lahko kot ime mape, npr. "test_data"
     vhodne_datoteke = "letosnji_data"
-    # naslov strani
-    naslov_strani = (
-        f"Izpitni roki na Oddelku za matematiko FMF v študijskem letu {leto}"
-    )
-    # opis strani: ker je dolg, ga zaradi berljivosti (v .py) prelomimo s pošenico
-    opis_strani = f"Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa), \
-        Matematika (1Mate) in Aplikativna matematika (1ApMa) in \
-        prvih treh letnikih programa Pedagoška matematika (2PeMa) \
-        na Oddelku za matematiko FMF v študijskem letu {leto}, ki zadoščajo izbranim kriterijem."
+    # Naslov in opis sta lastna tej strani, zato ju ni v prevodi/vmesnik.json,
+    # ampak ju podamo kot slovar po jezikih. Prazen prevod pomeni, da se uporabi
+    # slovenski, tako da je stran uporabna tudi pred prevajanjem.
+    naslov_strani = {
+        "sl": f"Izpitni roki na Oddelku za matematiko FMF v študijskem letu {leto}",
+        "en": (
+            f"Exam dates at the Department of Mathematics, FMF, "
+            f"in the academic year {leto}"
+        ),
+        "de": (
+            f"Prüfungstermine am Fachbereich für Mathematik der FMF "
+            f"im Studienjahr {leto}"
+        ),
+    }
+    # opis strani: ker je dolg, ga zaradi berljivosti (v .py) prelomimo na več kosov
+    opis_strani = {
+        "sl": (
+            f"Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa), "
+            f"Matematika (1Mate) in Aplikativna matematika (1ApMa) in "
+            f"prvih treh letnikih programa Pedagoška matematika (2PeMa) "
+            f"na Oddelku za matematiko FMF v študijskem letu {leto}, "
+            f"ki zadoščajo izbranim kriterijem."
+        ),
+        "en": (
+            f"Below are the exam dates for the programmes Financial Mathematics (1FiMa), "
+            f"Mathematics (1Mate) and Applied Mathematics (1ApMa), and for the first "
+            f"three years of the programme Mathematics Education (2PeMa) "
+            f"at the Department of Mathematics, FMF, in the academic year {leto}, "
+            f"that match the selected criteria."
+        ),
+        "de": (
+            f"Unten stehen die Prüfungstermine der Studiengänge Finanzmathematik (1FiMa), "
+            f"Mathematik (1Mate) und Angewandte Mathematik (1ApMa) sowie der ersten drei "
+            f"Jahrgänge des Studiengangs Mathematiklehramt (2PeMa) "
+            f"am Fachbereich für Mathematik der FMF im Studienjahr {leto}, "
+            f"die den ausgewählten Kriterien entsprechen."
+        ),
+    }
     # uradna izpitna obdobja
     zimsko = (f"24. 1. {leto_konca}", f"16. 2. {leto_konca}")
     spomladansko = (f"5. 6. {leto_konca}", f"5. 7. {leto_konca}")
