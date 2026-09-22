@@ -2,6 +2,8 @@ letosnji_data
 data
 .idea
 out/*.html
+# ... tudi zgenerirane strani v jezikovnih podmapah (out/en/, out/de/)
+out/*/*.html
 **/_build
 **/_static
 **/_templates

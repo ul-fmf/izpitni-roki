@@ -5,10 +5,9 @@ const ID_BREZ_LETNIKA = "brezletnika";
 // Vse skupine filtrov, po vrsti, kot nastopajo v id-ju izpitne vrstice.
 const SKUPINE = ["predmet", "program", "letnik", "rok", "izvajalec", "obdobje"];
 
-const ODSTRANI_VSE = "Odstrani vse";
-const ODSTRANI_VSA = "Odstrani vsa";
-const IZBERI_VSE = "Izberi vse";
-const IZBERI_VSA = "Izberi vsa";
+// Napisa 'izberi vse' in 'odstrani vse' prideta z elementa (data-izberi,
+// data-odstrani), ker sta odvisna od jezika in v slovenscini tudi od spola
+// skupine (vse/vsa). Glej prevodi/vmesnik.json.
 
 $(document).on('click', '.allow-focus', function (e) {
   e.stopPropagation();
@@ -70,24 +69,8 @@ $(".opcija").on("click", function() {
 
 $(".group-choice").on("click", function() {
     const razred = $(this).attr("data-group");
-    const pikaRazred = "." + razred;
-    const trenutniNapis = $(this).text();
-    if (trenutniNapis === ODSTRANI_VSE || trenutniNapis === ODSTRANI_VSA){
-        $(pikaRazred).removeClass("active");
-        if (trenutniNapis === ODSTRANI_VSE){
-            $(this).text(IZBERI_VSE);
-        } else {
-            $(this).text(IZBERI_VSA);
-        }
-
-    } else {
-        $(pikaRazred).addClass("active");
-        if (trenutniNapis === IZBERI_VSE){
-            $(this).text(ODSTRANI_VSE);
-        } else {
-            $(this).text(ODSTRANI_VSA);
-        }
-    }
+    const jeOdstrani = $(this).text().trim() === ($(this).attr("data-odstrani") || "").trim();
+    $("." + razred).toggleClass("active", !jeOdstrani);
     posodobiGrupnoIzbiro(razred);
     posodobiTabeloIzbranih();
     zapisiStanjeVUrl();
@@ -147,34 +130,21 @@ function posodobiTabeloIzbranih(){
 
 function posodobiGrupnoIzbiro(razred) {
     const vsi = moznosti(razred);
-    const nVsi = vsi.length;
     const nAktivni = vsi.filter(".active").length;
     const gumbID = "#gumb_" + razred;
-    const grupaID = "#grupa_" + razred;
-    const srednjiSpol = $(grupaID).text().endsWith("a");
+    const grupa = $("#grupa_" + razred);
     if (nAktivni > 0){
-        if (srednjiSpol){
-            // Odstrani/dodaj vsa
-            $(grupaID).text(ODSTRANI_VSA);
-        } else {
-            // ... vse
-            $(grupaID).text(ODSTRANI_VSE);
-        }
-
+        grupa.text(grupa.attr("data-odstrani"));
         $(gumbID).removeClass("btn-secondary");
-        if (nAktivni < nVsi){
+        if (nAktivni < vsi.length){
             $(gumbID).removeClass("btn-success");
             $(gumbID).addClass("btn-warning");
         } else {
             $(gumbID).removeClass("btn-warning");
             $(gumbID).addClass("btn-success");
         }
-    } else{
-        if (srednjiSpol){
-            $(grupaID).text(IZBERI_VSA);
-        } else {
-            $(grupaID).text(IZBERI_VSE);
-        }
+    } else {
+        grupa.text(grupa.attr("data-izberi"));
         $(gumbID).removeClass("btn-success");
         $(gumbID).removeClass("btn-warning");
         $(gumbID).addClass("btn-secondary");
@@ -193,7 +163,8 @@ $(".izvoz-koledarja").on("click", function() {
 
     var element = document.createElement('a');
     element.setAttribute('href', "data:text/calendar;charset=utf8," + encodeURIComponent(icsVsebina));
-    element.setAttribute('download', "izbrani_izpiti.ics");
+    const imeDatoteke = $(".table.izpiti").attr("data-datoteka") || "izbrani_izpiti.ics";
+    element.setAttribute('download', imeDatoteke);
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click();
@@ -223,6 +194,7 @@ function zapisiStanjeVUrl(){
     // Vedno gradimo iz same poti: tako morebitni query string iz vhodne
     // povezave ne prezivi in ne prepise izbire ob ponovnem nalaganju.
     const naslov = zapis ? location.pathname + "#" + zapis : location.pathname;
+    osveziPovezaveJezikov(zapis);
     try {
         history.replaceState(null, "", naslov);
     } catch (e) {
@@ -255,3 +227,15 @@ function uveljaviStanjeIzUrl(){
 }
 
 $(uveljaviStanjeIzUrl);
+
+// Preklop jezika mora ohraniti izbiro. Kljuci v fragmentu so slovenski
+// originali (glej prevodi/vmesnik.json), zato je fragment v vseh jezikih enak
+// in ga je dovolj prepisati na povezavo.
+function osveziPovezaveJezikov(zapis){
+    $(".povezava-jezik").each(function(){
+        const osnova = ($(this).attr("href") || "").split("#")[0];
+        if (osnova){
+            $(this).attr("href", zapis ? osnova + "#" + zapis : osnova);
+        }
+    });
+}

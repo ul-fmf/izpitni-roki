@@ -19,7 +19,7 @@ naredi_html(
 #Izbrane izpitne roke lahko prenesete kot .ics datoteko in jih nato dodate v svoj osebni koledar, vendar pozor: morebitne kasnejše spremembe izpitnih rokov se v vašem osebnem koledarju ne bodo poznale.""",
     obdobja={
         "zimsko": (datetime(2024, 1, 1), datetime(2024, 3, 1)),
-        "letno": (datetime(2024, 6, 1), datetime(2024, 8,1)),
+        "spomladansko": (datetime(2024, 6, 1), datetime(2024, 8, 1)),
         "jesensko": (datetime(2024, 8, 11), datetime(2024, 10, 1))
     },
     oblika_summary=None,

@@ -15,16 +15,25 @@ ZAPISNIKAR = naredi_zapisnikarja(__file__)
 VHODNA_MAPA = "test_data"
 IME_IZHODNE = "testna_stran"
 
-NASLOV = "Izpitni roki: testna stran"
+NASLOV = {
+    "sl": "Izpitni roki: testna stran",
+    "en": "",
+    "de": "",
+}
 
-OPIS = (
-    "<b>To je samo testna stran, ki prikazuje delovanje generatorja izpitnih "
-    "rokov.</b> Zgenerirana je iz nekaj starih, vzorčnih podatkov in <b>ne "
-    "vsebuje pravih izpitnih rokov</b>, zato razporeda izpitov tu ne iščite. "
-    "Lahko pa preizkusite, kako delujejo filtri po programih, letnikih, "
-    "izpitnih obdobjih, predmetih, izvajalcih in rokih ter kako je videti izvoz "
-    "izbranih rokov v datoteko <code>.ics</code>."
-)
+# Prazen prevod pomeni, da se uporabi slovenski.
+OPIS = {
+    "en": "",
+    "de": "",
+    "sl": (
+        "<b>To je samo testna stran, ki prikazuje delovanje generatorja izpitnih "
+        "rokov.</b> Zgenerirana je iz nekaj starih, vzorčnih podatkov in <b>ne "
+        "vsebuje pravih izpitnih rokov</b>, zato razporeda izpitov tu ne iščite. "
+        "Lahko pa preizkusite, kako delujejo filtri po programih, letnikih, "
+        "izpitnih obdobjih, predmetih, izvajalcih in rokih ter kako je videti izvoz "
+        "izbranih rokov v datoteko <code>.ics</code>."
+    ),
+}
 
 # Izpitna obdobja za študijsko leto 2021/22, iz katerega so vzorčni podatki.
 OBDOBJA = {

@@ -1,3 +1,13 @@
+:root {
+    /* Svetlo modra ozadja glave; isto barvo dobijo neizbrani gumbi za jezik. */
+    --barva-glave: #e3f2fd;
+    --barva-glave-temneje: #cfe6fb;
+}
+
+.glava-strani {
+    background-color: var(--barva-glave);
+}
+
 
 .dropdown-menu li a:hover,
 .dropdown-menu li a:focus {
@@ -40,4 +50,85 @@
 
 .gumb-v-vrsti {
     margin-top: 5px;
+}
+
+/* Preklop jezika: zastave namesto napisov (issue #9) */
+.preklop-jezika {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.povezava-jezik {
+    padding: 0.15rem 0.3rem;
+    line-height: 1;
+}
+
+/* Neizbrani jezik se zlije z glavo, izbrani obdrzi bootstrapov btn-primary. */
+.povezava-jezik.btn-light,
+.povezava-jezik.btn-light:focus {
+    background-color: var(--barva-glave);
+    border-color: var(--barva-glave);
+}
+
+.povezava-jezik.btn-light:hover {
+    background-color: var(--barva-glave-temneje);
+    border-color: var(--barva-glave-temneje);
+}
+
+/* Portret namesto zastave (glej out/portreti/README.md). Slike so razlicnih
+   razmerij, zato jih obrezemo v krog in poravnamo na zgornji del, kjer je obraz. */
+.povezava-jezik .portret-ovoj {
+    position: relative;
+    display: block;
+}
+
+.povezava-jezik .portret {
+    display: block;
+    height: 4rem;
+    width: 4rem;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    background-color: #fff;
+}
+
+/* Ob postanku z misko portret zamenja znak, po katerem je matematik znan:
+   pi (Vega), 01 (Turing), e (Euler). Crke so posevne, stevke pokoncne -
+   tako jih postavi tudi latex v matematicnem nacinu. */
+.povezava-jezik .znak {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    background-color: rgba(255, 255, 255, 0.92);
+    font-family: "Cambria Math", "Latin Modern Math", Georgia, "Times New Roman", serif;
+    font-style: italic;
+    /* Posevne crke se nagibajo v desno, zato jih odmik na desni opticno
+       poravna nazaj v sredino kroga. */
+    padding-right: 0.12em;
+    font-size: 2rem;
+    line-height: 1;
+    color: #10395c;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.povezava-jezik[hreflang="en"] .znak {
+    /* 01 so stevke, in te tudi latex pise pokoncno */
+    font-style: normal;
+    padding-right: 0;
+    letter-spacing: -0.1em;
+}
+
+.povezava-jezik:hover .znak,
+.povezava-jezik:focus .znak {
+    opacity: 1;
 }

@@ -3,6 +3,7 @@ import re
 import html
 import unicodedata
 from izpitni_roki.osnovno import (
+    preveri_zapolnjeno,
     naredi_zapisnikarja,
     IzpitniRok,
     Koledar,
@@ -10,6 +11,7 @@ from izpitni_roki.osnovno import (
     IDTerIme
 )
 from izpitni_roki.nalozi_ics import nalozi_ics
+from izpitni_roki.jezik import JEZIKI, PRIVZETI_JEZIK, nalozi_jezik
 from typing import List, Callable, Dict, Tuple, Optional
 from datetime import datetime
 
@@ -193,7 +195,59 @@ def doloci_skupinsko_crko(moznost: IDTerIme) -> str:
     return CRKE[0]
 
 
+def prevedi_moznost(jezik, html_razred: str, moznost: IDTerIme) -> str:
+    """
+    Besedilo, s katerim je možnost prikazana v spustnem meniju, v danem jeziku.
+
+    Imena izvajalcev se ne prevajajo (so imena, ne besedilo), vse ostalo pa gre
+    skozi slovar prevodov.
+
+    :param jezik: objekt :class:`izpitni_roki.jezik.Jezik`
+    :param html_razred: skupina filtra, npr. ``program``
+    :param moznost: možnost, npr. ``Program("1ApMa")``
+
+    :return: npr. ``"Aplikativna matematika"``
+    """
+    prevajalci = {
+        "program": jezik.program,
+        "letnik": jezik.letnik,
+        "obdobje": jezik.obdobje,
+        "predmet": jezik.predmet,
+        "rok": jezik.rok,
+    }
+    if html_razred in prevajalci:
+        return prevajalci[html_razred](moznost.ime)
+    return str(moznost)
+
+
+def _ovoj_menija(jezik, ime_menija: str, html_razred: str, skupine: str) -> str:
+    """Skupni ovoj obeh vrst spustnih menijev."""
+    return str(
+        HtmlPredloga(
+            "spustni_spustni",
+            ime_menija=ime_menija,
+            razred=html_razred,
+            skupine=skupine,
+            izberi_vse=jezik.gumb_skupine(html_razred, izbrano=False),
+            odstrani_vse=jezik.gumb_skupine(html_razred, izbrano=True),
+        )
+    )
+
+
+def _moznost_html(jezik, html_razred: str, moznost: IDTerIme) -> str:
+    return str(
+        HtmlPredloga(
+            "spustni_spustni_nivo2",
+            razred=html_razred,
+            besedilo=html.escape(prevedi_moznost(jezik, html_razred, moznost)),
+            id=moznost.id,
+            ime=html.escape(moznost.ime, quote=True),
+        )
+    )
+
+
 def naredi_spustni_meni_po_crkah(
+        jezik,
         ime_menija: str,
         html_razred: str,
         moznosti: List[IDTerIme]
@@ -201,6 +255,10 @@ def naredi_spustni_meni_po_crkah(
     """
     Naredi dvonivojski spustni meni.
 
+    Skupine črk se ravnajo po **slovenskem** imenu, tudi v prevedenih različicah,
+    da je vrstni red v vseh jezikih enak in da se ujema z razvrstitvijo.
+
+    :param jezik: objekt :class:`izpitni_roki.jezik.Jezik`
     :param ime_menija: napis na gumbu
     :param html_razred: razred, ki ga dodatmo v ``class`` atribut vseh možnosti
     :param moznosti: Urejen seznam moznosti.
@@ -212,47 +270,36 @@ def naredi_spustni_meni_po_crkah(
         return ""
     skupine: List[List[IDTerIme]] = [[] for _ in CRKE]
     for moznost in moznosti:
-        ime_skupine = doloci_skupinsko_crko(moznost)
-        skupine[CRKE.index(ime_skupine)].append(moznost)
+        skupine[CRKE.index(doloci_skupinsko_crko(moznost))].append(moznost)
     elementi_nivo1 = []
     for crka, skupina in zip(CRKE, skupine):
         if not skupina:
             continue
-        elementi_nivo2 = []
-        for moznost in skupina:
-            element = HtmlPredloga(
-                "spustni_spustni_nivo2",
-                razred=html_razred,
-                besedilo=str(moznost),
-                id=moznost.id,
-                ime=html.escape(moznost.ime, quote=True)
-            )
-            elementi_nivo2.append(str(element))
         elementi_nivo1.append(
             str(
                 HtmlPredloga(
                     "spustni_spustni_nivo1",
                     ime_skupine=crka,
-                    moznosti="\n".join(elementi_nivo2),
+                    moznosti="\n".join(
+                        _moznost_html(jezik, html_razred, m) for m in skupina
+                    ),
                     razred=html_razred
                 )
             )
         )
-    return str(
-        HtmlPredloga(
-            "spustni_spustni",
-            ime_menija=ime_menija,
-            razred=html_razred,
-            skupine="\n".join(elementi_nivo1),
-            vse=moznosti[0].vse_vsa()
-        )
-    )
+    return _ovoj_menija(jezik, ime_menija, html_razred, "\n".join(elementi_nivo1))
 
 
-def naredi_spustni_meni(ime_menija: str, html_razred: str, moznosti: List[IDTerIme]) -> str:
+def naredi_spustni_meni(
+        jezik,
+        ime_menija: str,
+        html_razred: str,
+        moznosti: List[IDTerIme]
+) -> str:
     """
     Naredi enonivojski spustni meni.
 
+    :param jezik: objekt :class:`izpitni_roki.jezik.Jezik`
     :param ime_menija: napis na gumbu
     :param html_razred: razred, ki ga dodatmo v ``class`` atribut vseh možnosti
     :param moznosti: Urejen seznam moznosti.
@@ -263,32 +310,16 @@ def naredi_spustni_meni(ime_menija: str, html_razred: str, moznosti: List[IDTerI
     """
     if not moznosti:
         return ""
-    elementi_nivo2 = []
-    for moznost in moznosti:
-        element = HtmlPredloga(
-            "spustni_spustni_nivo2",
-            razred=html_razred,
-            besedilo=moznost.ime,
-            id=moznost.id,
-            ime=html.escape(moznost.ime, quote=True)
-        )
-        elementi_nivo2.append(str(element))
-    return str(
-        HtmlPredloga(
-            "spustni_spustni",
-            ime_menija=ime_menija,
-            razred=html_razred,
-            skupine="\n".join(elementi_nivo2),
-            vse=moznosti[0].vse_vsa()
-        )
-    )
+    elementi = [_moznost_html(jezik, html_razred, m) for m in moznosti]
+    return _ovoj_menija(jezik, ime_menija, html_razred, "\n".join(elementi))
 
 
-def naredi_tabelo(koledarji: List[Koledar]) -> str:
+def naredi_tabelo(koledarji: List[Koledar], jezik) -> str:
     """
     Html koda za tabelo vseh izpitnih rokov
 
     :param koledarji: seznam objektov Koledar
+    :param jezik: objekt :class:`izpitni_roki.jezik.Jezik`
 
     :return: str(html predloga za tabelo)
     """
@@ -301,12 +332,12 @@ def naredi_tabelo(koledarji: List[Koledar]) -> str:
             str(HtmlPredloga(
                 "tabela_vrstica",
                 id=izpitni_rok.id(),
-                datum=izpitni_rok.prikazi_datum(),
-                predmet=str(izpitni_rok.predmet),
-                letnik=izpitni_rok.prikazi_smer_in_letnik(),
-                rok=str(izpitni_rok.rok),
+                datum=izpitni_rok.prikazi_datum(jezik),
+                predmet=html.escape(jezik.predmet(izpitni_rok.predmet.ime)),
+                letnik=izpitni_rok.prikazi_smer_in_letnik(jezik),
+                rok=jezik.rok(izpitni_rok.rok.ime),
                 izvajalci=izpitni_rok.prikazi_izvajalce(),
-                ics_raw=izpitni_rok.ics_vrstice
+                ics_raw=izpitni_rok.ics_vrstice(jezik)
             ))
         )
     # ics opis skupnega koledarja bomo naredili iz enega od ics opisov
@@ -314,88 +345,178 @@ def naredi_tabelo(koledarji: List[Koledar]) -> str:
     return str(
         HtmlPredloga(
             "tabela",
-            ics_raw=koledarji[0].prilagodi_ics_opis("Izpitni roki"),
+            ics_raw=koledarji[0].prilagodi_ics_opis(jezik.niz("ics_ime_koledarja")),
+            ics_datoteka=jezik.niz("ics_ime_datoteke"),
+            stolpec_datum=jezik.niz("stolpec_datum"),
+            stolpec_predmet=jezik.niz("stolpec_predmet"),
+            stolpec_program_letnik=jezik.niz("stolpec_program_letnik"),
+            stolpec_rok=jezik.niz("stolpec_rok"),
+            stolpec_izvajalci=jezik.niz("stolpec_izvajalci"),
             vrstice="\n".join(vrstice)
         )
     )
 
 
+MAPA_PORTRETOV = "portreti"
+
+
+def pot_do_portreta(trenutni, koda: str) -> str:
+    """
+    Pot do portreta matematika, ki predstavlja dani jezik.
+
+    Slike so v ``out/portreti`` in se objavijo skupaj s stranjo, zato jih naslovimo
+    glede na to, v kateri mapi je stran, ki povezavo vsebuje.
+
+    :param trenutni: jezik strani, na kateri je povezava
+    :param koda: jezik, ki ga povezava ponuja
+    :return: npr. ``../portreti/sl.jpg``
+    """
+    return f"{trenutni.predpona_sredstev}{MAPA_PORTRETOV}/{koda}.jpg"
+
+
+def naredi_preklop_jezika(trenutni, ime_izhodne: str) -> str:
+    """
+    Povezave na isto stran v drugih jezikih.
+
+    Fragment (permalink, issue #7) je v vseh jezikih enak, ker so ključi slovenski
+    originali; ``posodabljanje.js`` ga tem povezavam doda ob vsaki spremembi izbire,
+    da izbira preživi preklop jezika.
+
+    :param trenutni: jezik te strani
+    :param ime_izhodne: ime html datoteke brez končnice
+
+    :return: html s povezavami na vse jezike
+    """
+    from izpitni_roki.jezik import vsi_jeziki
+
+    povezave = []
+    # Portret namesto napisa; ime jezika ostane v title in aria-label, da je
+    # povezava razumljiva tudi bralniku zaslona in ob postanku z miško.
+    for jezik in vsi_jeziki():
+        if jezik.koda == trenutni.koda:
+            pot = "#"
+        elif jezik.podmapa:
+            pot = f"{trenutni.predpona_sredstev}{jezik.podmapa}/{ime_izhodne}.html"
+        else:
+            pot = f"{trenutni.predpona_sredstev}{ime_izhodne}.html"
+        povezave.append(
+            str(
+                HtmlPredloga(
+                    "jezik_povezava",
+                    razred="btn-primary" if jezik.koda == trenutni.koda else "btn-light",
+                    pot=pot,
+                    koda=jezik.koda,
+                    ime=html.escape(jezik.niz("ime_jezika") or jezik.koda, quote=True),
+                    portret=pot_do_portreta(trenutni, jezik.koda),
+                    znak=html.escape(jezik.niz("znak_portreta")),
+                )
+            )
+        )
+    return "\n".join(povezave)
+
+
+def _za_jezik(vrednost, koda: str) -> str:
+    """Besedilo, ki ga je klicatelj podal bodisi kot niz bodisi kot slovar po jezikih."""
+    if isinstance(vrednost, dict):
+        return vrednost.get(koda) or vrednost.get(PRIVZETI_JEZIK, "")
+    return vrednost
+
+
+def naredi_stran_za_jezik(
+        koledarji: List[Koledar],
+        jezik,
+        naslov,
+        opis_strani,
+        ime_izhodne: str
+) -> str:
+    """
+    Sestavi eno html stran v danem jeziku in jo zapiše v izhodno mapo.
+
+    :param koledarji: naloženi koledarji
+    :param jezik: objekt :class:`izpitni_roki.jezik.Jezik`
+    :param naslov: naslov strani (niz ali slovar po jezikih)
+    :param opis_strani: opis strani (niz ali slovar po jezikih)
+    :param ime_izhodne: ime datoteke brez končnice
+
+    :return: pot do zapisane datoteke
+    """
+    meniji = [
+        naredi_spustni_meni(jezik, jezik.niz("meni_program"), "program",
+                            najdi_vse_programe(koledarji)),
+        naredi_spustni_meni(jezik, jezik.niz("meni_letnik"), "letnik",
+                            najdi_vse_letnike(koledarji)),
+        naredi_spustni_meni(jezik, jezik.niz("meni_obdobje"), "obdobje",
+                            najdi_vsa_obdobja(koledarji)),
+        naredi_spustni_meni_po_crkah(jezik, jezik.niz("meni_predmet"), "predmet",
+                                     najdi_vse_predmete(koledarji)),
+        naredi_spustni_meni_po_crkah(jezik, jezik.niz("meni_izvajalec"), "izvajalec",
+                                     najdi_vse_izvajalce(koledarji)),
+        naredi_spustni_meni(jezik, jezik.niz("meni_rok"), "rok",
+                            najdi_vse_roke(koledarji)),
+        str(HtmlPredloga("prenos", gumb_prenos=jezik.niz("gumb_prenos"))),
+    ]
+
+    html_stran = HtmlPredloga(
+        "stran",
+        koda_jezika=jezik.koda,
+        predpona=jezik.predpona_sredstev,
+        title=jezik.niz("title"),
+        naslov=_za_jezik(naslov, jezik.koda),
+        jeziki=naredi_preklop_jezika(jezik, ime_izhodne),
+        razdelek_o_strani=jezik.niz("razdelek_o_strani"),
+        razdelek_izbira=jezik.niz("razdelek_izbira"),
+        razdelek_izbrani=jezik.niz("razdelek_izbrani"),
+        opis_strani=_za_jezik(opis_strani, jezik.koda),
+        odstavek_ics=jezik.niz("odstavek_ics"),
+        gumb_komentar=jezik.niz("gumb_komentar"),
+        spustni_meniji="\n\n".join(meni for meni in meniji if meni),
+        izpiti=naredi_tabelo(koledarji, jezik),
+    )
+    mapa = os.path.join(IZHODNA_MAPA, jezik.podmapa) if jezik.podmapa else IZHODNA_MAPA
+    os.makedirs(mapa, exist_ok=True)
+    pot = os.path.join(mapa, f"{ime_izhodne}.html")
+    besedilo = preveri_zapolnjeno(str(html_stran), f"strani {pot}")
+    with open(pot, "w", encoding="utf-8") as f:
+        print(besedilo, file=f)
+    return pot
+
+
 def naredi_html(
         poti_do_koledarjev: List[str],
-        naslov: str = "Naslov strani",
+        naslov = "Naslov strani",
         opis_strani: str = "Opis strani",
         ime_izhodne: str = "izpitni_roki",
         obdobja: Optional[Dict[str, Tuple[datetime, datetime]]] = None,
         oblika_summary: Optional[str] = None,
-        oblika_datum: Optional[str] = None
-):
+        oblika_datum: Optional[str] = None,
+        jeziki: Optional[List[str]] = None
+) -> List[str]:
     """
-    Naredi celotno spletno stran.
+    Naredi celotno spletno stran, v vsakem od želenih jezikov po eno.
+
+    Slovenska različica pristane v izhodni mapi, ostale v podmapi s kodo jezika
+    (``out/en/...``), tako da že deljene povezave na slovensko stran še naprej
+    delujejo.
 
     :param poti_do_koledarjev: seznam poti do .ics datotek, ki vsebujejo izpitne roke
-    :param ime_izhodne: ime izhodne datoteke, npr. ``izpitni_roki`` (in ne ``izpitni_roki.html``)
-    :param naslov: naslov spletne strani, npr.
+    :param naslov: naslov spletne strani; niz ali slovar ``{"sl": ..., "en": ...}``
+    :param opis_strani: kratek opis strani; niz ali slovar po jezikih
+    :param ime_izhodne: ime izhodne datoteke, npr. ``izpitni_roki``
+    :param obdobja: slovar, ki podaja imena in intervale izpitnih obdobij
+    :param oblika_summary: regularni izraz, ki mu zadošča polje ``SUMMARY`` v ics datoteki
+    :param oblika_datum: format datuma (npr. ``%Y%m%D``)
+    :param jeziki: kode jezikov, ki naj jih zgeneriramo; privzeto vsi znani
 
-        .. code-block:: text
-
-            "Izpitni roki na Oddelku za matematiko FMF v študijskem letu 2022/23"
-
-    :param opis_strani: Kratek opis strani (npr. katere izpitne roke vsebuje), npr.
-
-        .. code-block:: text
-
-            "Spodaj so prikazani izpitni roki na programih Finančna matematika (1FiMa),
-            Matematika (1Mate) in Aplikativna matematika (1ApMa) in prvih treh letnikih programa
-            Pedagoška matematika (2PeMa) na Oddelku za matematiko FMF v študijskem letu 2022/23,
-            ki zadoščajo izbranim kriterijem."
-
-    :param obdobja: slovar, ki podaja imena in intervale izpitnih obdobij, npr.
-        ``{"zimsko izpitno obdobje": (datetime(2022, 1, 15), datetime(2022, 2, 15), ...}``.
-        Izpiti, ki ne bodo padli v nobeno od naštetih obdobij, bodo imeli kategorijo
-        ``izven izpitnega obdobja``.
-    :param oblika_summary: regularni izraz, ki mu zadošča polje ``SUMMARY`` v ics datoteki.
-    :param oblika_datum: format datuma (npr. ``%Y%m%D``), ki mu zadošča polje
-        ``DTSTART;VALUE=DATE``.
-
-    :return: Ne vrne ničesar, se pa str(predloga za stran) pojavi v izhodni mapi ``out``.
+    :return: seznam poti do zgeneriranih datotek
     """
-    # nalozi
     koledarji = [
         nalozi_ics(pot, obdobja, oblika_summary, oblika_datum) for pot in poti_do_koledarjev
     ]
-    # ustvari
-    vsi_programi = najdi_vse_programe(koledarji)
-    vsi_letniki = najdi_vse_letnike(koledarji)
-    vsi_roki = najdi_vse_roke(koledarji)
-    vsi_izvajalci = najdi_vse_izvajalce(koledarji)
-    vsi_predmeti = najdi_vse_predmete(koledarji)
-    vsa_obdobja = najdi_vsa_obdobja(koledarji)
-
-    meni_programi = naredi_spustni_meni("Programi", "program", vsi_programi)
-    meni_letniki = naredi_spustni_meni("Letniki", "letnik", vsi_letniki)
-    meni_obdobja = naredi_spustni_meni("Obdobja", "obdobje", vsa_obdobja)
-    meni_predmeti = naredi_spustni_meni_po_crkah("Predmeti", "predmet", vsi_predmeti)
-    meni_izvajalci = naredi_spustni_meni_po_crkah("Izvajalci", "izvajalec", vsi_izvajalci)
-    meni_roki = naredi_spustni_meni("Roki", "rok", vsi_roki)
-
-    # prazne menije (npr. letniki, kadar noben program letnikov nima) izpustimo
-    meniji = "\n\n".join(
-        [
-            meni for meni in [
-                meni_programi, meni_letniki, meni_obdobja, meni_predmeti,
-                meni_izvajalci, meni_roki, str(HtmlPredloga("prenos"))
-            ] if meni
-         ]
-    )
-    izpiti = naredi_tabelo(koledarji)
-
-    html_stran = HtmlPredloga(
-        "stran",
-        naslov=naslov,
-        opis_strani=opis_strani,
-        spustni_meniji=meniji,
-        izpiti=izpiti
-    )
-    os.makedirs(IZHODNA_MAPA, exist_ok=True)
-    with open(os.path.join(IZHODNA_MAPA, f"{ime_izhodne}.html"), "w", encoding="utf-8") as f:
-        print(html_stran, file=f)
+    poti = []
+    for koda in (jeziki if jeziki is not None else JEZIKI):
+        jezik = nalozi_jezik(koda)
+        poti.append(
+            naredi_stran_za_jezik(koledarji, jezik, naslov, opis_strani, ime_izhodne)
+        )
+        ZAPISNIKAR.info(f"Zgeneriral {poti[-1]}")
+    return poti

@@ -39,8 +39,14 @@ class TestZgenerirenaStran(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        if os.path.exists(POT):
-            os.remove(POT)
+        from izpitni_roki.jezik import JEZIKI, nalozi_jezik
+
+        for koda in JEZIKI:
+            podmapa = nalozi_jezik(koda).podmapa
+            mapa = os.path.join(IZHODNA_MAPA, podmapa) if podmapa else IZHODNA_MAPA
+            pot = os.path.join(mapa, f"{IME_IZHODNE}.html")
+            if os.path.exists(pot):
+                os.remove(pot)
 
     def test_vsaka_moznost_ima_ime_in_id(self):
         """Permalink išče možnosti po data-ime, filter pa po id."""

@@ -49,7 +49,7 @@ class IDTerIme:
     def naredi_id(ime: str) -> str:
         """
         Iz imena naredi id. Id je determinističen: isto ime vedno da isti id, tudi
-        v naslednji generaciji strani. Od tega so odvisni permalinki (issue #7).
+        v naslednji generaciji strani. Od tega so odvisni permalinki.
 
         Id se ne sme začeti s števko (sicer ni veljaven css selektor) in ne sme
         vsebovati ločil, ki ju uporablja :meth:`IzpitniRok.id` (``_`` in ``x``),
@@ -339,7 +339,7 @@ class IzpitniRok:
         # vrstico vstavljene vsebine, v ics pa vrstica, ki se začne s presledkom,
         # pomeni nadaljevanje prejšnje (RFC 5545), zaradi česar dogodkov ni mogoče
         # uvoziti. Znake @@@@ nazaj v prelome vrstic pretvori out/posodabljanje.js.
-        self.ics_vrstice = ics_vrstice
+        self.nastavi_ics_vrstice(ics_vrstice)
 
     def preveri(self):
         """
@@ -371,22 +371,26 @@ class IzpitniRok:
             f"IzpitniRok("
             f"{self.datum}, {self.predmet}, {self.programi}, "
             f"{self.letniki}, {self.rok}, {self.izvajalci}, "
-            f"{self.obdobje}, {self.ics_vrstice}"
+            f"{self.obdobje}, {self._ics_vrstice}"
             f")"
         )
 
-    def _ics_summary(self):
+    def _ics_summary(self, jezik):
+        """Povzetek dogodka za izvoz .ics, v celoti v danem jeziku."""
+
         def opisi_par(par):
             program, letnik = par
+            ime_programa = jezik.program(program.ime)
             if letnik.je_brez_letnika():
-                return program.ime
-            return f"{program.ime} - {letnik} letnik"
+                return ime_programa
+            return f"{ime_programa} - {jezik.letnik(letnik.ime)}"
 
         smeri_in_letniki = "\\, ".join(
             map(opisi_par, zip(self.programi, self.letniki))
         )
         izvajalci = "\\, ".join(map(str, self.izvajalci))
-        return f"{self.predmet} ({smeri_in_letniki})\\, {izvajalci}\\, {self.rok} rok"
+        rok = jezik.niz("oblika_roka").format(rok=jezik.rok(self.rok.ime))
+        return f"{jezik.predmet(self.predmet.ime)} ({smeri_in_letniki})\\, {izvajalci}\\, {rok}"
 
     @staticmethod
     def _zvij_vrstico(vrsta: str, dolzina: int = 75) -> str:
@@ -414,16 +418,20 @@ class IzpitniRok:
         kosi.append(trenutni)
         return "@@@@ ".join(kosi)
 
-    @property
-    def ics_vrstice(self):
+    def ics_vrstice(self, jezik):
+        """Surove ics vrstice tega roka, v katerih je SUMMARY na novo sestavljen
+        v danem jeziku.
+
+        :param jezik: objekt :class:`izpitni_roki.jezik.Jezik`
+        """
+
         def menjalec(m):
-            zvita = IzpitniRok._zvij_vrstico("SUMMARY:" + self._ics_summary())
+            zvita = IzpitniRok._zvij_vrstico("SUMMARY:" + self._ics_summary(jezik))
             return zvita + "@@@@" + m.group(1)
 
         return re.sub("SUMMARY:.+?@@@@([^ ])", menjalec, self._ics_vrstice)
 
-    @ics_vrstice.setter
-    def ics_vrstice(self, vrednost: str):
+    def nastavi_ics_vrstice(self, vrednost: str):
         """
         Spremeni surove ics vrstice v eno samo samo, tako da znake za novo vrsto nadomesti
         z ``@@@@`` in odstrani morebitno pojavitev ``ni smeri``.
@@ -431,42 +439,15 @@ class IzpitniRok:
         ena_vrsta = vrednost.replace("\n", "@@@@")
         self._ics_vrstice = re.sub("(\\\\, ?)?ni smeri", "", ena_vrsta)
 
-    def prikazi_datum(self) -> str:
+    def prikazi_datum(self, jezik) -> str:
         """
-        Polje datum pretvori v berljiv niz. Tako se npr. 3. 10. 2022 pretvori v niz
-        ``"3. oktober 2022 (ponedeljek)"``.
+        Polje datum pretvori v berljiv niz v danem jeziku, npr. 3. 10. 2022
+        v slovenščini v ``"3. oktober 2022 (ponedeljek)"``.
 
+        :param jezik: objekt :class:`izpitni_roki.jezik.Jezik`
         :return: berljiva predstavitev datuma
         """
-        dnevi = [
-            "ponedeljek",
-            "torek",
-            "sreda",
-            "četrtek",
-            "petek",
-            "sobota",
-            "nedelja",
-        ]
-        meseci = [
-            "januar",
-            "februar",
-            "marec",
-            "april",
-            "maj",
-            "junij",
-            "julij",
-            "avgust",
-            "september",
-            "oktober",
-            "november",
-            "december",
-        ]
-        dan = dnevi[self.datum.weekday()]
-        mesec = meseci[self.datum.month - 1]
-        oblikovan_datum = self.datum.strftime(
-            f"{self.datum.day}. {mesec} {self.datum.year}"
-        )
-        return f"{oblikovan_datum} ({dan})"
+        return jezik.datum(self.datum)
 
     @staticmethod
     def _id_seznama(seznam: List[IDTerIme]):
@@ -510,7 +491,7 @@ class IzpitniRok:
         else:
             return ", ".join(map(str, seznam[:-1])) + f" in {seznam[-1]}"
 
-    def prikazi_smer_in_letnik(self):
+    def prikazi_smer_in_letnik(self, jezik):
         """
         Prikaže smer(i) ter letnik(e) v lepo berljivi obliki.
 
@@ -525,10 +506,15 @@ class IzpitniRok:
         """
         vrstice = []
         for program, letnik in zip(self.programi, self.letniki):
+            odebeljen = f"<b>{jezik.program(program.ime)}</b>"
             if letnik.je_brez_letnika():
-                vrstice.append(f"<b>{program}</b>")
+                vrstice.append(odebeljen)
             else:
-                vrstice.append(f"<b>{program}</b>, {letnik} letnik")
+                vrstice.append(
+                    jezik.niz("oblika_smer_letnik").format(
+                        program=odebeljen, letnik=jezik.letnik(letnik.ime)
+                    )
+                )
         return "<br>".join(vrstice)
 
     def prikazi_izvajalce(self):
@@ -548,7 +534,9 @@ class IzpitniRok:
         :return: Za izpitni rok Topologije, ki se zgodi 25. 10. 2022, bomo dobili
             ``"25. oktober 2022 (torek), Topologija"``
         """
-        return f"{self.prikazi_datum()}, {self.predmet}"
+        from izpitni_roki.jezik import PRIVZETI_JEZIK, nalozi_jezik
+
+        return f"{self.prikazi_datum(nalozi_jezik(PRIVZETI_JEZIK))}, {self.predmet}"
 
     def ignoriraj(self) -> bool:
         """
@@ -598,7 +586,7 @@ class IzpitniRok:
             izpitni_rok1.rok,
             sorted(set(izpitni_rok1.izvajalci + izpitni_rok2.izvajalci)),
             izpitni_rok1.obdobje,
-            izpitni_rok1.ics_vrstice,
+            izpitni_rok1._ics_vrstice,
         )
 
 
@@ -698,6 +686,32 @@ class HtmlPredloga:
                 vrednost = parameter
             niz = niz.replace(parameter, vrednost)
         return niz
+
+
+class NezapolnjenaPredloga(Exception):
+    """V zgenerirani strani je ostal ključ predloge, ki ga nihče ni napolnil."""
+
+
+def preveri_zapolnjeno(besedilo: str, kaj: str) -> str:
+    """
+    Preveri, da v zgenerirani vsebini ni ostalo nobenega ``{{kljuc}}``.
+
+    HtmlPredloga nenastavljene ključe pusti pri miru, kar je tiha napaka: na strani
+    se pojavi ``{{gumb_prenos}}`` namesto besedila. Raje prekinemo generiranje.
+
+    :param besedilo: zgenerirana vsebina
+    :param kaj: kaj generiramo (za sporočilo o napaki)
+
+    :return: nespremenjeno besedilo
+
+    :raises NezapolnjenaPredloga: če je kak ključ ostal nezapolnjen
+    """
+    ostanki = sorted(set(re.findall("{{[^{}]+}}", besedilo)))
+    if ostanki:
+        raise NezapolnjenaPredloga(
+            f"V {kaj} so ostali nezapolnjeni ključi predloge: {', '.join(ostanki)}"
+        )
+    return besedilo
 
 
 # Pomožne funkcije

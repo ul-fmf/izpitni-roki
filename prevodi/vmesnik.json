@@ -1,0 +1,281 @@
+{
+  "sl": {
+    "ime_jezika": "Slovensko",
+    "znak_portreta": "π",
+    "title": "Izpitni roki",
+    "razdelek_o_strani": "O strani",
+    "razdelek_izbira": "Izbira izpitnih rokov",
+    "razdelek_izbrani": "Izbrani izpiti",
+    "odstavek_ics": "Izbrane izpitne roke lahko prenesete kot <code>.ics</code> datoteko in jih nato dodate v svoj osebni koledar, vendar pozor: morebitne kasnejše spremembe izpitnih rokov se v vašem osebnem koledarju <b>ne bodo poznale.</b>",
+    "gumb_komentar": "Pošlji komentar",
+    "gumb_prenos": "Prenesi izbrane izpite",
+    "stolpec_datum": "Datum",
+    "stolpec_predmet": "Predmet",
+    "stolpec_program_letnik": "Program in letnik",
+    "stolpec_rok": "Rok",
+    "stolpec_izvajalci": "Izvajalci",
+    "meni_program": "Programi",
+    "meni_letnik": "Letniki",
+    "meni_obdobje": "Obdobja",
+    "meni_predmet": "Predmeti",
+    "meni_izvajalec": "Izvajalci",
+    "meni_rok": "Roki",
+    "izberi_vse": {
+      "program": "Izberi vse",
+      "letnik": "Izberi vse",
+      "obdobje": "Izberi vsa",
+      "predmet": "Izberi vse",
+      "izvajalec": "Izberi vse",
+      "rok": "Izberi vse"
+    },
+    "odstrani_vse": {
+      "program": "Odstrani vse",
+      "letnik": "Odstrani vse",
+      "obdobje": "Odstrani vsa",
+      "predmet": "Odstrani vse",
+      "izvajalec": "Odstrani vse",
+      "rok": "Odstrani vse"
+    },
+    "programi": {
+      "1FiMa": "Finančna matematika",
+      "1ApMa": "Aplikativna matematika",
+      "1Mate": "Matematika",
+      "2PeMa": "Pedagoška matematika",
+      "magistrski študij": "Magistrski študij"
+    },
+    "letniki": {
+      "prvi": "1. letnik",
+      "drugi": "2. letnik",
+      "tretji": "3. letnik",
+      "četrti": "4. letnik",
+      "peti": "5. letnik"
+    },
+    "obdobja": {
+      "zimsko": "zimsko",
+      "spomladansko": "spomladansko",
+      "jesensko": "jesensko",
+      "izven izpitnih obdobij": "izven izpitnih obdobij"
+    },
+    "roki": {
+      "1.": "1.",
+      "2.": "2.",
+      "3.": "3.",
+      "4.": "4.",
+      "5.": "5."
+    },
+    "oblika_smer_letnik": "{program}, {letnik}",
+    "oblika_roka": "{rok} rok",
+    "ics_ime_koledarja": "Izpitni roki",
+    "ics_ime_datoteke": "izbrani_izpiti.ics",
+    "dnevi": [
+      "ponedeljek",
+      "torek",
+      "sreda",
+      "četrtek",
+      "petek",
+      "sobota",
+      "nedelja"
+    ],
+    "meseci": [
+      "januar",
+      "februar",
+      "marec",
+      "april",
+      "maj",
+      "junij",
+      "julij",
+      "avgust",
+      "september",
+      "oktober",
+      "november",
+      "december"
+    ],
+    "oblika_datuma": "{dan}. {mesec} {leto} ({dan_v_tednu})"
+  },
+  "en": {
+    "ime_jezika": "English",
+    "znak_portreta": "01",
+    "title": "Exam dates",
+    "razdelek_o_strani": "About this page",
+    "razdelek_izbira": "Choosing exam dates",
+    "razdelek_izbrani": "Selected exams",
+    "odstavek_ics": "You can download the selected exam dates as an <code>.ics</code> file and add them to your personal calendar. Please note: any later changes to the exam dates <b>will not be reflected</b> in your calendar.",
+    "gumb_komentar": "Send a comment",
+    "gumb_prenos": "Download selected exams",
+    "stolpec_datum": "Date",
+    "stolpec_predmet": "Course",
+    "stolpec_program_letnik": "Programme and year",
+    "stolpec_rok": "Sitting",
+    "stolpec_izvajalci": "Lecturers",
+    "meni_program": "Programmes",
+    "meni_letnik": "Years",
+    "meni_obdobje": "Periods",
+    "meni_predmet": "Courses",
+    "meni_izvajalec": "Lecturers",
+    "meni_rok": "Sittings",
+    "izberi_vse": {
+      "program": "Select all",
+      "letnik": "Select all",
+      "obdobje": "Select all",
+      "predmet": "Select all",
+      "izvajalec": "Select all",
+      "rok": "Select all"
+    },
+    "odstrani_vse": {
+      "program": "Clear all",
+      "letnik": "Clear all",
+      "obdobje": "Clear all",
+      "predmet": "Clear all",
+      "izvajalec": "Clear all",
+      "rok": "Clear all"
+    },
+    "programi": {
+      "1FiMa": "Financial Mathematics",
+      "1ApMa": "Applied Mathematics",
+      "1Mate": "Mathematics",
+      "2PeMa": "Mathematics Education",
+      "magistrski študij": "Master's Programme"
+    },
+    "letniki": {
+      "prvi": "1st year",
+      "drugi": "2nd year",
+      "tretji": "3rd year",
+      "četrti": "4th year",
+      "peti": "5th year"
+    },
+    "obdobja": {
+      "zimsko": "winter",
+      "spomladansko": "spring",
+      "jesensko": "autumn",
+      "izven izpitnih obdobij": "outside exam periods"
+    },
+    "roki": {
+      "1.": "first",
+      "2.": "second",
+      "3.": "third",
+      "4.": "fourth",
+      "5.": "fifth"
+    },
+    "oblika_smer_letnik": "{program}, {letnik}",
+    "oblika_roka": "{rok} sitting",
+    "ics_ime_koledarja": "Exam dates",
+    "ics_ime_datoteke": "selected_exams.ics",
+    "dnevi": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
+    "meseci": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "oblika_datuma": "{dan} {mesec} {leto} ({dan_v_tednu})"
+  },
+  "de": {
+    "ime_jezika": "Deutsch",
+    "znak_portreta": "e",
+    "title": "Prüfungstermine",
+    "razdelek_o_strani": "Über diese Seite",
+    "razdelek_izbira": "Auswahl der Prüfungstermine",
+    "razdelek_izbrani": "Ausgewählte Prüfungen",
+    "odstavek_ics": "Sie können die ausgewählten Prüfungstermine als <code>.ics</code>-Datei herunterladen und in Ihren persönlichen Kalender übernehmen. Achtung: spätere Änderungen der Prüfungstermine werden in Ihrem Kalender <b>nicht übernommen.</b>",
+    "gumb_komentar": "Kommentar senden",
+    "gumb_prenos": "Ausgewählte Prüfungen herunterladen",
+    "stolpec_datum": "Datum",
+    "stolpec_predmet": "Fach",
+    "stolpec_program_letnik": "Studiengang und Jahrgang",
+    "stolpec_rok": "Prüfungstermin",
+    "stolpec_izvajalci": "Lehrende",
+    "meni_program": "Studiengänge",
+    "meni_letnik": "Jahrgänge",
+    "meni_obdobje": "Prüfungszeiträume",
+    "meni_predmet": "Fächer",
+    "meni_izvajalec": "Lehrende",
+    "meni_rok": "Prüfungstermine",
+    "izberi_vse": {
+      "program": "Alle auswählen",
+      "letnik": "Alle auswählen",
+      "obdobje": "Alle auswählen",
+      "predmet": "Alle auswählen",
+      "izvajalec": "Alle auswählen",
+      "rok": "Alle auswählen"
+    },
+    "odstrani_vse": {
+      "program": "Alle entfernen",
+      "letnik": "Alle entfernen",
+      "obdobje": "Alle entfernen",
+      "predmet": "Alle entfernen",
+      "izvajalec": "Alle entfernen",
+      "rok": "Alle entfernen"
+    },
+    "programi": {
+      "1FiMa": "Finanzmathematik",
+      "1ApMa": "Angewandte Mathematik",
+      "1Mate": "Mathematik",
+      "2PeMa": "Mathematiklehramt",
+      "magistrski študij": "Masterstudium"
+    },
+    "letniki": {
+      "prvi": "1. Jahrgang",
+      "drugi": "2. Jahrgang",
+      "tretji": "3. Jahrgang",
+      "četrti": "4. Jahrgang",
+      "peti": "5. Jahrgang"
+    },
+    "obdobja": {
+      "zimsko": "Winter",
+      "spomladansko": "Frühjahr",
+      "jesensko": "Herbst",
+      "izven izpitnih obdobij": "außerhalb der Prüfungszeiträume"
+    },
+    "roki": {
+      "1.": "erster",
+      "2.": "zweiter",
+      "3.": "dritter",
+      "4.": "vierter",
+      "5.": "fünfter"
+    },
+    "oblika_smer_letnik": "{program}, {letnik}",
+    "oblika_roka": "{rok} Prüfungstermin",
+    "ics_ime_koledarja": "Prüfungstermine",
+    "ics_ime_datoteke": "ausgewaehlte_pruefungen.ics",
+    "dnevi": [
+      "Montag",
+      "Dienstag",
+      "Mittwoch",
+      "Donnerstag",
+      "Freitag",
+      "Samstag",
+      "Sonntag"
+    ],
+    "meseci": [
+      "Januar",
+      "Februar",
+      "März",
+      "April",
+      "Mai",
+      "Juni",
+      "Juli",
+      "August",
+      "September",
+      "Oktober",
+      "November",
+      "Dezember"
+    ],
+    "oblika_datuma": "{dan}. {mesec} {leto} ({dan_v_tednu})"
+  }
+}
