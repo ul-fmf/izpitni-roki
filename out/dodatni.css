@@ -80,8 +80,8 @@
    razmerij, zato jih obrezemo v krog in poravnamo na zgornji del, kjer je obraz. */
 .povezava-jezik .portret {
     display: block;
-    height: 2rem;
-    width: 2rem;
+    height: 4rem;
+    width: 4rem;
     object-fit: cover;
     object-position: center top;
     border-radius: 50%;
