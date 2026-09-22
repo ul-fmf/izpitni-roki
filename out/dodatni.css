@@ -1,3 +1,13 @@
+:root {
+    /* Svetlo modra ozadja glave; isto barvo dobijo neizbrani gumbi za jezik. */
+    --barva-glave: #e3f2fd;
+    --barva-glave-temneje: #cfe6fb;
+}
+
+.glava-strani {
+    background-color: var(--barva-glave);
+}
+
 
 .dropdown-menu li a:hover,
 .dropdown-menu li a:focus {
@@ -52,6 +62,18 @@
 .povezava-jezik {
     padding: 0.15rem 0.3rem;
     line-height: 1;
+}
+
+/* Neizbrani jezik se zlije z glavo, izbrani obdrzi bootstrapov btn-primary. */
+.povezava-jezik.btn-light,
+.povezava-jezik.btn-light:focus {
+    background-color: var(--barva-glave);
+    border-color: var(--barva-glave);
+}
+
+.povezava-jezik.btn-light:hover {
+    background-color: var(--barva-glave-temneje);
+    border-color: var(--barva-glave-temneje);
 }
 
 /* Zastave so 4:3 (glej predloge/zastave/README.md), zato sirino racunamo. */
