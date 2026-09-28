@@ -29,6 +29,26 @@ def naredi_zapisnikarja(name):
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
 
 
+def normalna_oblika(niz: str) -> str:
+    """
+    Oblika niza, primerna za urejanje po abecedi, ki vsebuje neangleške črke
+    (č, ć, đ, š, ž).
+
+    Uporabljata jo :meth:`IDTerIme._normalna_oblika` za imena iz ics datotek in
+    :func:`izpitni_roki.naredi_html.naredi_spustni_meni_po_crkah` za **prevedena**
+    imena, ki objekta IDTerIme nimajo (issue #9).
+
+    :param niz: npr. ``"Šečđežeć"``
+
+    :return: normalizirana oblika, npr. ``"s{ec{d{ez{ec{{"``, saj je znak ``{``
+        tik za znakom ``z``
+    """
+    posebni = {"č": "c{", "ć": "c{{", "đ": "d{", "š": "s{", "ž": "z{"}
+    return "".join(
+        crka if crka not in posebni else posebni[crka] for crka in niz.lower()
+    )
+
+
 class IDTerIme:
     """
     Nadrazred za razna polja v razredu :meth:`izpitni_roki.osnovno.IzpitniRok`,
@@ -102,13 +122,7 @@ class IDTerIme:
             saj je znak ``{`` tik za znakom ``z``.
 
         """
-        posebni = {"č": "c{", "ć": "c{{", "đ": "d{", "š": "s{", "ž": "z{"}
-        return "".join(
-            [
-                crka if crka not in posebni else posebni[crka]
-                for crka in self.ime.lower()
-            ]
-        )
+        return normalna_oblika(self.ime)
 
     def __lt__(self, other):
         if isinstance(other, IDTerIme):

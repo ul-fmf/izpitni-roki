@@ -3,6 +3,7 @@ import re
 import html
 import unicodedata
 from izpitni_roki.osnovno import (
+    normalna_oblika,
     preveri_zapolnjeno,
     naredi_zapisnikarja,
     IzpitniRok,
@@ -17,7 +18,10 @@ from datetime import datetime
 
 
 ZAPISNIKAR = naredi_zapisnikarja(__file__)
-CRKE = "ABCČDEFGHIJKLMNOPRSŠTUVZŽ"
+# Slovenska abeceda, razsirjena s crkami, ki jih slovenscina nima, prevodi pa
+# jih uporabljajo (nem. Wahrscheinlichkeitsrechnung). Vrstni red se mora ujemati
+# z urejanjem v osnovno.normalna_oblika, sicer skupine ne bi bile po abecedi.
+CRKE = "ABCČDEFGHIJKLMNOPQRSŠTUVWXYZŽ"
 IZHODNA_MAPA = "out"
 
 
@@ -173,23 +177,23 @@ def najdi_vsa_obdobja(koledarji: List[Koledar]) -> List[IDTerIme]:
     return najdi_vse(koledarji, lambda rok: [rok.obdobje])
 
 
-def doloci_skupinsko_crko(moznost: IDTerIme) -> str:
+def doloci_skupinsko_crko(besedilo: str) -> str:
     """
-    Pove, pod katero črko v dvonivojskem spustnem meniju sodi dana možnost.
+    Pove, pod katero črko v dvonivojskem spustnem meniju sodi dano besedilo.
 
-    :param moznost: možnost, npr. ``Izvajalec("Álvarez Román")``
+    :param besedilo: besedilo, po katerem uvrščamo, npr. ``"Álvarez Román"``
 
-    :return: črka iz ``CRKE``. Tuje črke, ki jih ``CRKE`` ne pozna (npr. ``Á``),
-        uvrstimo k osnovni črki (``A``).
+    :return: črka iz ``CRKE``. Tuje črke, ki jih ``CRKE`` ne pozna (npr. ``Á``
+        ali nemški ``Ö``), uvrstimo k osnovni črki (``A``, ``O``).
     """
-    crka = moznost[0].upper()
+    crka = besedilo[0].upper()
     if crka in CRKE:
         return crka
     osnovna_crka = unicodedata.normalize("NFD", crka)[0]
     if osnovna_crka in CRKE:
         return osnovna_crka
     ZAPISNIKAR.warning(
-        f"Črke '{crka}' (na začetku '{moznost.ime}') ne poznam, "
+        f"Črke '{crka}' (na začetku '{besedilo}') ne poznam, "
         f"zato možnost uvrščam pod '{CRKE[0]}'."
     )
     return CRKE[0]
@@ -218,6 +222,29 @@ def prevedi_moznost(jezik, html_razred: str, moznost: IDTerIme) -> str:
     if html_razred in prevajalci:
         return prevajalci[html_razred](moznost.ime)
     return str(moznost)
+
+
+def besedilo_za_razvrscanje(jezik, html_razred: str, moznost: IDTerIme) -> str:
+    """
+    Besedilo, po katerem možnost uvrstimo v skupino črk.
+
+    Imena predmetov se prevajajo, zato jih uvrščamo po **prevodu**: v angleščini
+    uporabnik ``Computer science 2`` išče pod ``C`` in ne pod ``R``, kjer je
+    slovensko ``Računalništvo 2`` (issue #9).
+
+    Imena izvajalcev pa niso besedilo, ampak imena, in se ne prevajajo. Uvrščamo
+    jih po priimku, ki je v ``ime`` na prvem mestu (prikazani ``str`` ima spredaj
+    osebno ime), zato so v vseh jezikih pod isto črko.
+
+    :param jezik: objekt :class:`izpitni_roki.jezik.Jezik`
+    :param html_razred: skupina filtra, npr. ``predmet``
+    :param moznost: možnost, npr. ``Predmet("Računalništvo 2")``
+
+    :return: besedilo za uvrščanje, npr. ``"Computer science 2"``
+    """
+    if html_razred == "izvajalec":
+        return moznost.ime
+    return prevedi_moznost(jezik, html_razred, moznost)
 
 
 def _ovoj_menija(jezik, ime_menija: str, html_razred: str, skupine: str) -> str:
@@ -255,8 +282,10 @@ def naredi_spustni_meni_po_crkah(
     """
     Naredi dvonivojski spustni meni.
 
-    Skupine črk se ravnajo po **slovenskem** imenu, tudi v prevedenih različicah,
-    da je vrstni red v vseh jezikih enak in da se ujema z razvrstitvijo.
+    Skupine črk in vrstni red v njih se ravnajo po imenu, kot je prikazano v tem
+    jeziku (issue #9): v angleščini uporabnik ``Computer science 2`` išče pod ``C``
+    in ne pod ``R``, kjer je slovensko ``Računalništvo 2``. Izvajalci se ne
+    prevajajo in ostanejo povsod pod priimkom; glej :func:`besedilo_za_razvrscanje`.
 
     :param jezik: objekt :class:`izpitni_roki.jezik.Jezik`
     :param ime_menija: napis na gumbu
@@ -268,9 +297,14 @@ def naredi_spustni_meni_po_crkah(
     """
     if not moznosti:
         return ""
+    oznacene = [
+        (besedilo_za_razvrscanje(jezik, html_razred, moznost), moznost)
+        for moznost in moznosti
+    ]
+    oznacene.sort(key=lambda par: normalna_oblika(par[0]))
     skupine: List[List[IDTerIme]] = [[] for _ in CRKE]
-    for moznost in moznosti:
-        skupine[CRKE.index(doloci_skupinsko_crko(moznost))].append(moznost)
+    for besedilo, moznost in oznacene:
+        skupine[CRKE.index(doloci_skupinsko_crko(besedilo))].append(moznost)
     elementi_nivo1 = []
     for crka, skupina in zip(CRKE, skupine):
         if not skupina:

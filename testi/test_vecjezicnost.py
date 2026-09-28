@@ -20,6 +20,37 @@ def pot_strani(koda):
     return os.path.join(mapa, f"{IME}.html")
 
 
+# Skupina crk (<li> brez razreda moznost) ali posamezna moznost v njej.
+SKUPINA_ALI_MOZNOST = re.compile(
+    r'<li class="(?P<skupina_razred>\w+) active">\s*'
+    r'<a class="dropdown-item" href="#!">\s*(?P<crka>[^\s<]+) &raquo;'
+    r'|'
+    r'<li class="(?P<razred>\w+) moznost active" id="[\w-]+" data-ime="(?P<ime>[^"]*)">\s*'
+    r'<a[^>]*>(?P<besedilo>[^<]*)</a>'
+)
+
+
+def skupine_po_crkah(stran):
+    """Iz strani izlusci dvonivojske menije.
+
+    :return: ``{razred: [(crka, [(prikazano besedilo, slovensko ime), ...]), ...]}``
+        v vrstnem redu, v kakrsnem so na strani
+    """
+    meniji = {}
+    odprta = {}
+    for zadetek in SKUPINA_ALI_MOZNOST.finditer(stran):
+        if zadetek.group("skupina_razred"):
+            razred = zadetek.group("skupina_razred")
+            skupina = (zadetek.group("crka"), [])
+            meniji.setdefault(razred, []).append(skupina)
+            odprta[razred] = skupina
+        elif zadetek.group("razred") in odprta:
+            odprta[zadetek.group("razred")][1].append(
+                (zadetek.group("besedilo").strip(), zadetek.group("ime"))
+            )
+    return meniji
+
+
 class TestVecjezicnost(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -150,6 +181,46 @@ class TestVecjezicnost(unittest.TestCase):
         self.assertIn("1. letnik", moznosti)
         self.assertNotIn("prvi", moznosti)
 
+    def test_predmeti_so_pod_crko_prikazanega_imena(self):
+        """Issue #9: 'Computer science 2' sodi pod C in ne pod R (Racunalnistvo 2)."""
+        for crka, moznosti in skupine_po_crkah(self.strani["en"])["predmet"]:
+            for besedilo, _ in moznosti:
+                with self.subTest(predmet=besedilo):
+                    self.assertEqual(besedilo[0].upper(), crka)
+
+    def test_abeceda_pozna_crke_drugih_jezikov(self):
+        """Issue #9: nemscina ima W (Wahrscheinlichkeitsrechnung), slovenska
+        abeceda pa ga nima, zato je predmet koncal pod A."""
+        skupine = dict(skupine_po_crkah(self.strani["de"])["predmet"])
+        self.assertIn("W", skupine)
+        self.assertIn(
+            "Wahrscheinlichkeitsrechnung 2",
+            [besedilo for besedilo, _ in skupine["W"]],
+        )
+
+    def test_predmeti_v_skupini_so_urejeni_po_prikazanem_imenu(self):
+        """Issue #9: pod C sta 'Computability theory' in 'Computer science 2';
+        urejena morata biti po anglescini in ne po slovenskih izvirnikih."""
+        for koda in JEZIKI:
+            for crka, moznosti in skupine_po_crkah(self.strani[koda])["predmet"]:
+                besedila = [besedilo for besedilo, _ in moznosti]
+                with self.subTest(jezik=koda, crka=crka):
+                    self.assertEqual(besedila, sorted(besedila, key=str.lower))
+
+    def test_izvajalci_ostanejo_pod_priimkom(self):
+        """Issue #9: imena izvajalcev se ne prevajajo, zato ostanejo v vseh jezikih
+        pod isto crko. Uvrscamo jih po priimku, ki je prvi v data-ime, in ne po
+        prikazanem imenu, ki je obrnjeno ('Kranjec Ana' se pokaze kot 'Ana Kranjec')."""
+        obrnjena = 0
+        for koda in JEZIKI:
+            for crka, moznosti in skupine_po_crkah(self.strani[koda])["izvajalec"]:
+                for besedilo, ime in moznosti:
+                    with self.subTest(jezik=koda, izvajalec=ime):
+                        self.assertEqual(ime[0].upper(), crka)
+                    obrnjena += besedilo != ime
+        self.assertGreater(
+            obrnjena, 0, "test bi bil prazen, ce se noben izvajalec ne bi obrnil"
+        )
 
 if __name__ == "__main__":
     unittest.main()
