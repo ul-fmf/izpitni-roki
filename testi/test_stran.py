@@ -5,8 +5,13 @@ import os
 import re
 import unittest
 
-from izpitni_roki.naredi_html import IZHODNA_MAPA, naredi_html
-from izpitni_roki.osnovno import Letnik
+from izpitni_roki.naredi_html import (
+    CRKE,
+    IZHODNA_MAPA,
+    doloci_skupinsko_crko,
+    naredi_html,
+)
+from izpitni_roki.osnovno import Letnik, normalna_oblika
 
 from testi.pomozno import OBDOBJA, TESTNE, pozabi_vse
 
@@ -122,6 +127,26 @@ class TestZgenerirenaStran(unittest.TestCase):
             self.html.index('src="posodabljanje.js"'),
             "permalink.js mora biti naložen pred posodabljanje.js",
         )
+
+
+class TestSkupinskaCrka(unittest.TestCase):
+    """Uvrscanje v skupine dvonivojskega menija (issue #9)."""
+
+    def test_latinicne_crke_drugih_jezikov(self):
+        """Abeceda mora pokriti crke, ki jih slovenscina nima, anglescina in
+        nemscina pa ju uporabljata; sicer moznost tiho pade pod A."""
+        for crka in "QWXY":
+            with self.subTest(crka=crka):
+                self.assertIn(crka, CRKE)
+
+    def test_tuje_crke_uvrstimo_k_osnovni(self):
+        self.assertEqual(doloci_skupinsko_crko("Ölgemälde"), "O")
+        self.assertEqual(doloci_skupinsko_crko("Álvarez Román"), "A")
+
+    def test_abeceda_je_urejena_kot_razvrscanje(self):
+        """Skupine izpisujemo v vrstnem redu CRKE, moznosti v njih pa uredimo
+        z normalna_oblika; ce se ne ujemata, skupine ne bi bile po abecedi."""
+        self.assertEqual(list(CRKE), sorted(CRKE, key=normalna_oblika))
 
 
 if __name__ == "__main__":
