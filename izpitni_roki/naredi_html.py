@@ -41,7 +41,7 @@ def nalozi_predmete_za_zduzevanje() -> Dict[str, List[str]]:
         for vrsta in f:
             i = vrsta.find(",")
             predmet = vrsta[:i].strip()
-            smeri = re.split(",| ?in ?", vrsta[i + 1:])
+            smeri = re.split(",", vrsta[i + 1:])
             assert predmet not in predmet_smeri
             predmet_smeri[predmet] = [smer.strip() for smer in smeri]
     return predmet_smeri
